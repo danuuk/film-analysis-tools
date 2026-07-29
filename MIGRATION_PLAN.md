@@ -399,16 +399,23 @@ edges**, **17 pointing at three modules** (`render_grain_runtime`, `runtime_look
 `additional_layers`). `additional_layers.py` does two jobs — sensitometry (FAT's) and image
 transforms (the plugin's) — and must be split, not moved.
 
-**Triage is three-way.**
+**Triage is four-way, and settled.** [`ledger.toml`](ledger.toml) carries the disposition of
+every legacy module with the reason for it, checked in CI by `tests/migration/test_ledger.py`.
 
-- **KEEP** → ~120 modules / 144k LOC, restructured on the way in. Actual retained volume will be
-  well below this once §3's ceremony share is removed.
-- **ARCHIVE** → 58 modules / 59,820 LOC of one-shot campaign work (`campaign.kodak` 19,
-  `campaign.ptf` 10, `campaign.b0-fsc1c` 9, `campaign.joint` 8, `campaign.broad` 5,
-  `campaign.vector-tile` 4, others 3). Each gets a short record — question, conclusion, evidence
-  location, what superseded it — then stays readable at the legacy pin.
-- **REMOVE** → produced *by* the P1 pass, not guessed now. Nothing deleted before its record exists.
-- **Plugin** → 23 modules / 27,902 LOC stay in `obs-art-plugin`.
+| Disposition | Modules | LOC | Meaning |
+|---|---:|---:|---|
+| **keep** | 126 | 145,786 | migrates here, restructured on the way in |
+| **archive** | 56 | 58,685 | one-shot campaign work; documented, then left readable at the pin |
+| **plugin** | 22 | 27,867 | stays in `obs-art-plugin` |
+| **remove** | 14 | 814 | dead scaffolding |
+| total | **218** | **233,152** | |
+
+The keep figure is an upper bound: retained volume falls well below it once §3's ceremony share
+is removed. The 14 removals are the legacy CLI/registry plumbing (entry point, analyzer registry,
+and the 657-line HOOKS table mapping 92 stage names onto argparse programs — the inventory it
+encoded is now the ledger), two ~13-line re-export shims, and the eight one-line `__init__.py`
+stubs of the Engine V1 consumer layer that was designed and never implemented. Nothing is
+deleted from history; all of it stays readable at the pin.
 
 **Archaeology is bounded.** 183 docs; **142** name a module; **111 / 164** modules are named in a
 doc. Binding must be by content — docs use campaign codenames (`stat2a`, `ptf3`, `vt6`), modules

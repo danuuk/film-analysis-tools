@@ -1,0 +1,549 @@
+# Migration ledger — disposition of every legacy module.
+#
+# Generated from obs-art-plugin @ 897aad09, then hand-maintained. Checked in CI by
+# tests/migration/test_ledger.py: dispositions must be valid, every group must carry a
+# reason, archived groups must name their record, and removals must be justified.
+# With FILM_ANALYSIS_LEGACY_ROOT set, the check also proves the ledger still covers the
+# legacy tree exactly once.
+#
+# keep    -> migrates into this repo, restructured on the way in
+# archive -> one-shot campaign work; documented, then left readable at the pin
+# remove  -> dead scaffolding; nothing is removed before its record exists
+# plugin  -> stays in obs-art-plugin
+
+[meta]
+schema_version = 1
+legacy_repo = "obs-art-plugin"
+legacy_pin = "897aad09"
+legacy_package = "mediachar"
+generated = "2026-07-28"
+
+[[group]]
+id = "campaign.al5"
+disposition = "archive"
+arc = "campaign.al5"
+record_pending = true
+reason = "AL-5 synthetic optical calibration harness."
+module_count = 1
+loc = 2226
+documented = 0
+modules = [
+  "analyzers/film_grain/al5_synthetic_calibration.py",  # 2226 LOC, NO DOC
+]
+
+[[group]]
+id = "campaign.b0_fsc1c"
+disposition = "archive"
+arc = "campaign.b0_fsc1c"
+record_pending = true
+reason = "B0-prime tone foundation, FSC1-C identity and integration, post-print chroma gain capability and stress testing."
+module_count = 9
+loc = 5320
+documented = 6
+modules = [
+  "analyzers/film_grain/reference_b0_prime_common_tone_crosswalk.py",  # 82 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_b0_prime_safe_tone.py",  # 65 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_b0_prime_safe_tone_diffuse_white.py",  # 43 LOC, NO DOC
+  "analyzers/film_grain/reference_chroma_gain_capability_report.py",  # 2449 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_chroma_gain_preview_seed_report.py",  # 593 LOC, NO DOC
+  "analyzers/film_grain/reference_chroma_gain_stress_report.py",  # 1679 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_fsc1c_a4_compatibility.py",  # 76 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_fsc1c_identity_recipe.py",  # 238 LOC, NO DOC
+  "analyzers/film_grain/reference_fsc1c_integrated_candidate.py",  # 95 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "campaign.broad"
+disposition = "archive"
+arc = "campaign.broad"
+record_pending = true
+reason = "Broad colour scan, coverage, review and freeze, plus global colour comparison."
+module_count = 5
+loc = 4267
+documented = 1
+modules = [
+  "analyzers/film_grain/reference_broad_colour_coverage.py",  # 1091 LOC, NO DOC
+  "analyzers/film_grain/reference_broad_colour_freeze.py",  # 524 LOC, NO DOC
+  "analyzers/film_grain/reference_broad_colour_review.py",  # 520 LOC, NO DOC
+  "analyzers/film_grain/reference_broad_colour_scan.py",  # 1216 LOC, NO DOC
+  "analyzers/film_grain/reference_global_colour_comparison.py",  # 916 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "campaign.joint"
+disposition = "archive"
+arc = "campaign.joint"
+record = "docs/archive/campaign-joint.md"
+reason = "Joint colour fitting arc: basis screen, fit, robust selection, equivalence audit, holdout confirmation, candidate frontier, visual limit, native equivalence."
+module_count = 8
+loc = 6498
+documented = 0
+modules = [
+  "analyzers/film_grain/reference_joint_colour_basis_screen.py",  # 626 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_candidate_frontier.py",  # 869 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_equivalence_audit.py",  # 936 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_fit.py",  # 913 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_holdout_confirmation.py",  # 831 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_native_equivalence.py",  # 965 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_robust_selection.py",  # 681 LOC, NO DOC
+  "analyzers/film_grain/reference_joint_colour_visual_limit.py",  # 677 LOC, NO DOC
+]
+
+[[group]]
+id = "campaign.kodak"
+disposition = "archive"
+arc = "campaign.kodak"
+record_pending = true
+reason = "Kodak 5219/2383 sensitometry, negative-to-print attribution, neutral construction, B1 toe and identity work, Status-M camera pilot."
+module_count = 19
+loc = 20628
+documented = 18
+modules = [
+  "analyzers/film_grain/reference_kodak_2383_source_envelope.py",  # 1355 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_kodak_2383_source_envelope_v2.py",  # 547 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_kodak_5219_sensitometric_extraction.py",  # 765 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_kodak_anchor_factorial.py",  # 1387 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_kodak_b0_prime.py",  # 960 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_kodak_b1_phase0_appearance.py",  # 1108 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_kodak_b1_phase0_authority.py",  # 744 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_kodak_b1_phase0_decision.py",  # 301 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_kodak_b1_v2_identity.py",  # 458 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_kodak_b1_v2_source_stage.py",  # 1160 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_kodak_b1_v2_toe.py",  # 1048 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_kodak_candidate_colour_gate.py",  # 1309 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_kodak_fsc0_comparison.py",  # 1756 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_kodak_fsc1_constrained_chroma_capacity.py",  # 480 LOC, NO DOC
+  "analyzers/film_grain/reference_kodak_negative_print_attribution.py",  # 1641 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_kodak_neutral_composition.py",  # 1491 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_kodak_neutral_proxy.py",  # 1522 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_kodak_stage_curve_ablation.py",  # 1247 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_kodak_status_m_camera_pilot.py",  # 1349 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "campaign.ptf"
+disposition = "archive"
+arc = "campaign.ptf"
+record_pending = true
+reason = "Practical target fit PTF1-PTF5: populations, attribution, visibility, sign capacity, absolute luma gate, basis screen."
+module_count = 10
+loc = 12265
+documented = 7
+modules = [
+  "analyzers/film_grain/reference_practical_target_fit_ptf1.py",  # 1822 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf2.py",  # 1046 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf2_attribution.py",  # 1283 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf2_visibility.py",  # 403 LOC, NO DOC
+  "analyzers/film_grain/reference_practical_target_fit_ptf3.py",  # 1308 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf3_context.py",  # 677 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf3_curves.py",  # 2390 LOC, NO DOC
+  "analyzers/film_grain/reference_practical_target_fit_ptf4_sign_capacity.py",  # 1754 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf5_absolute_luma_gate.py",  # 600 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_practical_target_fit_ptf5_basis_screen.py",  # 982 LOC, NO DOC
+]
+
+[[group]]
+id = "campaign.vector_tile"
+disposition = "archive"
+arc = "campaign.vector_tile"
+record_pending = true
+reason = "Vector-tile pilot, response atlas, followup and curve analysis — the exploratory arc STAT2A grew out of."
+module_count = 4
+loc = 7481
+documented = 4
+modules = [
+  "analyzers/film_grain/reference_vector_tile_curve_analysis.py",  # 1913 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_vector_tile_pilot.py",  # 2020 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_vector_tile_response_atlas.py",  # 1812 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_vector_tile_response_followup.py",  # 1736 LOC, 3 doc(s)
+]
+
+[[group]]
+id = "catalog"
+disposition = "keep"
+target = "capabilities/source"
+reason = "Scene detection, eight scored categories, face scouting. Promoted to first-class: this is the meta-database the catalogue-and-regenerate model is built on."
+module_count = 12
+loc = 3017
+documented = 8
+modules = [
+  "analyzers/scene_catalog/__init__.py",  # 53 LOC, 4 doc(s)
+  "analyzers/scene_catalog/assets.py",  # 195 LOC, 4 doc(s)
+  "analyzers/scene_catalog/catalog.py",  # 168 LOC, 4 doc(s)
+  "analyzers/scene_catalog/cli.py",  # 497 LOC, 4 doc(s)
+  "analyzers/scene_catalog/compare_report.py",  # 609 LOC, 1 doc(s)
+  "analyzers/scene_catalog/face_scout.py",  # 682 LOC, 4 doc(s)
+  "analyzers/scene_catalog/ffmpeg_tools.py",  # 51 LOC, NO DOC
+  "analyzers/scene_catalog/html_report.py",  # 98 LOC, NO DOC
+  "analyzers/scene_catalog/metrics.py",  # 217 LOC, 4 doc(s)
+  "analyzers/scene_catalog/scene_detection.py",  # 102 LOC, NO DOC
+  "analyzers/scene_catalog/scoring.py",  # 158 LOC, 4 doc(s)
+  "analyzers/scene_catalog/source_probe.py",  # 187 LOC, NO DOC
+]
+
+[[group]]
+id = "colour"
+disposition = "keep"
+target = "capabilities/colour"
+reason = "Colour features, source adapters, renderers, tile classification, masks. reference_colour_features is the clean substrate the fast path was built on."
+module_count = 10
+loc = 9659
+documented = 10
+modules = [
+  "analyzers/film_grain/colour_tile_classification.py",  # 198 LOC, 3 doc(s)
+  "analyzers/film_grain/input_domain.py",  # 301 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_colour_features.py",  # 381 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_colour_renderer.py",  # 413 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_colour_sample_pack.py",  # 2123 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_colour_source_adapter.py",  # 1104 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_control_probe.py",  # 434 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_mask_author.py",  # 2829 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_masks.py",  # 1175 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_synthetic_colour_response_atlas.py",  # 701 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "core"
+disposition = "keep"
+target = "core"
+reason = "Shared IO and thread control that 153 and 44 modules depend on. Rewritten, not copied: the legacy `fail()` raised SystemExit from library code."
+module_count = 2
+loc = 142
+documented = 2
+modules = [
+  "core/contract/__init__.py",  # 107 LOC, 4 doc(s)
+  "core/native_threads.py",  # 35 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "detect"
+disposition = "keep"
+target = "capabilities/detect"
+reason = "Face and skin providers, attrition accounting, suitability, temporal grouping. Already a coherent subpackage; largely a lift."
+module_count = 15
+loc = 8980
+documented = 14
+modules = [
+  "analyzers/film_grain/reference_bright_skin_audit.py",  # 600 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_face_skin_attrition_compare.py",  # 657 LOC, NO DOC
+  "analyzers/film_grain/reference_face_skin_provider_benchmark.py",  # 572 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_face_skin_proxy_mask_export.py",  # 693 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_face_skin_sc4_proxy_pilot.py",  # 1658 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_face_skin_validation.py",  # 678 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_skin_candidate_promotion.py",  # 823 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_skin_luma_bucket_audit.py",  # 316 LOC, 2 doc(s)
+  "analyzers/film_grain/skin_selection/__init__.py",  # 754 LOC, 4 doc(s)
+  "analyzers/film_grain/skin_selection/attrition.py",  # 377 LOC, 4 doc(s)
+  "analyzers/film_grain/skin_selection/mediapipe_face_mesh.py",  # 509 LOC, 4 doc(s)
+  "analyzers/film_grain/skin_selection/provider_contract.py",  # 263 LOC, 1 doc(s)
+  "analyzers/film_grain/skin_selection/semantic_probability.py",  # 324 LOC, 4 doc(s)
+  "analyzers/film_grain/skin_selection/suitability.py",  # 457 LOC, 4 doc(s)
+  "analyzers/film_grain/skin_selection/temporal.py",  # 299 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "evidence"
+disposition = "keep"
+target = "evidence"
+reason = "Canonical JSON, domain-separated identities, artifact records. Roughly six of its ~40 wire schemas survive; hashing is retained as cache key, change detector and regeneration identity, not as proof."
+module_count = 14
+loc = 3407
+documented = 9
+modules = [
+  "analyzers/film_grain/reference_calibration_contract_v1/__init__.py",  # 26 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/artifacts.py",  # 199 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/canonical.py",  # 229 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/e0_controlled.py",  # 483 LOC, NO DOC
+  "analyzers/film_grain/reference_calibration_contract_v1/e0_evidence.py",  # 281 LOC, NO DOC
+  "analyzers/film_grain/reference_calibration_contract_v1/golden_vectors.py",  # 536 LOC, NO DOC
+  "analyzers/film_grain/reference_calibration_contract_v1/hypothesis_models.py",  # 20 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/identities.py",  # 360 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/import_policy.py",  # 101 LOC, NO DOC
+  "analyzers/film_grain/reference_calibration_contract_v1/population_models.py",  # 230 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/schemas.py",  # 685 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/task_models.py",  # 61 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_calibration_contract_v1/verification_models.py",  # 100 LOC, NO DOC
+  "analyzers/film_grain/runtime_probe.py",  # 96 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "fit"
+disposition = "keep"
+target = "capabilities/fit"
+reason = "Parameter specs, calibration fits, behaviour vectors, cross-validation. Moves onto the Transform protocol so fits become testable without an engine build."
+module_count = 13
+loc = 17156
+documented = 12
+modules = [
+  "analyzers/film_grain/calibration_parameters.py",  # 349 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_behaviour_replay_queue.py",  # 334 LOC, NO DOC
+  "analyzers/film_grain/reference_behaviour_threshold_preflight.py",  # 588 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_behaviour_vector.py",  # 943 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_behaviour_visual_replay.py",  # 1231 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_common_support_context_residual_audit.py",  # 1806 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_common_support_control_screen.py",  # 2206 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_common_support_timing_fit.py",  # 3010 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_common_support_vector_audit.py",  # 1441 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_context_conditioned_timing_fit.py",  # 2057 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_engaged_calibration_fit.py",  # 2891 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_fit_cross_validation.py",  # 193 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_residual_lut.py",  # 107 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "grain_measure"
+disposition = "keep"
+target = "capabilities/measure"
+reason = "Grain and texture characterisation on real footage — patch detection, temporal isolation, zone and sparkle analysis, PSD refitting."
+module_count = 14
+loc = 21063
+documented = 8
+modules = [
+  "analyzers/film_grain/analyze_frames.py",  # 309 LOC, 2 doc(s)
+  "analyzers/film_grain/analyze_patches.py",  # 2316 LOC, 2 doc(s)
+  "analyzers/film_grain/build_scene_profile.py",  # 377 LOC, 2 doc(s)
+  "analyzers/film_grain/debug_real_footage.py",  # 3515 LOC, 1 doc(s)
+  "analyzers/film_grain/grain_compare.py",  # 3777 LOC, 2 doc(s)
+  "analyzers/film_grain/grain_properties.py",  # 1654 LOC, 2 doc(s)
+  "analyzers/film_grain/layer_ab_report.py",  # 4982 LOC, NO DOC
+  "analyzers/film_grain/layer_effectiveness.py",  # 784 LOC, NO DOC
+  "analyzers/film_grain/refit_temporal_spectrum.py",  # 365 LOC, NO DOC
+  "analyzers/film_grain/render_patch_previews.py",  # 335 LOC, NO DOC
+  "analyzers/film_grain/slow_heterogeneity_contract.py",  # 764 LOC, NO DOC
+  "analyzers/film_grain/sparkle_analysis.py",  # 743 LOC, 2 doc(s)
+  "analyzers/film_grain/sparkle_recalc.py",  # 406 LOC, NO DOC
+  "analyzers/film_grain/zone_analysis.py",  # 736 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "measure"
+disposition = "keep"
+target = "capabilities/measure"
+reason = "Patch grids, accumulators, PSD and noise, selection and bucketing. Already engine-free and clean."
+module_count = 3
+loc = 1158
+documented = 3
+modules = [
+  "core/measure/__init__.py",  # 792 LOC, 4 doc(s)
+  "core/noise/__init__.py",  # 213 LOC, 4 doc(s)
+  "core/selection/__init__.py",  # 153 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "orchestration"
+disposition = "keep"
+target = "runner"
+reason = "Manifest-driven stage running with state and resume. The semantics are sound; the argv/subprocess dispatch layer is not and is replaced by in-process calls."
+module_count = 3
+loc = 8141
+documented = 2
+modules = [
+  "analyzers/film_grain/reference_experiment.py",  # 1974 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_experiment_local_colour.py",  # 920 LOC, NO DOC
+  "analyzers/film_grain/reference_pipeline.py",  # 5247 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "profile"
+disposition = "keep"
+target = "capabilities/fit"
+reason = "Reference anchor profiles and calibration candidates — the fitted artifacts the fit layer produces and consumes."
+module_count = 3
+loc = 3132
+documented = 3
+modules = [
+  "analyzers/film_grain/reference_calibration_candidate.py",  # 222 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_profile.py",  # 1456 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_profile_aggregate.py",  # 1454 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "report"
+disposition = "keep"
+target = "capabilities/report"
+reason = "Report and preview generation. Reshaped to lead with effect size and spread rather than a verdict."
+module_count = 5
+loc = 10236
+documented = 5
+modules = [
+  "analyzers/film_grain/display_camera_bench.py",  # 5006 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_calibration_candidate_report.py",  # 1759 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_profile_report.py",  # 1698 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_scene_context_report.py",  # 1705 LOC, 1 doc(s)
+  "core/render/__init__.py",  # 68 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "sample"
+disposition = "keep"
+target = "capabilities/sample"
+reason = "Frame populations and candidate mining. reference_frame_population is the second-cleanest module in the tree at 8% ceremony and in-degree 70."
+module_count = 7
+loc = 8333
+documented = 5
+modules = [
+  "analyzers/film_grain/reference_candidate_consumption.py",  # 204 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_candidate_mask_sets.py",  # 202 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_candidate_mining.py",  # 5088 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_candidate_review.py",  # 1951 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_frame_population.py",  # 378 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_ptf1_population.py",  # 192 LOC, NO DOC
+  "analyzers/film_grain/reference_ptf2_population.py",  # 318 LOC, NO DOC
+]
+
+[[group]]
+id = "source"
+disposition = "keep"
+target = "capabilities/source"
+reason = "ffmpeg decode, frame extraction, scene info and input-domain intake. Sheds the argparse.Namespace coupling that makes the primitives uncallable outside a CLI."
+module_count = 9
+loc = 4883
+documented = 8
+modules = [
+  "analyzers/film_grain/reference_camera_sample_qa.py",  # 498 LOC, NO DOC
+  "analyzers/film_grain/reference_obs_slog3_boundary_probe.py",  # 767 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_obs_slog3_camera_gate.py",  # 854 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_slog3_source_adapter_smoke_report.py",  # 371 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_slog3_source_intake.py",  # 612 LOC, 1 doc(s)
+  "core/decode/__init__.py",  # 419 LOC, 4 doc(s)
+  "core/sourcing/__init__.py",  # 102 LOC, 4 doc(s)
+  "core/sourcing/crop_scene_frames.py",  # 495 LOC, 1 doc(s)
+  "core/sourcing/extract_frames.py",  # 765 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "statistics"
+disposition = "keep"
+target = "capabilities/statistics"
+reason = "The statistical tests themselves. Salvage rather than port: reference_vector_tile_stat2a is ~21k def-LOC at roughly 82% verification vocabulary, so the statistics inside it are a small fraction of the volume."
+module_count = 8
+loc = 37075
+documented = 8
+modules = [
+  "analyzers/film_grain/reference_stat2a_evidence.py",  # 577 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_statistical_colour_report.py",  # 3543 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_statistical_control_capacity.py",  # 1450 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_statistical_frame_replay.py",  # 1408 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_statistical_objective_audit.py",  # 2499 LOC, 3 doc(s)
+  "analyzers/film_grain/reference_statistical_residual_localization.py",  # 3650 LOC, 2 doc(s)
+  "analyzers/film_grain/reference_statistical_screening_cohort.py",  # 819 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_vector_tile_stat2a.py",  # 23129 LOC, 3 doc(s)
+]
+
+[[group]]
+id = "stock"
+disposition = "keep"
+target = "capabilities/stock"
+reason = "Sensitometry, density models and datasheet extraction. Measurement science, distinct from the image transforms it currently shares a module with."
+module_count = 8
+loc = 9404
+documented = 1
+modules = [
+  "analyzers/film_grain/al3_scanner_mtf_contract.py",  # 565 LOC, NO DOC
+  "analyzers/film_grain/al3_stock_mtf_fits.py",  # 1094 LOC, NO DOC
+  "analyzers/film_grain/camera_negative_density_anchor.py",  # 370 LOC, NO DOC
+  "analyzers/film_grain/density_to_l100_targets.py",  # 259 LOC, NO DOC
+  "analyzers/film_grain/film_density_engagement_model.py",  # 479 LOC, NO DOC
+  "analyzers/film_grain/film_stock_document.py",  # 5577 LOC, 4 doc(s)
+  "analyzers/film_grain/grain_density_amplitude_bridge.py",  # 508 LOC, NO DOC
+  "analyzers/film_grain/grain_density_chroma_bridge.py",  # 552 LOC, NO DOC
+]
+
+[[group]]
+id = "plugin.parity"
+disposition = "plugin"
+target = "obs-art-plugin"
+reason = "Validates the plugin's own shaders and native pass bodies against a source model. Product-specific, not general film analysis."
+module_count = 12
+loc = 15618
+documented = 4
+modules = [
+  "analyzers/film_grain/export_shader_assets.py",  # 1722 LOC, NO DOC
+  "analyzers/film_grain/native_al2_hdr_placement.py",  # 316 LOC, NO DOC
+  "analyzers/film_grain/native_al3b_stock_acutance.py",  # 459 LOC, NO DOC
+  "analyzers/film_grain/native_al4_parity_report.py",  # 825 LOC, NO DOC
+  "analyzers/film_grain/native_al5_optical.py",  # 368 LOC, NO DOC
+  "analyzers/film_grain/native_b0_prime_common_tone_crosswalk_equivalence.py",  # 212 LOC, NO DOC
+  "analyzers/film_grain/native_b0_prime_fsc1c_equivalence.py",  # 413 LOC, NO DOC
+  "analyzers/film_grain/native_b0_prime_safe_tone_diffuse_white_equivalence.py",  # 140 LOC, NO DOC
+  "analyzers/film_grain/native_b0_prime_safe_tone_equivalence.py",  # 265 LOC, 1 doc(s)
+  "analyzers/film_grain/native_ui_contract.py",  # 1827 LOC, 1 doc(s)
+  "analyzers/film_grain/reference_obs_colour_contract_probe.py",  # 904 LOC, 1 doc(s)
+  "analyzers/film_grain/shader_runner_parity.py",  # 8167 LOC, 1 doc(s)
+]
+
+[[group]]
+id = "plugin.runtime"
+disposition = "plugin"
+target = "obs-art-plugin"
+reason = "The Python runtime twin of the emulation chain, its look registry and asset exporters. FAT reaches these through a forward/ adapter instead of owning them."
+module_count = 9
+loc = 7913
+documented = 3
+modules = [
+  "analyzers/film_grain/bake_grain_tiles.py",  # 1006 LOC, NO DOC
+  "analyzers/film_grain/export_grain_preset.py",  # 1221 LOC, 2 doc(s)
+  "analyzers/film_grain/layer_coupling_core.py",  # 371 LOC, 2 doc(s)
+  "analyzers/film_grain/print_response_presets.py",  # 282 LOC, NO DOC
+  "analyzers/film_grain/reference_kodak_experimental_runtime.py",  # 495 LOC, 2 doc(s)
+  "analyzers/film_grain/render_grain_preview.py",  # 289 LOC, NO DOC
+  "analyzers/film_grain/render_grain_runtime.py",  # 3749 LOC, NO DOC
+  "analyzers/film_grain/runtime_looks.py",  # 434 LOC, NO DOC
+  "analyzers/film_grain/runtime_variants.py",  # 66 LOC, NO DOC
+]
+
+[[group]]
+id = "plugin.runtime.split"
+disposition = "plugin"
+target = "obs-art-plugin"
+reason = "SPLIT REQUIRED: additional_layers.py does two jobs. Sensitometry (log_exposure_at_density, FilmDensityCharacteristic, print_dloge_curve_xy) moves to capabilities/stock; the apply_* image transforms stay with the plugin."
+module_count = 1
+loc = 4336
+documented = 1
+modules = [
+  "analyzers/film_grain/additional_layers.py",  # 4336 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "engine_v1.stub"
+disposition = "remove"
+justification = "One-line empty __init__.py packages. The Engine V1 consumer layer was laid out and never implemented, which is itself the evidence that the design was too heavy to finish. Its vocabulary is carried into evidence/; the schemas remain readable at the pin."
+module_count = 8
+loc = 16
+documented = 8
+modules = [
+  "analyzers/film_grain/reference_calibration_coordinator_v1/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_engine_v1/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_plugins_v1/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_plugins_v1/roadmap_v3/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_studies_v1/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_studies_v1/roadmap_v3/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_verifier_v1/__init__.py",  # 2 LOC, 4 doc(s)
+  "analyzers/film_grain/reference_calibration_verifier_v1/roadmap_v3/__init__.py",  # 2 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "legacy.cli"
+disposition = "remove"
+justification = "Entry point, analyzer registry and the 657-line HOOKS table that maps 92 stage names onto argparse programs. FAT confines argument parsing to cli/ and dispatches in process, so the table has no counterpart; the inventory it encoded is this ledger."
+module_count = 4
+loc = 772
+documented = 3
+modules = [
+  "__main__.py",  # 8 LOC, NO DOC
+  "analyzers/film_grain/__init__.py",  # 657 LOC, 4 doc(s)
+  "analyzers/registry.py",  # 22 LOC, 4 doc(s)
+  "cli/__init__.py",  # 85 LOC, 4 doc(s)
+]
+
+[[group]]
+id = "shim.compat"
+disposition = "remove"
+justification = "Pure re-export shims of ~13 lines with no logic of their own; the modules they forward to are migrating."
+module_count = 2
+loc = 26
+documented = 2
+modules = [
+  "analyzers/film_grain/crop_scene_frames.py",  # 13 LOC, 1 doc(s)
+  "analyzers/film_grain/extract_frames.py",  # 13 LOC, 1 doc(s)
+]

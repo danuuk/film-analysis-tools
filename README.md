@@ -71,6 +71,15 @@ accumulated in its previous life.
 
 ## Status
 
+**P2 — triage complete.** [`ledger.toml`](ledger.toml) carries the disposition of all 218 legacy
+modules with the reason for each: **keep 126** (145,786 LOC), **archive 56** (58,685),
+**plugin 22** (27,867), **remove 14** (814). CI checks that every module is claimed exactly once,
+that no disposition lacks a reason, that removals carry a justification, and — with a legacy
+checkout available — that the ledger still covers the legacy tree. Archive records are tracked by
+a ratchet, so a campaign cannot be archived unrecorded. The first record,
+[`docs/archive/campaign-joint.md`](docs/archive/campaign-joint.md), covers the arc that had zero
+documentation.
+
 **P1 — the fast path, working.** Sample tables with cohort selectors, analytic transforms,
 colour metrics, permutation null controls, comparison reporting, and a CLI. Verified against a
 real 260k-row pack, including a cross-check that recomputed colour features reproduce the ones
