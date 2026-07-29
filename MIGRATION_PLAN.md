@@ -485,6 +485,16 @@ batched draw consumes the generator in the same order, results are bit-identical
 non-finite metrics as JSON was also emitting bare `NaN` tokens, which Python reads back happily
 and stricter parsers reject; they are now `null`.
 
+**P3b — Analytical reporting.** Pulled forward on request: a table is the wrong output for
+"what is it actually doing". Self-contained HTML with hand-rolled SVG — tone and hue response
+curves, metric distributions against the null band, cohort coverage maps, before/after swatches.
+No plotting dependency; the charts this system needs are simple enough that a framework would be
+more configuration than drawing, and the output is text that embeds in one file.
+
+It carries the tier and the controls beside the figures rather than in a footnote, because a
+report that looks authoritative while resting on a single marginal metric is precisely the
+failure recorded in `docs/archive/campaign-joint.md`.
+
 **P4 — Controls and tiers.** Promote the scattered null/baseline/holdout/perturbation code to
 first-class `capabilities/statistics/`. Implement the tier ladder and rule 7. Permutation/null
 control is the weakest existing primitive (3 modules) and the highest-value fix.

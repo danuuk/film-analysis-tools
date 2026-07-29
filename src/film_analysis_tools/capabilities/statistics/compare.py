@@ -108,6 +108,25 @@ class Comparison:
         )
 
 
+def per_sample_metric(
+    cohort: SampleTable,
+    *,
+    baseline: Transform,
+    candidate: Transform,
+    metric: str | metrics_module.Metric = "hue_drift",
+) -> np.ndarray:
+    """The finite per-row metric values behind a comparison.
+
+    Exposed because the distribution is the thing worth looking at: a summary can only say
+    the median cancelled, while the distribution shows *why* — two lobes of opposite sign,
+    a long tail, or a clean directional shift.
+    """
+    metric_fn = metrics_module.named(metric) if isinstance(metric, str) else metric
+    rgb = cohort.rgb
+    values = np.asarray(metric_fn(baseline(rgb), candidate(rgb)), dtype=np.float64)
+    return values[np.isfinite(values)]
+
+
 def compare(
     cohort: SampleTable,
     *,
@@ -138,9 +157,7 @@ def compare(
             "which arrive with the controls work in P4"
         )
 
-    rgb = cohort.rgb
-    per_sample = np.asarray(metric_fn(baseline(rgb), candidate(rgb)), dtype=np.float64)
-    finite = per_sample[np.isfinite(per_sample)]
+    finite = per_sample_metric(cohort, baseline=baseline, candidate=candidate, metric=metric_fn)
     if finite.size == 0:
         raise DataError(f"metric {metric_name!r} produced no finite values on {cohort.label!r}")
 

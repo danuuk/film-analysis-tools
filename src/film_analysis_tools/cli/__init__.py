@@ -16,6 +16,7 @@ from film_analysis_tools.capabilities import report, sample
 from film_analysis_tools.capabilities.colour import metrics, transforms
 from film_analysis_tools.capabilities.sample import cohorts as cohorts_module
 from film_analysis_tools.capabilities.statistics import compare_cohorts
+from film_analysis_tools.capabilities.statistics.compare import per_sample_metric
 from film_analysis_tools.core import FilmAnalysisError, Tier, Workspace, io
 
 DEFAULT_COHORTS = "neutral,skin_like,foliage_like,shadows,highlights"
@@ -124,6 +125,33 @@ def _compare(args: argparse.Namespace) -> int:
     print(report.format_comparisons(results, title=title))
 
     if args.save:
+        baseline_fn = transforms.named(args.baseline)
+        candidate_fn = transforms.named(args.candidate)
+        per_sample = {
+            name: per_sample_metric(
+                table, baseline=baseline_fn, candidate=candidate_fn, metric=args.metric
+            )
+            for name, table in selected.items()
+        }
+        page = report.comparison_report(
+            report.ReportContext(
+                title=f"{args.pack}: {args.baseline} → {args.candidate}",
+                pack=args.pack,
+                baseline=args.baseline,
+                candidate=args.candidate,
+                metric=args.metric,
+                resamples=args.resamples,
+                seed=args.seed,
+                roots=workspace.describe(),
+            ),
+            results,
+            selected,
+            per_sample,
+            baseline=baseline_fn,
+            candidate=candidate_fn,
+        )
+        workspace.output(args.save, "report.html").write_text(page, encoding="utf-8")
+
         records = [result.as_record() for result in results]
         io.write_csv(workspace.output(args.save, "comparisons.csv"), records)
         io.write_json(
@@ -141,7 +169,9 @@ def _compare(args: argparse.Namespace) -> int:
                 "results": records,
             },
         )
-        print(f"\nwrote {workspace.output(args.save, 'summary.json', create=False).parent}")
+        directory = workspace.output(args.save, "summary.json", create=False).parent
+        print(f"\nwrote {directory}")
+        print(f"open  {directory / 'report.html'}")
     return 0
 
 

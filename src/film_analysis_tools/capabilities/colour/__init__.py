@@ -6,7 +6,7 @@ luma, opponent axes, chroma headroom, and fixed-cell binning.
 
 from __future__ import annotations
 
-from film_analysis_tools.capabilities.colour import features, metrics, transforms
+from film_analysis_tools.capabilities.colour import display, features, metrics, transforms
 from film_analysis_tools.capabilities.colour.features import (
     feature_columns,
     hue_degrees,
@@ -15,6 +15,7 @@ from film_analysis_tools.capabilities.colour.features import (
 )
 
 __all__ = [
+    "display",
     "feature_columns",
     "features",
     "hue_degrees",

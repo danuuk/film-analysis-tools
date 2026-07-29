@@ -71,6 +71,15 @@ accumulated in its previous life.
 
 ## Status
 
+**P3b — analytical reporting.** `--save NAME` now also writes a self-contained `report.html`:
+tone and hue response curves, per-cohort metric distributions with the null band shaded, cohort
+coverage maps, and before/after colour swatches. Hand-rolled SVG, so the dependency set stays at
+NumPy alone; one file, no assets, no network, light and dark themes.
+
+The hue response curve is the one worth looking at first — it plots drift against input hue and
+states whether the curve changes sign, which is what turns "the median was zero" into an
+explanation rather than a puzzle.
+
 **P3 — core foundation.** Typed IO that raises instead of exiting, writes atomically, and never
 coerces silently; a `Workspace` with separate read and write roots, so results are addressed by
 name and nothing writes into the corpus. Two defects found by having built P1 first: the
