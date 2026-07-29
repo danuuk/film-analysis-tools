@@ -441,21 +441,27 @@ The plan follows its own advice: a thin working fast path early, before heavy mi
 **P0 — Bootstrap.** `git init`, uv + Python 3.12, ruff/mypy/pytest, CI, `AGENTS.md`,
 `ARCHITECTURE.md`. Layer packages with rules 1–7 enforced from the first commit.
 
-**P1 — Triage.** Dispositions only — KEEP / ARCHIVE / REMOVE / plugin, machine-checked in
-`ledger.toml`. Cheap and mechanical. The 39 written records are *deferred and parallelised*
-across later phases so the ledger doesn't block working code.
+**P1 — The fast path.** §4, end to end on real data: sample table, cohort selectors, `compare`,
+null control, effect-size summary, CLI. Built fresh on the clean legacy substrate
+(`colour_features`, `frame_population`), deliberately thin. Resolves packs by **name through a
+workspace**, never by caller-supplied folder path (§5.5), so the folder-oriented model is never
+baked in. **This is the product; everything after it is migration into a thing that already
+works.**
 
-**P2 — The fast path.** §4, end to end on real footage: sample table, cohort selectors, `compare`,
-null control, effect-size summary, CLI. Built fresh on the two clean legacy modules
-(`colour_features`, `frame_population`), deliberately thin. Reads sources through a **minimal
-catalogue query** from day one (§5.5) — hash-identified sources plus the existing
-`scene_catalog` — so the folder-oriented model is never baked in. **This is the product;
-everything after it is migration into a thing that already works.**
+Sequenced ahead of triage deliberately. It does not depend on triage, it delivers the speed that
+is the point of the repo, and *using* it is what teaches us which legacy code is worth keeping —
+which is §2.4 applied to the migration itself.
 
-**P3 — Core foundation.** `errors`, typed IO (replacing `core.contract`, in-degree 153),
-`Workspace` (replacing 90 hardcoded paths + 39 `parents[N]`), parallel/thread control
-(`core/native_threads.py`, in-degree 44 — BLAS threads, unrelated to OBS "native"). Shaped by
-what P2 actually needed rather than guessed upfront.
+**P2 — Triage.** Dispositions only — KEEP / ARCHIVE / REMOVE / plugin, machine-checked in
+`ledger.toml`. Cheap and mechanical, and better informed for following P1. The 39 written records
+are *deferred and parallelised* across later phases so the ledger doesn't block working code.
+One exception is pulled forward: the `campaign.joint` archaeology (8 modules, zero
+documentation), because that reasoning is perishable in a way the rest is not.
+
+**P3 — Core foundation.** Harden what P1 established: `errors`, typed IO (replacing
+`core.contract`, in-degree 153), `Workspace` (replacing 90 hardcoded paths + 39 `parents[N]`),
+parallel/thread control (`core/native_threads.py`, in-degree 44 — BLAS threads, unrelated to OBS
+"native"). Shaped by what P1 actually needed rather than guessed upfront.
 
 **P4 — Controls and tiers.** Promote the scattered null/baseline/holdout/perturbation code to
 first-class `capabilities/statistics/`. Implement the tier ladder and rule 7. Permutation/null

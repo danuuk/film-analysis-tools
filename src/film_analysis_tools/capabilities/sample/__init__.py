@@ -7,4 +7,12 @@ per-row provenance (source frame, source pixel) so a sample never loses its basi
 
 from __future__ import annotations
 
-__all__: list[str] = []
+from film_analysis_tools.capabilities.sample import cohorts
+from film_analysis_tools.capabilities.sample.loading import (
+    describe_pack,
+    load_pack,
+    pack_manifest,
+)
+from film_analysis_tools.capabilities.sample.table import RGB_COLUMN, SampleTable
+
+__all__ = ["RGB_COLUMN", "SampleTable", "cohorts", "describe_pack", "load_pack", "pack_manifest"]
