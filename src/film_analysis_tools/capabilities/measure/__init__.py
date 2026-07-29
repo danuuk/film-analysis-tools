@@ -5,4 +5,8 @@ Engine-free by construction. Nothing here needs a forward model or a reference.
 
 from __future__ import annotations
 
-__all__: list[str] = []
+from film_analysis_tools.capabilities.measure import residual, synthetic
+from film_analysis_tools.capabilities.measure.residual import ResidualEstimate, extract
+from film_analysis_tools.capabilities.measure.synthetic import SyntheticSpec
+
+__all__ = ["ResidualEstimate", "SyntheticSpec", "extract", "residual", "synthetic"]
