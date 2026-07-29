@@ -1,0 +1,50 @@
+# ---------------------------------------------------------------------------
+# SOURCE AND DERIVED MEDIA — safeguard, NOT a retention policy.
+#
+# Sources (film remuxes, camera shoots, charts) live OUTSIDE the repo and are
+# identified by content hash, not path (MIGRATION_PLAN.md section 5). Extracted
+# frames and rendered rasters are a regenerable cache and never belong in Git.
+# Compact numeric tables, curves, catalogues and manifests may be committed.
+# ---------------------------------------------------------------------------
+sources/
+frames/
+rasters/
+materialised/
+*.mkv
+*.mov
+*.mp4
+*.mxf
+*.dpx
+*.exr
+*.arriraw
+*.r3d
+*.tif
+*.tiff
+
+# Regenerable output
+/build/
+/dist/
+/cache/
+
+# Local, machine-specific configuration
+local.toml
+*.local.toml
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+*.egg-info/
+
+# Editor / OS metadata
+.idea/
+.vscode/
+*.swp
+.DS_Store

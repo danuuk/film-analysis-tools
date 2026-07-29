@@ -1,0 +1,72 @@
+[project]
+name = "film-analysis-tools"
+version = "0.1.0"
+description = "Measurement, fitting and validation tooling for film emulation work."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "LicenseRef-Proprietary-Internal" }
+authors = [{ name = "Film Analysis Tools authors" }]
+keywords = ["film", "colour", "calibration", "statistics", "validation"]
+
+# Deliberately minimal at bootstrap. Heavier scientific dependencies (scipy, OpenCV,
+# MediaPipe, matplotlib) arrive with the capability that needs them, not before —
+# see MIGRATION_PLAN.md section 2.2.
+dependencies = [
+    "numpy>=2.2,<3",
+]
+
+[project.scripts]
+film-analysis = "film_analysis_tools.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.11",
+    "mypy>=1.15",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/film_analysis_tools"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "RUF", # ruff-specific
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["film_analysis_tools"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src/film_analysis_tools"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = false
+no_implicit_optional = true
+strict_equality = true
+warn_return_any = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["film_analysis_tools"]
+branch = true
