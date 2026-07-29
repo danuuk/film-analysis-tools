@@ -71,6 +71,20 @@ accumulated in its previous life.
 
 ## Status
 
+**Camera sample catalogue.** A clean, queryable index of 105 Sony ZV-E10 II clips across eleven
+validation categories — exposure extremes, saturated practicals, low saturation, difficult
+shadows, motion and noise, and skin under four lighting conditions. Built by re-measuring the
+original camera files; it carries no dependency on the legacy catalogues, which were read once to
+recover which sources existed and then discarded. Clips are identified by content hash, so a
+renamed source is re-found rather than lost. See
+[`docs/camera-corpus-recovery.md`](docs/camera-corpus-recovery.md).
+
+```bash
+film-analysis catalogue                                              # taxonomy and counts
+film-analysis catalogue deep_underexposure saturated_practical --all # overlaps
+film-analysis catalogue skin_mixed --paths --verify                  # resolve, hash-checked
+```
+
 **P3b — analytical reporting.** `--save NAME` now also writes a self-contained `report.html`:
 tone and hue response curves, per-cohort metric distributions with the null band shaded, cohort
 coverage maps, and before/after colour swatches. Hand-rolled SVG, so the dependency set stays at

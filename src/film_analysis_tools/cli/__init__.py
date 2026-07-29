@@ -12,7 +12,7 @@ import sys
 from collections.abc import Sequence
 
 from film_analysis_tools import __version__
-from film_analysis_tools.capabilities import report, sample
+from film_analysis_tools.capabilities import catalogue, report, sample
 from film_analysis_tools.capabilities.colour import metrics, transforms
 from film_analysis_tools.capabilities.sample import cohorts as cohorts_module
 from film_analysis_tools.capabilities.statistics import compare_cohorts
@@ -72,6 +72,23 @@ def build_parser() -> argparse.ArgumentParser:
         help="also write summary.json and comparisons.csv under the result root",
     )
     comparison.set_defaults(handler=_compare)
+
+    cat = subparsers.add_parser("catalogue", help="query the camera sample catalogue")
+    cat.add_argument(
+        "category",
+        nargs="*",
+        help="validation categories; omit to list the taxonomy and its counts",
+    )
+    cat.add_argument("--all", action="store_true", help="require every category, not any")
+    cat.add_argument("--shoot", default=None, help="restrict to one shoot")
+    cat.add_argument("--limit", type=int, default=0)
+    cat.add_argument("--paths", action="store_true", help="resolve and print file paths")
+    cat.add_argument(
+        "--verify",
+        action="store_true",
+        help="re-hash resolved files; slower, but proves the sample is the one recorded",
+    )
+    cat.set_defaults(handler=_catalogue)
 
     return parser
 
@@ -172,6 +189,36 @@ def _compare(args: argparse.Namespace) -> int:
         directory = workspace.output(args.save, "summary.json", create=False).parent
         print(f"\nwrote {directory}")
         print(f"open  {directory / 'report.html'}")
+    return 0
+
+
+def _catalogue(args: argparse.Namespace) -> int:
+    cat = catalogue.bundled()
+    if not args.category:
+        counts = cat.counts()
+        print(f"{cat.catalogue_id}: {len(cat)} clips, {cat.camera.get('model', '?')}")
+        print(f"decode: {cat.decode.get('transfer')} / {cat.decode.get('primaries')}\n")
+        for name, entry in cat.categories.items():
+            flag = " (human-labelled)" if entry.get("human_labelled") else ""
+            print(f"  {name:26s} {counts.get(name, 0):3d}{flag}")
+            print(f"  {'':26s}     provokes: {entry.get('provokes', '')}")
+        empty = [name for name, count in counts.items() if count == 0]
+        if empty:
+            print(f"\nno material for: {', '.join(empty)} — a gap in the corpus, not a bug")
+        print(f"uncategorised (ordinary material): {len(cat.uncategorised())}")
+        return 0
+
+    clips = cat.select(*args.category, require_all=args.all, shoot=args.shoot, limit=args.limit)
+    joiner = " AND " if args.all else " OR "
+    print(f"{joiner.join(args.category)} -> {len(clips)} clips")
+    for clip in clips:
+        line = f"  {clip.clip_id}  {clip.shoot:16s} {clip.duration_s:5.1f}s  {clip.notes}"
+        if args.paths:
+            try:
+                line += f"\n      {clip.locate(verify=args.verify)}"
+            except FilmAnalysisError as error:
+                line += f"\n      UNRESOLVED: {error}"
+        print(line)
     return 0
 
 

@@ -31,6 +31,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/film_analysis_tools"]
+# The catalogue manifest is small metadata that must ship with the package;
+# the media it indexes stays outside the repository.
+artifacts = ["**/*.json"]
 
 [tool.ruff]
 line-length = 100

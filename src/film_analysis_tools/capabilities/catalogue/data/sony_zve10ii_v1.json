@@ -1,0 +1,5285 @@
+{
+ "schema_version": 1,
+ "catalogue_id": "sony_zve10ii_v1",
+ "generated": "2026-07-29T20:20:08Z",
+ "camera": {
+  "model": "ZV-E10M2",
+  "capture_gamma": "s-log3-cine",
+  "capture_primaries": "s-gamut3-cine",
+  "coding_equations": "rec709"
+ },
+ "decode": {
+  "input_range": "full",
+  "in_color_matrix": "bt709",
+  "output_pixel_format": "rgb48le",
+  "transfer": "slog3_to_linear",
+  "primaries": "sgamut3cine_to_rec709",
+  "note": "evidence class: published Sony formulae, not per-unit measured"
+ },
+ "provenance": {
+  "built_from": "direct re-measurement of the original camera files",
+  "legacy_dependency": "none — legacy catalogues were read once to recover which source files existed, then discarded",
+  "probe_frames_per_clip": 3,
+  "spatial_subsample": 4
+ },
+ "categories": [
+  {
+   "id": "normal_daylight_interior",
+   "title": "Normal daylight and interiors",
+   "provokes": "baseline drift — a look that misbehaves on ordinary material is disqualified",
+   "rule": "median linear luma between 0.02 and 1.0, little floor content, no blown highlights",
+   "human_labelled": false
+  },
+  {
+   "id": "deep_underexposure",
+   "title": "Deep underexposure",
+   "provokes": "black crush, hue shifts in the toe, noise lifted into visible colour",
+   "rule": "over 35% of pixels near the code floor, or median linear luma below 0.0015",
+   "human_labelled": false
+  },
+  {
+   "id": "overexposure_clipped",
+   "title": "Overexposure and clipped highlights",
+   "provokes": "hard clipping, hue twist above white, loss of highlight separation",
+   "rule": "95th-percentile linear luma above 1.5, or top code above 0.78",
+   "human_labelled": false
+  },
+  {
+   "id": "saturated_practical",
+   "title": "Saturated practical lights and objects",
+   "provokes": "gamut collapse, channel clipping, hue rotation on out-of-gamut sources",
+   "rule": "over 2% of pixels outside Rec.709, or broad high-saturation coverage at high luma",
+   "human_labelled": false
+  },
+  {
+   "id": "low_saturation",
+   "title": "Low-saturation scenes",
+   "provokes": "false colour and tinting where there should be none; neutral-axis errors",
+   "rule": "median saturation below 0.25 and under 35% of pixels above 0.40 saturation",
+   "human_labelled": false
+  },
+  {
+   "id": "difficult_shadows",
+   "title": "Difficult shadows",
+   "provokes": "banding and gradient breakup where deep shadow meets a bright source",
+   "rule": "over 13 stops between the 5th and 99th luma percentile, with real floor content",
+   "human_labelled": false
+  },
+  {
+   "id": "motion_or_noise",
+   "title": "Motion and camera noise",
+   "provokes": "temporal instability — a look that flickers or amplifies grain frame to frame",
+   "rule": "frame-to-frame luma change above 0.9 relative, or dark-region noise above 0.12",
+   "human_labelled": false
+  },
+  {
+   "id": "skin_neutral",
+   "title": "Skin under neutral light",
+   "provokes": "skin-tone accuracy on the reference case, with no colour cast to hide behind",
+   "rule": "a labelled face, with a near-neutral frame cast",
+   "human_labelled": true
+  },
+  {
+   "id": "skin_warm",
+   "title": "Skin under warm light",
+   "provokes": "warm-cast skin drifting orange or losing separation from the background",
+   "rule": "a labelled face, with a warm frame cast",
+   "human_labelled": true
+  },
+  {
+   "id": "skin_green",
+   "title": "Skin under green light",
+   "provokes": "green-cast skin turning sallow; the hardest cast for a colour model",
+   "rule": "a labelled face, with a green frame cast",
+   "human_labelled": true
+  },
+  {
+   "id": "skin_mixed",
+   "title": "Skin under mixed lighting",
+   "provokes": "competing sources pulling skin in two directions at once",
+   "rule": "a labelled face, with two or more disagreeing casts in frame",
+   "human_labelled": true
+  }
+ ],
+ "clips": [
+  {
+   "clip_id": "C0011",
+   "sha256": "a7747af8bf5980417af61f1dc56f5968bd1850fc26ae14f494aec6967c6662d1",
+   "byte_size": 201607119,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0011.MP4",
+   "captured": "2026-07-14T16:47:29+02:00",
+   "duration_s": 24.024,
+   "probe_times_s": [
+    4.805,
+    12.012,
+    19.219
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "low_saturation",
+    "skin_neutral"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 576
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.003185,
+     "5": 0.005102,
+     "25": 0.013354,
+     "50": 0.044324,
+     "75": 0.125082,
+     "95": 0.225553,
+     "99": 0.282939
+    },
+    "sat_p50": 0.23084,
+    "sat_cov_040": 0.28689,
+    "chroma_hi_luma": 0.36697,
+    "out_of_gamut": 0.00059,
+    "code_max": 0.53086,
+    "near_floor": 5e-05,
+    "dynamic_range_stops": 5.793,
+    "motion": 0.44456,
+    "noise": 0.01427,
+    "cast_warm_cool": 0.23357,
+    "cast_green_magenta": -0.08435,
+    "cast_disagreement": 0.27534
+   },
+   "notes": "face, indoor daylight",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0012",
+   "sha256": "5bc51891fcd98dc645687e492a47ad013c68fda50150c7d2608f468bef0d6e02",
+   "byte_size": 67385697,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0012.MP4",
+   "captured": "2026-07-14T16:48:40+02:00",
+   "duration_s": 9.5095,
+   "probe_times_s": [
+    1.902,
+    4.755,
+    7.608
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 228
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.0061,
+     "5": 0.009748,
+     "25": 0.027654,
+     "50": 0.056004,
+     "75": 0.135798,
+     "95": 0.270649,
+     "99": 0.666972
+    },
+    "sat_p50": 0.36024,
+    "sat_cov_040": 0.40324,
+    "chroma_hi_luma": 0.42801,
+    "out_of_gamut": 1e-05,
+    "code_max": 0.72294,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 6.096,
+    "motion": 1.52796,
+    "noise": 0.08706
+   },
+   "notes": "cacti and plants",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0013",
+   "sha256": "68ca6e1f7020bd04a59a0f8624e57496fc64337735cd8765e47c6ad61a24be09",
+   "byte_size": 67384855,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0013.MP4",
+   "captured": "2026-07-14T16:51:52+02:00",
+   "duration_s": 6.006,
+   "probe_times_s": [
+    1.201,
+    3.003,
+    4.805
+   ],
+   "categories": [
+    "normal_daylight_interior"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 144
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.002336,
+     "5": 0.01012,
+     "25": 0.036284,
+     "50": 0.066906,
+     "75": 0.133929,
+     "95": 0.238708,
+     "99": 0.494778
+    },
+    "sat_p50": 0.37335,
+    "sat_cov_040": 0.45848,
+    "chroma_hi_luma": 0.37035,
+    "out_of_gamut": 6e-05,
+    "code_max": 0.72686,
+    "near_floor": 0.00011,
+    "dynamic_range_stops": 5.612,
+    "motion": 0.33216,
+    "noise": 0.09975
+   },
+   "notes": "cutlery on green board",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0014",
+   "sha256": "5299e5f231531007bce42fa3850ddb792ab3f53559f3738a1f17f162f3183138",
+   "byte_size": 67384731,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0014.MP4",
+   "captured": "2026-07-14T16:52:13+02:00",
+   "duration_s": 5.5055,
+   "probe_times_s": [
+    1.101,
+    2.753,
+    4.404
+   ],
+   "categories": [
+    "normal_daylight_interior"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 132
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.003877,
+     "5": 0.012621,
+     "25": 0.050841,
+     "50": 0.105363,
+     "75": 0.191765,
+     "95": 0.289934,
+     "99": 0.798729
+    },
+    "sat_p50": 0.41629,
+    "sat_cov_040": 0.51634,
+    "chroma_hi_luma": 0.24608,
+    "out_of_gamut": 0.0,
+    "code_max": 0.72503,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 5.984,
+    "motion": 0.05778,
+    "noise": 0.05765
+   },
+   "notes": "spoon over green surface",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0015",
+   "sha256": "2c3fab21d7b0bd0f112be6e1aa781a3da9870fde42786f2dd4b64041d563fc21",
+   "byte_size": 67384983,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0015.MP4",
+   "captured": "2026-07-14T16:53:25+02:00",
+   "duration_s": 6.5065,
+   "probe_times_s": [
+    1.301,
+    3.253,
+    5.205
+   ],
+   "categories": [
+    "overexposure_clipped"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 156
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.005743,
+     "5": 0.009327,
+     "25": 0.063832,
+     "50": 0.445437,
+     "75": 1.047415,
+     "95": 2.982906,
+     "99": 3.046799
+    },
+    "sat_p50": 0.53594,
+    "sat_cov_040": 0.66117,
+    "chroma_hi_luma": 0.50142,
+    "out_of_gamut": 0.00436,
+    "code_max": 0.76014,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 8.352,
+    "motion": 0.29306,
+    "noise": 0.0483
+   },
+   "notes": "craft box, mixed objects",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0016",
+   "sha256": "9f84c9b3e2611f6d3976830b402d62da436ba34f49e1e1277dd43cbb95b77468",
+   "byte_size": 67385065,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0016.MP4",
+   "captured": "2026-07-14T16:53:40+02:00",
+   "duration_s": 7.007,
+   "probe_times_s": [
+    1.401,
+    3.503,
+    5.606
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 168
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.00966,
+     "5": 0.013911,
+     "25": 0.057975,
+     "50": 0.211721,
+     "75": 0.784298,
+     "95": 2.856551,
+     "99": 3.055749
+    },
+    "sat_p50": 0.48108,
+    "sat_cov_040": 0.61931,
+    "chroma_hi_luma": 0.48333,
+    "out_of_gamut": 0.0349,
+    "code_max": 0.74575,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 7.779,
+    "motion": 0.26514,
+    "noise": 0.05091
+   },
+   "notes": "plants and glass, window backlight",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0017",
+   "sha256": "d8ec13ec33e26b36ccae16d8d073080f39d0326ad3190448334cc6dadef40539",
+   "byte_size": 67384983,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0017.MP4",
+   "captured": "2026-07-14T16:54:18+02:00",
+   "duration_s": 6.5065,
+   "probe_times_s": [
+    1.301,
+    3.253,
+    5.205
+   ],
+   "categories": [
+    "overexposure_clipped"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 156
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.005377,
+     "5": 0.007985,
+     "25": 0.016221,
+     "50": 0.042361,
+     "75": 0.285346,
+     "95": 2.943753,
+     "99": 2.98792
+    },
+    "sat_p50": 0.38718,
+    "sat_cov_040": 0.48568,
+    "chroma_hi_luma": 0.50675,
+    "out_of_gamut": 0.0,
+    "code_max": 0.72799,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 8.548,
+    "motion": 0.48517,
+    "noise": 0.02644
+   },
+   "notes": "red and white cap",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0018",
+   "sha256": "755503cd041869c94e7251d0fc9a30280e06f7c1e68fe9b8b91f2c470ee928a8",
+   "byte_size": 67384479,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0018.MP4",
+   "captured": "2026-07-14T16:54:51+02:00",
+   "duration_s": 4.5045,
+   "probe_times_s": [
+    0.901,
+    2.252,
+    3.604
+   ],
+   "categories": [
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 108
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.0017,
+     "5": 0.00229,
+     "25": 0.005341,
+     "50": 0.014086,
+     "75": 0.025523,
+     "95": 0.141348,
+     "99": 0.647751
+    },
+    "sat_p50": 0.21359,
+    "sat_cov_040": 0.13449,
+    "chroma_hi_luma": 0.0833,
+    "out_of_gamut": 5e-05,
+    "code_max": 0.72117,
+    "near_floor": 0.00035,
+    "dynamic_range_stops": 8.144,
+    "motion": 0.41599,
+    "noise": 0.02693
+   },
+   "notes": "dark hat brim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0019",
+   "sha256": "2c9b152fdacc4d92cf90113a853b5f1c3e1f1a85bf0defc1232c1ccae0ef94ed",
+   "byte_size": 67384097,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0019.MP4",
+   "captured": "2026-07-14T16:55:10+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "normal_daylight_interior"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.003188,
+     "5": 0.020765,
+     "25": 0.138212,
+     "50": 0.233108,
+     "75": 0.311367,
+     "95": 0.4526,
+     "99": 1.486068
+    },
+    "sat_p50": 0.50154,
+    "sat_cov_040": 0.57727,
+    "chroma_hi_luma": 0.55962,
+    "out_of_gamut": 4e-05,
+    "code_max": 0.72897,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 6.161,
+    "motion": 0.11412,
+    "noise": 0.04286
+   },
+   "notes": "pink orchids",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0020",
+   "sha256": "c0bb170844974c6d63b5ba3d9d9af7d1031495d07de1683eb5bb27d74e15164c",
+   "byte_size": 67384603,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0020.MP4",
+   "captured": "2026-07-14T16:55:27+02:00",
+   "duration_s": 5.005,
+   "probe_times_s": [
+    1.001,
+    2.502,
+    4.004
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 120
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.009924,
+     "5": 0.021586,
+     "25": 0.054895,
+     "50": 0.123166,
+     "75": 0.154701,
+     "95": 0.2318,
+     "99": 0.627293
+    },
+    "sat_p50": 0.1169,
+    "sat_cov_040": 0.29166,
+    "chroma_hi_luma": 0.10057,
+    "out_of_gamut": 0.00633,
+    "code_max": 0.73088,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 4.861,
+    "motion": 0.34316,
+    "noise": 0.08169
+   },
+   "notes": "kitchen tap, red bottle",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0021",
+   "sha256": "c459d4c2665807ac3408b48ee370d69cffe024f58f8567070b15f7035ec2d79b",
+   "byte_size": 67384367,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0021.MP4",
+   "captured": "2026-07-14T16:56:08+02:00",
+   "duration_s": 4.5045,
+   "probe_times_s": [
+    0.901,
+    2.252,
+    3.604
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "saturated_practical",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 108
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.044778,
+     "5": 0.071306,
+     "25": 0.134915,
+     "50": 0.184001,
+     "75": 0.252637,
+     "95": 0.472699,
+     "99": 0.736327
+    },
+    "sat_p50": 0.62054,
+    "sat_cov_040": 0.80516,
+    "chroma_hi_luma": 0.74289,
+    "out_of_gamut": 0.0003,
+    "code_max": 0.77607,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 3.368,
+    "motion": 0.45226,
+    "noise": 0.2072
+   },
+   "notes": "backlit curtain texture",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0022",
+   "sha256": "fe515b8fc0e4916aaeaa995dbc791b502ecad283edca8520cfc2eaf294647de1",
+   "byte_size": 67384055,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0022.MP4",
+   "captured": "2026-07-14T16:56:50+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "normal_daylight_interior"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000545,
+     "5": 0.001009,
+     "25": 0.008609,
+     "50": 0.025507,
+     "75": 0.107233,
+     "95": 0.974413,
+     "99": 1.760936
+    },
+    "sat_p50": 0.3959,
+    "sat_cov_040": 0.49658,
+    "chroma_hi_luma": 0.70429,
+    "out_of_gamut": 0.01418,
+    "code_max": 0.74664,
+    "near_floor": 0.0418,
+    "dynamic_range_stops": 10.77,
+    "motion": 0.74383,
+    "noise": 0.06086
+   },
+   "notes": "cactus in pot",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0023",
+   "sha256": "4b34cc7d9f91ed930c706f6721ce40c766bcc553f9d03d84e6130894dab52f06",
+   "byte_size": 67384183,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0023.MP4",
+   "captured": "2026-07-14T16:57:01+02:00",
+   "duration_s": 3.5035,
+   "probe_times_s": [
+    0.701,
+    1.752,
+    2.803
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 84
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001644,
+     "5": 0.002529,
+     "25": 0.011145,
+     "50": 0.077498,
+     "75": 0.583469,
+     "95": 1.565385,
+     "99": 2.98792
+    },
+    "sat_p50": 0.66303,
+    "sat_cov_040": 0.76237,
+    "chroma_hi_luma": 0.7784,
+    "out_of_gamut": 0.00123,
+    "code_max": 0.74177,
+    "near_floor": 0.00012,
+    "dynamic_range_stops": 10.206,
+    "motion": 0.2641,
+    "noise": 0.02266
+   },
+   "notes": "checkerboard in hard sunlight",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0024",
+   "sha256": "a389bfd6234c8ffcf8f49d0f31465851d08b5b41af4220c7a71024ce49d47747",
+   "byte_size": 67383931,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0024.MP4",
+   "captured": "2026-07-14T16:57:11+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001202,
+     "5": 0.001802,
+     "25": 0.004497,
+     "50": 0.015908,
+     "75": 0.124422,
+     "95": 0.908225,
+     "99": 1.737428
+    },
+    "sat_p50": 0.65538,
+    "sat_cov_040": 0.74107,
+    "chroma_hi_luma": 0.81726,
+    "out_of_gamut": 0.00077,
+    "code_max": 0.73771,
+    "near_floor": 0.00224,
+    "dynamic_range_stops": 9.913,
+    "motion": 0.30766,
+    "noise": 0.02403
+   },
+   "notes": "checkerboard in shadow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0025",
+   "sha256": "2fa1990ff9affbbc9c65be6a6345527146aa5cb7a94f9e0ddd62b968397eecfe",
+   "byte_size": 67384307,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0025.MP4",
+   "captured": "2026-07-14T16:57:40+02:00",
+   "duration_s": 4.004,
+   "probe_times_s": [
+    0.801,
+    2.002,
+    3.203
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 96
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001791,
+     "5": 0.005457,
+     "25": 0.020952,
+     "50": 0.049227,
+     "75": 0.146126,
+     "95": 1.786656,
+     "99": 2.961664
+    },
+    "sat_p50": 0.59433,
+    "sat_cov_040": 0.63577,
+    "chroma_hi_luma": 0.83762,
+    "out_of_gamut": 0.09281,
+    "code_max": 0.74249,
+    "near_floor": 0.00068,
+    "dynamic_range_stops": 9.084,
+    "motion": 0.3952,
+    "noise": 0.05767
+   },
+   "notes": "coloured clothes pegs",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0026",
+   "sha256": "483102d0bc5c98efcaa1cda3d17bfd8fd7ece797ad91db2de216764c7df1c9bf",
+   "byte_size": 67384097,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0026.MP4",
+   "captured": "2026-07-14T16:58:19+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.003414,
+     "5": 0.007122,
+     "25": 0.039615,
+     "50": 0.114907,
+     "75": 0.234143,
+     "95": 0.344425,
+     "99": 0.533503
+    },
+    "sat_p50": 0.16802,
+    "sat_cov_040": 0.1408,
+    "chroma_hi_luma": 0.01775,
+    "out_of_gamut": 0.0,
+    "code_max": 0.63992,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 6.227,
+    "motion": 0.15794,
+    "noise": 0.03105
+   },
+   "notes": "washing machine, white",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0027",
+   "sha256": "9ef7f50f458c0f7c901fc219ea43ec708e19b6e2d54e2f4599e6b7129d08b09c",
+   "byte_size": 67384603,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0027.MP4",
+   "captured": "2026-07-14T16:58:33+02:00",
+   "duration_s": 5.005,
+   "probe_times_s": [
+    1.001,
+    2.502,
+    4.004
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 120
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.004288,
+     "5": 0.006623,
+     "25": 0.019328,
+     "50": 0.0478,
+     "75": 0.086692,
+     "95": 0.164799,
+     "99": 0.246357
+    },
+    "sat_p50": 0.14489,
+    "sat_cov_040": 0.05361,
+    "chroma_hi_luma": 0.09064,
+    "out_of_gamut": 0.0,
+    "code_max": 0.57786,
+    "near_floor": 4e-05,
+    "dynamic_range_stops": 5.217,
+    "motion": 0.29337,
+    "noise": 0.0769
+   },
+   "notes": "microwave interior",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0028",
+   "sha256": "fa5150bf1af4f360bc05b110a6d9b88bacc4933ef25739b7151648e566ae9e7c",
+   "byte_size": 67384855,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0028.MP4",
+   "captured": "2026-07-14T16:59:27+02:00",
+   "duration_s": 6.006,
+   "probe_times_s": [
+    1.201,
+    3.003,
+    4.805
+   ],
+   "categories": [
+    "overexposure_clipped"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 144
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001201,
+     "5": 0.001679,
+     "25": 0.005392,
+     "50": 0.016998,
+     "75": 0.175313,
+     "95": 1.540623,
+     "99": 2.127058
+    },
+    "sat_p50": 0.43993,
+    "sat_cov_040": 0.56273,
+    "chroma_hi_luma": 0.43666,
+    "out_of_gamut": 0.00253,
+    "code_max": 0.73111,
+    "near_floor": 0.00038,
+    "dynamic_range_stops": 10.307,
+    "motion": 0.05274,
+    "noise": 0.00419
+   },
+   "notes": "backlit purple fabric",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0029",
+   "sha256": "bb301cdc24a8f3248cac53cd2d631fcae2c3d585b3f104033ffd4930909ae9b4",
+   "byte_size": 67384055,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0029.MP4",
+   "captured": "2026-07-14T16:59:39+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.003526,
+     "5": 0.006273,
+     "25": 0.014239,
+     "50": 0.030169,
+     "75": 0.128363,
+     "95": 0.564778,
+     "99": 1.389886
+    },
+    "sat_p50": 0.59043,
+    "sat_cov_040": 0.71886,
+    "chroma_hi_luma": 0.67258,
+    "out_of_gamut": 0.07298,
+    "code_max": 0.73117,
+    "near_floor": 0.00011,
+    "dynamic_range_stops": 7.792,
+    "motion": 0.58351,
+    "noise": 0.0476
+   },
+   "notes": "plants and glassware",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0030",
+   "sha256": "84582172173fcfb4a1b5c2a1abb2b5ca73e64bbcf492c003618c259a88bd0a08",
+   "byte_size": 67383931,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0030.MP4",
+   "captured": "2026-07-14T17:00:05+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.024237,
+     "5": 0.042295,
+     "25": 0.119453,
+     "50": 0.582094,
+     "75": 1.379184,
+     "95": 2.98792,
+     "99": 3.004197
+    },
+    "sat_p50": 0.16484,
+    "sat_cov_040": 0.03154,
+    "chroma_hi_luma": 0.00051,
+    "out_of_gamut": 0.0,
+    "code_max": 0.73898,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 6.15,
+    "motion": 0.43295,
+    "noise": 0.02159
+   },
+   "notes": "white wall, blown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0031",
+   "sha256": "f4160f125e26d221fc684616b5729bf0922f15e8013241d9474a2d872842c01f",
+   "byte_size": 67383861,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0031.MP4",
+   "captured": "2026-07-14T17:00:11+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "low_saturation",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.081111,
+     "5": 0.26009,
+     "25": 0.889955,
+     "50": 1.336159,
+     "75": 2.621795,
+     "95": 3.014409,
+     "99": 3.06809
+    },
+    "sat_p50": 0.20238,
+    "sat_cov_040": 0.23985,
+    "chroma_hi_luma": 0.00011,
+    "out_of_gamut": 0.0,
+    "code_max": 0.73497,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 3.56,
+    "motion": 0.20126,
+    "noise": 0.13322
+   },
+   "notes": "white wall texture, blown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0032",
+   "sha256": "627c3df417b3b12dd9e980747d207f2dd885acc929c58a594b5a6ce923338bf4",
+   "byte_size": 67383931,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0032.MP4",
+   "captured": "2026-07-14T17:00:33+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.126099,
+     "5": 0.220134,
+     "25": 0.568292,
+     "50": 1.7356,
+     "75": 2.98792,
+     "95": 2.98792,
+     "99": 3.024968
+    },
+    "sat_p50": 0.14837,
+    "sat_cov_040": 0.23449,
+    "chroma_hi_luma": 0.00611,
+    "out_of_gamut": 0.0,
+    "code_max": 0.7474,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 3.78,
+    "motion": 0.0838,
+    "noise": 0.08636
+   },
+   "notes": "chair against window, blown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0033",
+   "sha256": "8e3af48322cfcffc73232296d7b2822321c2298994c3f6c890f4cc18b4ba7be6",
+   "byte_size": 67383931,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0033.MP4",
+   "captured": "2026-07-14T17:00:57+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.041114,
+     "5": 0.123359,
+     "25": 0.274906,
+     "50": 0.716699,
+     "75": 2.298984,
+     "95": 2.967665,
+     "99": 3.099092
+    },
+    "sat_p50": 0.65958,
+    "sat_cov_040": 0.93914,
+    "chroma_hi_luma": 0.92338,
+    "out_of_gamut": 2e-05,
+    "code_max": 0.73721,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 4.651,
+    "motion": 0.10538,
+    "noise": 0.08605
+   },
+   "notes": "cardboard and foil, blown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0034",
+   "sha256": "a4ad795e8048be8d3788feadf91d6b845ea69268bc79832ffa0556a3446be50f",
+   "byte_size": 67383973,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0034.MP4",
+   "captured": "2026-07-14T17:01:08+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.095728,
+     "5": 0.133967,
+     "25": 0.295808,
+     "50": 0.472845,
+     "75": 1.899912,
+     "95": 2.649024,
+     "99": 3.048476
+    },
+    "sat_p50": 0.33004,
+    "sat_cov_040": 0.4158,
+    "chroma_hi_luma": 0.1673,
+    "out_of_gamut": 0.0,
+    "code_max": 0.72793,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 4.508,
+    "motion": 0.13539,
+    "noise": 0.02725
+   },
+   "notes": "white paper on desk, blown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0035",
+   "sha256": "597a7cce7f3125bc293498f2bebd19004ef5f8846adbc90d95ae58b573518c56",
+   "byte_size": 67383973,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0035.MP4",
+   "captured": "2026-07-14T17:01:16+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.14961,
+     "5": 0.247265,
+     "25": 0.420589,
+     "50": 1.405056,
+     "75": 2.20411,
+     "95": 3.02766,
+     "99": 3.093779
+    },
+    "sat_p50": 0.81448,
+    "sat_cov_040": 0.94913,
+    "chroma_hi_luma": 0.84487,
+    "out_of_gamut": 2e-05,
+    "code_max": 0.7508,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 3.645,
+    "motion": 0.19321,
+    "noise": 0.03847
+   },
+   "notes": "orange plastic vase, saturated",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0036",
+   "sha256": "7b89cb5dc0dd4d791be31b2334f6eb0ea30a394a7a93687f1ad8b08985e9a107",
+   "byte_size": 67383845,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0036.MP4",
+   "captured": "2026-07-14T17:01:27+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.130404,
+     "5": 0.462869,
+     "25": 1.164293,
+     "50": 1.38288,
+     "75": 1.607561,
+     "95": 2.98792,
+     "99": 2.98792
+    },
+    "sat_p50": 0.20182,
+    "sat_cov_040": 0.19833,
+    "chroma_hi_luma": 0.02285,
+    "out_of_gamut": 0.0,
+    "code_max": 0.72239,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 2.69,
+    "motion": 0.02021,
+    "noise": 0.01157
+   },
+   "notes": "white wall, blown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0037",
+   "sha256": "9938a84d4343d1d2a2d28b7548b88d1fbcae294279a746401741203c283ec7aa",
+   "byte_size": 67383973,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0037.MP4",
+   "captured": "2026-07-14T17:01:39+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.174018,
+     "5": 0.386157,
+     "25": 1.017803,
+     "50": 2.757477,
+     "75": 2.98792,
+     "95": 2.98792,
+     "99": 3.024535
+    },
+    "sat_p50": 0.14982,
+    "sat_cov_040": 0.24908,
+    "chroma_hi_luma": 0.00134,
+    "out_of_gamut": 0.0,
+    "code_max": 0.74362,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 2.969,
+    "motion": 0.0791,
+    "noise": 0.09998
+   },
+   "notes": "rooftop cityscape, daylight",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0038",
+   "sha256": "7bbaa01b13d30140209cd97b713414f40959f567c2827cd31602b76227b38df7",
+   "byte_size": 67384097,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0038.MP4",
+   "captured": "2026-07-14T17:01:46+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "overexposure_clipped"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.082025,
+     "5": 0.172039,
+     "25": 0.430415,
+     "50": 0.919495,
+     "75": 2.98792,
+     "95": 2.98792,
+     "99": 2.98792
+    },
+    "sat_p50": 0.18457,
+    "sat_cov_040": 0.37967,
+    "chroma_hi_luma": 0.00051,
+    "out_of_gamut": 0.00033,
+    "code_max": 0.7348,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 4.118,
+    "motion": 0.10694,
+    "noise": 0.06401
+   },
+   "notes": "rooftop cityscape, daylight",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0039",
+   "sha256": "5912a9074158c436081a3610ed5009e18de51c6e4fb00cb26d78545bab63578c",
+   "byte_size": 67384479,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0039.MP4",
+   "captured": "2026-07-14T17:01:57+02:00",
+   "duration_s": 4.5045,
+   "probe_times_s": [
+    0.901,
+    2.252,
+    3.604
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 108
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.131877,
+     "5": 0.202824,
+     "25": 0.895495,
+     "50": 2.98792,
+     "75": 2.98792,
+     "95": 2.98792,
+     "99": 2.98792
+    },
+    "sat_p50": 0.0,
+    "sat_cov_040": 0.06743,
+    "chroma_hi_luma": 0.0,
+    "out_of_gamut": 0.0,
+    "code_max": 0.7323,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 3.881,
+    "motion": 0.0887,
+    "noise": 0.06907
+   },
+   "notes": "rooftop cityscape, daylight",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0040",
+   "sha256": "c0532834da1f256188af24b53b619c847a0d3a88cf996552338df438b220556f",
+   "byte_size": 67385739,
+   "shoot": "samples",
+   "path_hint": "~/Movies/samples/C0040.MP4",
+   "captured": "2026-07-14T17:02:53+02:00",
+   "duration_s": 9.5095,
+   "probe_times_s": [
+    1.902,
+    4.755,
+    7.608
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 228
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001904,
+     "5": 0.002936,
+     "25": 0.011716,
+     "50": 0.038507,
+     "75": 0.075481,
+     "95": 0.112321,
+     "99": 0.131866
+    },
+    "sat_p50": 0.34237,
+    "sat_cov_040": 0.44363,
+    "chroma_hi_luma": 0.25636,
+    "out_of_gamut": 0.0,
+    "code_max": 0.43177,
+    "near_floor": 0.00078,
+    "dynamic_range_stops": 5.489,
+    "motion": 0.42058,
+    "noise": 0.03345,
+    "cast_warm_cool": 0.48963,
+    "cast_green_magenta": -0.14989,
+    "cast_disagreement": 0.40424
+   },
+   "notes": "face with raised hands",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0045",
+   "sha256": "400d76dd1524fc5b350bf3edc33bccdd50a654ea454f231d1e226ac7a7d8bcef",
+   "byte_size": 67383721,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0045.MP4",
+   "captured": "2026-07-14T20:30:59+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "normal_daylight_interior"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001416,
+     "5": 0.003277,
+     "25": 0.012849,
+     "50": 0.026163,
+     "75": 0.050584,
+     "95": 0.158027,
+     "99": 0.180635
+    },
+    "sat_p50": 0.40914,
+    "sat_cov_040": 0.50486,
+    "chroma_hi_luma": 0.36288,
+    "out_of_gamut": 0.00193,
+    "code_max": 0.49151,
+    "near_floor": 0.00354,
+    "dynamic_range_stops": 5.785,
+    "motion": 0.14874,
+    "noise": 0.06047
+   },
+   "notes": "hat and pencil cup",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0046",
+   "sha256": "a866095f5f1689b50994c711d4be4ccadda2d414cbf3434bf377e269ac25d77a",
+   "byte_size": 67383845,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0046.MP4",
+   "captured": "2026-07-14T20:31:06+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "low_saturation",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.00432,
+     "5": 0.008814,
+     "25": 0.026872,
+     "50": 0.07566,
+     "75": 0.149328,
+     "95": 0.275094,
+     "99": 0.360669
+    },
+    "sat_p50": 0.24318,
+    "sat_cov_040": 0.23596,
+    "chroma_hi_luma": 0.10137,
+    "out_of_gamut": 0.00208,
+    "code_max": 0.72331,
+    "near_floor": 1e-05,
+    "dynamic_range_stops": 5.355,
+    "motion": 0.33422,
+    "noise": 0.14856
+   },
+   "notes": "guitar pedal shelf",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0047",
+   "sha256": "1a64a32991ee101c99996cdc47ef794c8cb4789243da0ceaf86c82e613c1d353",
+   "byte_size": 67383845,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0047.MP4",
+   "captured": "2026-07-14T20:31:15+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "saturated_practical",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.005555,
+     "5": 0.011772,
+     "25": 0.035785,
+     "50": 0.103757,
+     "75": 0.20831,
+     "95": 0.38327,
+     "99": 0.487854
+    },
+    "sat_p50": 0.90442,
+    "sat_cov_040": 0.98928,
+    "chroma_hi_luma": 0.99993,
+    "out_of_gamut": 0.03473,
+    "code_max": 0.7424,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 5.373,
+    "motion": 0.31344,
+    "noise": 0.13165
+   },
+   "notes": "guitar pedal shelf, warm",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0048",
+   "sha256": "c29e2403b70a220f2fda2aa64f5527edc177ff0b1a1200d1a841f32e6a4d8ff9",
+   "byte_size": 67383721,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0048.MP4",
+   "captured": "2026-07-14T20:31:21+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.001191,
+     "5": 0.004838,
+     "25": 0.017859,
+     "50": 0.03535,
+     "75": 0.068754,
+     "95": 0.228301,
+     "99": 0.262859
+    },
+    "sat_p50": 0.92627,
+    "sat_cov_040": 0.99716,
+    "chroma_hi_luma": 0.99691,
+    "out_of_gamut": 0.03502,
+    "code_max": 0.62498,
+    "near_floor": 0.00409,
+    "dynamic_range_stops": 5.764,
+    "motion": 0.25472,
+    "noise": 0.04243
+   },
+   "notes": "hat and pencil cup, warm",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0049",
+   "sha256": "f51409307c2e7e9067afecab83f883f4bd3186a791966b9d5b3f826d59f644e0",
+   "byte_size": 67383845,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0049.MP4",
+   "captured": "2026-07-14T20:31:33+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.007383,
+     "5": 0.012623,
+     "25": 0.057544,
+     "50": 0.174015,
+     "75": 0.332388,
+     "95": 0.44593,
+     "99": 0.486006
+    },
+    "sat_p50": 0.91386,
+    "sat_cov_040": 0.99822,
+    "chroma_hi_luma": 1.0,
+    "out_of_gamut": 0.04554,
+    "code_max": 0.67767,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 5.267,
+    "motion": 0.24571,
+    "noise": 0.05555
+   },
+   "notes": "coiled cables, UFO poster",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0050",
+   "sha256": "f86ee35fc9fb38eeb5d32b80a910260b5b9f42e4e4ff24311016a410ae47fe9f",
+   "byte_size": 67383845,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0050.MP4",
+   "captured": "2026-07-14T20:31:43+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "normal_daylight_interior"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.005679,
+     "5": 0.011271,
+     "25": 0.050244,
+     "50": 0.137417,
+     "75": 0.253021,
+     "95": 0.341612,
+     "99": 0.36841
+    },
+    "sat_p50": 0.27759,
+    "sat_cov_040": 0.40676,
+    "chroma_hi_luma": 0.09367,
+    "out_of_gamut": 0.00585,
+    "code_max": 0.59548,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 5.031,
+    "motion": 0.24535,
+    "noise": 0.07394
+   },
+   "notes": "coiled cables, UFO poster",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0051",
+   "sha256": "eba1159189bc69f03c44124ecfd84749032db4d5dd03acdc4ffac0b55c330562",
+   "byte_size": 67385611,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0051.MP4",
+   "captured": "2026-07-14T20:32:43+02:00",
+   "duration_s": 9.009,
+   "probe_times_s": [
+    1.802,
+    4.505,
+    7.207
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "saturated_practical",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 216
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.002082,
+     "5": 0.003828,
+     "25": 0.012637,
+     "50": 0.037538,
+     "75": 0.085345,
+     "95": 0.298808,
+     "99": 1.089401
+    },
+    "sat_p50": 0.92131,
+    "sat_cov_040": 0.93238,
+    "chroma_hi_luma": 0.92211,
+    "out_of_gamut": 0.37964,
+    "code_max": 0.77411,
+    "near_floor": 0.00013,
+    "dynamic_range_stops": 8.153,
+    "motion": 0.55156,
+    "noise": 0.13417
+   },
+   "notes": "cyan LED strip on pedal shelf — most out-of-gamut clip in the corpus",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0052",
+   "sha256": "e8e1f93fcb3db369b5b2c2b220b0ba896ecc7d3bb8f4402cb58697dffb67a2dc",
+   "byte_size": 67384813,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0052.MP4",
+   "captured": "2026-07-14T20:33:02+02:00",
+   "duration_s": 6.006,
+   "probe_times_s": [
+    1.201,
+    3.003,
+    4.805
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "overexposure_clipped",
+    "saturated_practical",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 144
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.002895,
+     "5": 0.005519,
+     "25": 0.019462,
+     "50": 0.057994,
+     "75": 0.13444,
+     "95": 0.259781,
+     "99": 0.640271
+    },
+    "sat_p50": 0.93932,
+    "sat_cov_040": 0.99647,
+    "chroma_hi_luma": 0.99915,
+    "out_of_gamut": 0.02241,
+    "code_max": 0.78738,
+    "near_floor": 2e-05,
+    "dynamic_range_stops": 6.858,
+    "motion": 0.6642,
+    "noise": 0.12991
+   },
+   "notes": "red and magenta LED strip, poster wall",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0053",
+   "sha256": "b5e90915210c2d2305d312ce1c67b14c5b52072535b69c8ac544738e6e778d2c",
+   "byte_size": 67385487,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0053.MP4",
+   "captured": "2026-07-14T20:33:39+02:00",
+   "duration_s": 8.5085,
+   "probe_times_s": [
+    1.702,
+    4.254,
+    6.807
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 204
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.018214,
+     "5": 0.039793,
+     "25": 0.160022,
+     "50": 0.581759,
+     "75": 0.899225,
+     "95": 1.633848,
+     "99": 2.007793
+    },
+    "sat_p50": 0.52312,
+    "sat_cov_040": 0.96943,
+    "chroma_hi_luma": 0.99667,
+    "out_of_gamut": 0.02146,
+    "code_max": 0.72456,
+    "near_floor": 0.0,
+    "dynamic_range_stops": 5.657,
+    "motion": 0.67355,
+    "noise": 0.02801
+   },
+   "notes": "Rubik's cube, bright evening interior",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0054",
+   "sha256": "07e67708e34dc2b9d22034c80f013abcc06af9617a502ddd5272ce6ffe8e599d",
+   "byte_size": 268719891,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0054.MP4",
+   "captured": "2026-07-14T20:35:47+02:00",
+   "duration_s": 39.5395,
+   "probe_times_s": [
+    7.908,
+    19.77,
+    31.632
+   ],
+   "categories": [
+    "normal_daylight_interior",
+    "motion_or_noise",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 948
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.00076,
+     "5": 0.001665,
+     "25": 0.005941,
+     "50": 0.021069,
+     "75": 0.078099,
+     "95": 0.7194,
+     "99": 1.237415
+    },
+    "sat_p50": 0.7893,
+    "sat_cov_040": 0.7954,
+    "chroma_hi_luma": 0.49269,
+    "out_of_gamut": 0.00556,
+    "code_max": 0.73779,
+    "near_floor": 0.01032,
+    "dynamic_range_stops": 9.537,
+    "motion": 1.03316,
+    "noise": 0.00315,
+    "cast_warm_cool": 0.84114,
+    "cast_green_magenta": -0.07936,
+    "cast_disagreement": 0.44061
+   },
+   "notes": "face, evening interior, warm key",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0055",
+   "sha256": "536cce64bb30af8a38ac7e5f014a05a5e7b65d1f1651ac4fc6c6f06484b4f5c4",
+   "byte_size": 268718755,
+   "shoot": "samples_evening",
+   "path_hint": "~/Movies/samples_evening/C0055.MP4",
+   "captured": "2026-07-14T20:36:37+02:00",
+   "duration_s": 35.035,
+   "probe_times_s": [
+    7.007,
+    17.517,
+    28.028
+   ],
+   "categories": [
+    "saturated_practical",
+    "motion_or_noise",
+    "skin_mixed"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 840
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000727,
+     "5": 0.001405,
+     "25": 0.004113,
+     "50": 0.018393,
+     "75": 0.072599,
+     "95": 0.475217,
+     "99": 0.993471
+    },
+    "sat_p50": 0.58831,
+    "sat_cov_040": 0.65251,
+    "chroma_hi_luma": 0.47282,
+    "out_of_gamut": 0.0282,
+    "code_max": 0.76014,
+    "near_floor": 0.01346,
+    "dynamic_range_stops": 9.466,
+    "motion": 1.01322,
+    "noise": 0.00369,
+    "cast_warm_cool": 0.21657,
+    "cast_green_magenta": -0.51006,
+    "cast_disagreement": 1.35272
+   },
+   "notes": "face, evening interior, magenta LED spill",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0062",
+   "sha256": "f2e3399d788a2976a748033d8fa5160ab143f254018ec01467dc31381ae57945",
+   "byte_size": 67383845,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0062.MP4",
+   "captured": "2026-07-17T20:19:16+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000105,
+     "5": 0.000215,
+     "25": 0.000861,
+     "50": 0.002224,
+     "75": 0.005784,
+     "95": 0.014675,
+     "99": 0.041267
+    },
+    "sat_p50": 0.61235,
+    "sat_cov_040": 0.71105,
+    "chroma_hi_luma": 0.72882,
+    "out_of_gamut": 0.00787,
+    "code_max": 0.74801,
+    "near_floor": 0.24225,
+    "dynamic_range_stops": 7.586,
+    "motion": 0.41061,
+    "noise": 0.07256
+   },
+   "notes": "pedal board, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0063",
+   "sha256": "f5713d8925a24ddad1f1e1aca092dd3b773c490559ca6fd5f303ac05573527ca",
+   "byte_size": 67383845,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0063.MP4",
+   "captured": "2026-07-17T20:19:33+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -1.3e-05,
+     "5": 0.000327,
+     "25": 0.001089,
+     "50": 0.002416,
+     "75": 0.007591,
+     "95": 0.026545,
+     "99": 0.043385
+    },
+    "sat_p50": 0.56587,
+    "sat_cov_040": 0.74865,
+    "chroma_hi_luma": 0.7962,
+    "out_of_gamut": 0.00656,
+    "code_max": 0.75247,
+    "near_floor": 0.13315,
+    "dynamic_range_stops": 7.054,
+    "motion": 0.20214,
+    "noise": 0.37562
+   },
+   "notes": "amplifier and cables, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0064",
+   "sha256": "d60a284d2c54763597083e3a54bb0fd8682c35a56a2c6b181e7a5b4a63846970",
+   "byte_size": 67383973,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0064.MP4",
+   "captured": "2026-07-17T20:19:47+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000215,
+     "5": 0.000622,
+     "25": 0.001996,
+     "50": 0.003622,
+     "75": 0.007111,
+     "95": 0.032554,
+     "99": 0.882371
+    },
+    "sat_p50": 0.2641,
+    "sat_cov_040": 0.27581,
+    "chroma_hi_luma": 0.16301,
+    "out_of_gamut": 0.00291,
+    "code_max": 0.75113,
+    "near_floor": 0.07446,
+    "dynamic_range_stops": 10.469,
+    "motion": 0.28104,
+    "noise": 0.02497
+   },
+   "notes": "colour chart on desk, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0065",
+   "sha256": "1cbb02b887f2d205634e01f5903e9250cbf0dab1811b5a0b2be3506faead4083",
+   "byte_size": 67384097,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0065.MP4",
+   "captured": "2026-07-17T20:19:58+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "saturated_practical",
+    "low_saturation"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000759,
+     "5": 0.001247,
+     "25": 0.002483,
+     "50": 0.004695,
+     "75": 0.007223,
+     "95": 0.0197,
+     "99": 0.046972
+    },
+    "sat_p50": 0.19906,
+    "sat_cov_040": 0.24424,
+    "chroma_hi_luma": 0.30007,
+    "out_of_gamut": 0.0226,
+    "code_max": 0.33957,
+    "near_floor": 0.01618,
+    "dynamic_range_stops": 5.235,
+    "motion": 0.63766,
+    "noise": 0.05838
+   },
+   "notes": "Rubik's cube, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0066",
+   "sha256": "e8a6698afc3b9f477e7207b9cc1ce7e1652ac27b53c0ab598e6351c8be47e521",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0066.MP4",
+   "captured": "2026-07-17T20:20:21+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000262,
+     "5": -1.3e-05,
+     "25": 0.000419,
+     "50": 0.000791,
+     "75": 0.001837,
+     "95": 0.00675,
+     "99": 0.01005
+    },
+    "sat_p50": 0.47277,
+    "sat_cov_040": 0.55682,
+    "chroma_hi_luma": 0.28122,
+    "out_of_gamut": 0.00089,
+    "code_max": 0.74788,
+    "near_floor": 0.51409,
+    "dynamic_range_stops": 13.295,
+    "motion": 0.95412,
+    "noise": 0.13235
+   },
+   "notes": "dark room, small red indicators",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0067",
+   "sha256": "b514c5691c60871c8be7ad9b047d4e8e520bef866fb2df487f5e2a6f20ba498a",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0067.MP4",
+   "captured": "2026-07-17T20:20:27+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000228,
+     "5": -1.3e-05,
+     "25": 0.000408,
+     "50": 0.000714,
+     "75": 0.001132,
+     "95": 0.002748,
+     "99": 0.007325
+    },
+    "sat_p50": 0.62156,
+    "sat_cov_040": 0.72806,
+    "chroma_hi_luma": 0.65378,
+    "out_of_gamut": 0.00222,
+    "code_max": 0.75373,
+    "near_floor": 0.57084,
+    "dynamic_range_stops": 12.839,
+    "motion": 1.32762,
+    "noise": 0.0767
+   },
+   "notes": "LED indicators in the dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0068",
+   "sha256": "0088826fdda0904e3e46e6b664347f8d0761d12aff42d34134411786b206a03f",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0068.MP4",
+   "captured": "2026-07-17T20:20:32+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000116,
+     "5": 0.000134,
+     "25": 0.000556,
+     "50": 0.000861,
+     "75": 0.00137,
+     "95": 0.004492,
+     "99": 0.007739
+    },
+    "sat_p50": 0.59042,
+    "sat_cov_040": 0.76895,
+    "chroma_hi_luma": 0.71337,
+    "out_of_gamut": 0.00011,
+    "code_max": 0.54281,
+    "near_floor": 0.47553,
+    "dynamic_range_stops": 5.852,
+    "motion": 0.44926,
+    "noise": 0.20089
+   },
+   "notes": "guitar in the dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0069",
+   "sha256": "2813a174e960c78907b6268ab7cd338b6a546c58ca41e3aec3891b3fe0cdb281",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0069.MP4",
+   "captured": "2026-07-17T20:20:48+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000308,
+     "5": -2.4e-05,
+     "25": 0.000373,
+     "50": 0.000871,
+     "75": 0.004777,
+     "95": 0.013908,
+     "99": 0.027645
+    },
+    "sat_p50": 0.51498,
+    "sat_cov_040": 0.61704,
+    "chroma_hi_luma": 0.64916,
+    "out_of_gamut": 1e-05,
+    "code_max": 0.73526,
+    "near_floor": 0.48902,
+    "dynamic_range_stops": 14.755,
+    "motion": 0.6581,
+    "noise": 0.05488
+   },
+   "notes": "table lamp, dark room",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0070",
+   "sha256": "ef6f3ffdf33fbc0f0e9a5e5c6d496f5e5b02cbcfd50c57edf28b66ac284ce648",
+   "byte_size": 67384097,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0070.MP4",
+   "captured": "2026-07-17T20:21:07+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000431,
+     "5": -0.000161,
+     "25": 0.000261,
+     "50": 0.000668,
+     "75": 0.007523,
+     "95": 0.026375,
+     "99": 0.030457
+    },
+    "sat_p50": 0.53368,
+    "sat_cov_040": 0.63746,
+    "chroma_hi_luma": 0.34707,
+    "out_of_gamut": 2e-05,
+    "code_max": 0.2598,
+    "near_floor": 0.54871,
+    "dynamic_range_stops": 14.894,
+    "motion": 2.17368,
+    "noise": 0.96777
+   },
+   "notes": "desk lamp, deep shadow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0071",
+   "sha256": "7cce456f472ebdc6c0181ed021521254067aa7c7732d5816354a453bc05de9d9",
+   "byte_size": 67383973,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0071.MP4",
+   "captured": "2026-07-17T20:21:22+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "saturated_practical",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000134,
+     "5": 0.000499,
+     "25": 0.001303,
+     "50": 0.002315,
+     "75": 0.004665,
+     "95": 0.008966,
+     "99": 0.022363
+    },
+    "sat_p50": 0.57255,
+    "sat_cov_040": 0.76877,
+    "chroma_hi_luma": 0.87319,
+    "out_of_gamut": 0.0,
+    "code_max": 0.32528,
+    "near_floor": 0.12031,
+    "dynamic_range_stops": 5.485,
+    "motion": 0.34471,
+    "noise": 0.10373,
+    "cast_warm_cool": 1.148,
+    "cast_green_magenta": -0.41631,
+    "cast_disagreement": 0.41355
+   },
+   "notes": "face, dim key light",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0072",
+   "sha256": "b142049c17c85faa61a2eef85136287de96189138446f379894d1494d3994171",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0072.MP4",
+   "captured": "2026-07-17T20:21:41+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "motion_or_noise",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000217,
+     "5": 5.3e-05,
+     "25": 0.00049,
+     "50": 0.000942,
+     "75": 0.001655,
+     "95": 0.003148,
+     "99": 0.003871
+    },
+    "sat_p50": 0.62532,
+    "sat_cov_040": 0.78375,
+    "chroma_hi_luma": 0.75536,
+    "out_of_gamut": 0.0,
+    "code_max": 0.17469,
+    "near_floor": 0.41434,
+    "dynamic_range_stops": 6.185,
+    "motion": 0.40278,
+    "noise": 0.25746,
+    "cast_warm_cool": 0.88584,
+    "cast_green_magenta": -0.27081,
+    "cast_disagreement": 0.34344
+   },
+   "notes": "face, very dim",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0073",
+   "sha256": "b7b8454d7dee840884707dcd1976efbcd51a20ed6f7acace9572a499154ff88f",
+   "byte_size": 67383845,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0073.MP4",
+   "captured": "2026-07-17T20:25:21+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000171,
+     "5": 0.000113,
+     "25": 0.00052,
+     "50": 0.000882,
+     "75": 0.001644,
+     "95": 0.008565,
+     "99": 0.080327
+    },
+    "sat_p50": 0.50375,
+    "sat_cov_040": 0.63012,
+    "chroma_hi_luma": 0.46714,
+    "out_of_gamut": 0.0,
+    "code_max": 0.49595,
+    "near_floor": 0.48128,
+    "dynamic_range_stops": 9.469,
+    "motion": 0.25487,
+    "noise": 0.09433
+   },
+   "notes": "dark interior, faint edge",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0074",
+   "sha256": "368dac3ba0a4bae4dfa9f143b18976f1b4d9e1a1ed328b43a1b725b7e2e75246",
+   "byte_size": 67383973,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0074.MP4",
+   "captured": "2026-07-17T20:25:27+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000308,
+     "5": -2.4e-05,
+     "25": 0.000352,
+     "50": 0.000678,
+     "75": 0.001324,
+     "95": 0.006114,
+     "99": 0.012805
+    },
+    "sat_p50": 0.53639,
+    "sat_cov_040": 0.633,
+    "chroma_hi_luma": 0.39125,
+    "out_of_gamut": 0.0,
+    "code_max": 0.22535,
+    "near_floor": 0.60112,
+    "dynamic_range_stops": 13.644,
+    "motion": 0.55383,
+    "noise": 0.21778
+   },
+   "notes": "dark interior, single lamp",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0075",
+   "sha256": "574518e7f3910ac6173b0b66a82e9f9a281f6af8f6600964d6fa8e8357c439d9",
+   "byte_size": 67383845,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0075.MP4",
+   "captured": "2026-07-17T20:25:32+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -8e-05,
+     "5": 0.000225,
+     "25": 0.000861,
+     "50": 0.001497,
+     "75": 0.002325,
+     "95": 0.005194,
+     "99": 0.007779
+    },
+    "sat_p50": 0.5908,
+    "sat_cov_040": 0.75843,
+    "chroma_hi_luma": 0.60288,
+    "out_of_gamut": 2e-05,
+    "code_max": 0.23801,
+    "near_floor": 0.22493,
+    "dynamic_range_stops": 5.111,
+    "motion": 0.4265,
+    "noise": 0.18569
+   },
+   "notes": "shelf in the dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0076",
+   "sha256": "2b337428af3a9c846ecb33b9af79d531954343fa241adbd6bb2eaa226599fa8b",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0076.MP4",
+   "captured": "2026-07-17T20:25:40+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -1.3e-05,
+     "5": 0.000292,
+     "25": 0.00078,
+     "50": 0.001257,
+     "75": 0.002961,
+     "95": 0.005163,
+     "99": 0.006038
+    },
+    "sat_p50": 0.45202,
+    "sat_cov_040": 0.62192,
+    "chroma_hi_luma": 0.67373,
+    "out_of_gamut": 0.0,
+    "code_max": 0.17288,
+    "near_floor": 0.29304,
+    "dynamic_range_stops": 4.371,
+    "motion": 0.20439,
+    "noise": 0.16564
+   },
+   "notes": "lamp and desk, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0077",
+   "sha256": "c53814e26d6d0f67b506849385db96eaef8e29d062a507cb2625f4267557a95e",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0077.MP4",
+   "captured": "2026-07-17T20:25:46+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000228,
+     "5": 6.7e-05,
+     "25": 0.000545,
+     "50": 0.000998,
+     "75": 0.003098,
+     "95": 0.009176,
+     "99": 0.012438
+    },
+    "sat_p50": 0.59688,
+    "sat_cov_040": 0.68457,
+    "chroma_hi_luma": 0.41677,
+    "out_of_gamut": 0.0,
+    "code_max": 0.72403,
+    "near_floor": 0.35034,
+    "dynamic_range_stops": 7.53,
+    "motion": 0.50678,
+    "noise": 0.09652
+   },
+   "notes": "dark desk, pencils",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0078",
+   "sha256": "cfa7fe7af1f24c7f9e26652bc0e6815eeb77ab8f5d0da688d9a3cf970f9238b9",
+   "byte_size": 67383845,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0078.MP4",
+   "captured": "2026-07-17T20:25:53+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000125,
+     "5": 0.000215,
+     "25": 0.001146,
+     "50": 0.002722,
+     "75": 0.004581,
+     "95": 0.00684,
+     "99": 0.018088
+    },
+    "sat_p50": 0.59155,
+    "sat_cov_040": 0.66213,
+    "chroma_hi_luma": 0.5957,
+    "out_of_gamut": 2e-05,
+    "code_max": 0.56265,
+    "near_floor": 0.18779,
+    "dynamic_range_stops": 6.396,
+    "motion": 0.20321,
+    "noise": 0.0816
+   },
+   "notes": "book cover, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0079",
+   "sha256": "a07d71cd834e6ae9995947826c397df3a2f2e22252d0834912d82db036bbd115",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0079.MP4",
+   "captured": "2026-07-17T20:25:57+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000217,
+     "5": 5.3e-05,
+     "25": 0.000601,
+     "50": 0.003008,
+     "75": 0.00403,
+     "95": 0.00879,
+     "99": 0.010149
+    },
+    "sat_p50": 0.82782,
+    "sat_cov_040": 0.86279,
+    "chroma_hi_luma": 0.98515,
+    "out_of_gamut": 0.0,
+    "code_max": 0.1807,
+    "near_floor": 0.30562,
+    "dynamic_range_stops": 7.576,
+    "motion": 0.37207,
+    "noise": 0.11359
+   },
+   "notes": "book cover, gold foil, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0080",
+   "sha256": "ef326baf2e2b35eab3d21cd446468ee21efe15b372d89a522bca92053c12b0ab",
+   "byte_size": 67384097,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0080.MP4",
+   "captured": "2026-07-17T20:26:02+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "deep_underexposure",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000217,
+     "5": 5.3e-05,
+     "25": 0.000496,
+     "50": 0.001223,
+     "75": 0.004752,
+     "95": 0.021323,
+     "99": 0.029332
+    },
+    "sat_p50": 0.73065,
+    "sat_cov_040": 0.74257,
+    "chroma_hi_luma": 0.75621,
+    "out_of_gamut": 0.0,
+    "code_max": 0.28777,
+    "near_floor": 0.39582,
+    "dynamic_range_stops": 9.107,
+    "motion": 1.07122,
+    "noise": 0.06975
+   },
+   "notes": "poster in the dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0081",
+   "sha256": "5d4835a515c11fb58ecc69e904a1ee442d6c227cd36c3e6e2ab00578bf6bdd2b",
+   "byte_size": 67384349,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0081.MP4",
+   "captured": "2026-07-17T20:26:09+02:00",
+   "duration_s": 4.004,
+   "probe_times_s": [
+    0.801,
+    2.002,
+    3.203
+   ],
+   "categories": [
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 96
+   },
+   "measured": {
+    "luma_p": {
+     "1": -7e-05,
+     "5": 0.000271,
+     "25": 0.001019,
+     "50": 0.00234,
+     "75": 0.004202,
+     "95": 0.011586,
+     "99": 0.031836
+    },
+    "sat_p50": 0.32581,
+    "sat_cov_040": 0.40209,
+    "chroma_hi_luma": 0.14176,
+    "out_of_gamut": 0.0,
+    "code_max": 0.38405,
+    "near_floor": 0.19996,
+    "dynamic_range_stops": 6.875,
+    "motion": 0.95875,
+    "noise": 0.09098
+   },
+   "notes": "pedal knobs, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0082",
+   "sha256": "b1a47fe6537036330458721a34c0a3b1d2c8c5cb3576aa9538a29cc7726ab425",
+   "byte_size": 67383845,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0082.MP4",
+   "captured": "2026-07-17T20:26:19+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -8e-05,
+     "5": 0.00018,
+     "25": 0.000612,
+     "50": 0.001009,
+     "75": 0.001592,
+     "95": 0.003435,
+     "99": 0.008042
+    },
+    "sat_p50": 0.94237,
+    "sat_cov_040": 0.8995,
+    "chroma_hi_luma": 0.75195,
+    "out_of_gamut": 0.0,
+    "code_max": 0.19283,
+    "near_floor": 0.17783,
+    "dynamic_range_stops": 5.481,
+    "motion": 0.40598,
+    "noise": 0.22343
+   },
+   "notes": "dark surface, faint gradient",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0083",
+   "sha256": "c589be18e6d15f9aa2f04f2c6cba4293bb2f52979d0d89ce649fa532ac03c9ae",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0083.MP4",
+   "captured": "2026-07-17T20:26:26+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000274,
+     "5": -1.3e-05,
+     "25": 0.000429,
+     "50": 0.00089,
+     "75": 0.002878,
+     "95": 0.00869,
+     "99": 0.012524
+    },
+    "sat_p50": 0.63933,
+    "sat_cov_040": 0.67656,
+    "chroma_hi_luma": 0.44833,
+    "out_of_gamut": 0.00399,
+    "code_max": 0.74704,
+    "near_floor": 0.447,
+    "dynamic_range_stops": 13.612,
+    "motion": 0.64272,
+    "noise": 0.05845
+   },
+   "notes": "pedal board with indicators, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0084",
+   "sha256": "33bbaa14c93a3cbadd97d68570878e4618e471307dac955a901e04b5977ef3e7",
+   "byte_size": 67384225,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0084.MP4",
+   "captured": "2026-07-17T20:26:33+02:00",
+   "duration_s": 3.5035,
+   "probe_times_s": [
+    0.701,
+    1.752,
+    2.803
+   ],
+   "categories": [
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 84
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000124,
+     "5": 0.00052,
+     "25": 0.001599,
+     "50": 0.002886,
+     "75": 0.004761,
+     "95": 0.006865,
+     "99": 0.014926
+    },
+    "sat_p50": 0.76747,
+    "sat_cov_040": 0.85451,
+    "chroma_hi_luma": 0.86927,
+    "out_of_gamut": 0.0,
+    "code_max": 0.4636,
+    "near_floor": 0.09572,
+    "dynamic_range_stops": 4.843,
+    "motion": 0.38241,
+    "noise": 0.09838
+   },
+   "notes": "orange segments on plate, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0085",
+   "sha256": "61c7508666411a3215431e29e3a01771a0d97cd8cdbd17e84747e2adce397336",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0085.MP4",
+   "captured": "2026-07-17T20:26:43+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000524,
+     "5": 0.001802,
+     "25": 0.013866,
+     "50": 0.019527,
+     "75": 0.025522,
+     "95": 0.038369,
+     "99": 0.044542
+    },
+    "sat_p50": 0.5918,
+    "sat_cov_040": 0.80761,
+    "chroma_hi_luma": 0.79556,
+    "out_of_gamut": 1e-05,
+    "code_max": 0.30669,
+    "near_floor": 0.01939,
+    "dynamic_range_stops": 4.627,
+    "motion": 0.15812,
+    "noise": 0.02862
+   },
+   "notes": "multimeter, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0086",
+   "sha256": "6146450c076f74e1e9b9a44fa6324431ac8ffb9eeab554adfad3558d1f64977c",
+   "byte_size": 67383721,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0086.MP4",
+   "captured": "2026-07-17T20:26:47+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000317,
+     "5": 0.000987,
+     "25": 0.003231,
+     "50": 0.005606,
+     "75": 0.013371,
+     "95": 0.021736,
+     "99": 0.026934
+    },
+    "sat_p50": 0.38144,
+    "sat_cov_040": 0.47121,
+    "chroma_hi_luma": 0.57221,
+    "out_of_gamut": 0.0,
+    "code_max": 0.26107,
+    "near_floor": 0.03924,
+    "dynamic_range_stops": 4.77,
+    "motion": 0.19009,
+    "noise": 0.05006
+   },
+   "notes": "multimeter and cloth, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0087",
+   "sha256": "f1fc3689e10213d7274e793ac91551bf66825de907e29a884639472a21da491b",
+   "byte_size": 67384097,
+   "shoot": "samples_dark",
+   "path_hint": "~/Movies/samples_dark/C0087.MP4",
+   "captured": "2026-07-17T20:27:03+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000271,
+     "5": 0.000679,
+     "25": 0.001893,
+     "50": 0.003562,
+     "75": 0.006273,
+     "95": 0.010772,
+     "99": 0.014028
+    },
+    "sat_p50": 0.5061,
+    "sat_cov_040": 0.69249,
+    "chroma_hi_luma": 0.83307,
+    "out_of_gamut": 0.0,
+    "code_max": 0.23081,
+    "near_floor": 0.07673,
+    "dynamic_range_stops": 4.369,
+    "motion": 0.66854,
+    "noise": 0.07789,
+    "cast_warm_cool": 0.96224,
+    "cast_green_magenta": -0.25678,
+    "cast_disagreement": 0.35075
+   },
+   "notes": "face, dark",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0088",
+   "sha256": "a7276128109efb5032445547718a985617090aec81e8d4170f39431972283447",
+   "byte_size": 67383721,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0088.MP4",
+   "captured": "2026-07-22T22:56:38+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000151,
+     "5": 0.000134,
+     "25": 0.000724,
+     "50": 0.002789,
+     "75": 0.029895,
+     "95": 0.152133,
+     "99": 0.260965
+    },
+    "sat_p50": 0.34434,
+    "sat_cov_040": 0.46482,
+    "chroma_hi_luma": 0.34363,
+    "out_of_gamut": 0.02703,
+    "code_max": 0.5585,
+    "near_floor": 0.28712,
+    "dynamic_range_stops": 10.927,
+    "motion": 0.21725,
+    "noise": 0.01696
+   },
+   "notes": "Rubik's cube and mug, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0100",
+   "sha256": "fd898b9da4daedafa932ea6840ac2fdf9aad5b8c0614101c77ec2ae3ae9881a0",
+   "byte_size": 67383593,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0100.MP4",
+   "captured": "2026-07-22T23:02:20+02:00",
+   "duration_s": 1.001,
+   "probe_times_s": [
+    0.2,
+    0.5,
+    0.801
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 24
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000225,
+     "5": 0.000576,
+     "25": 0.001257,
+     "50": 0.002041,
+     "75": 0.006475,
+     "95": 0.365088,
+     "99": 0.952735
+    },
+    "sat_p50": 0.31139,
+    "sat_cov_040": 0.36903,
+    "chroma_hi_luma": 0.4427,
+    "out_of_gamut": 0.0,
+    "code_max": 0.71945,
+    "near_floor": 0.12629,
+    "dynamic_range_stops": 10.691,
+    "motion": 0.26645,
+    "noise": 0.00725
+   },
+   "notes": "straw hat under lamp, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0101",
+   "sha256": "9742420e8bd8d962ca7ca6362969b226539f6f5392c4742881a9f17314809bc4",
+   "byte_size": 67384097,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0101.MP4",
+   "captured": "2026-07-22T23:02:24+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": 0.000134,
+     "5": 0.00052,
+     "25": 0.001314,
+     "50": 0.002346,
+     "75": 0.011284,
+     "95": 0.183452,
+     "99": 0.642512
+    },
+    "sat_p50": 0.34465,
+    "sat_cov_040": 0.38338,
+    "chroma_hi_luma": 0.60215,
+    "out_of_gamut": 5e-05,
+    "code_max": 0.72529,
+    "near_floor": 0.13175,
+    "dynamic_range_stops": 10.271,
+    "motion": 0.40707,
+    "noise": 0.01117
+   },
+   "notes": "straw hat under lamp, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0102",
+   "sha256": "73e6b3ddd4bfee7a7ecf47525bee83c3dcfbab8f6a17136b99cef78e282a6cb1",
+   "byte_size": 67384097,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0102.MP4",
+   "captured": "2026-07-22T23:03:04+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000319,
+     "5": -7e-05,
+     "25": 0.000338,
+     "50": 0.00078,
+     "75": 0.002336,
+     "95": 0.037925,
+     "99": 0.088202
+    },
+    "sat_p50": 0.73063,
+    "sat_cov_040": 0.7838,
+    "chroma_hi_luma": 0.80297,
+    "out_of_gamut": 0.0,
+    "code_max": 0.43767,
+    "near_floor": 0.50095,
+    "dynamic_range_stops": 16.429,
+    "motion": 1.49881,
+    "noise": 0.03735
+   },
+   "notes": "shoes on floor, deep shadow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0103",
+   "sha256": "26e32ec8c1d2a9e4f5a346c2546ef279ad39132998adb33e3b8b95114ace5504",
+   "byte_size": 67383845,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0103.MP4",
+   "captured": "2026-07-22T23:03:17+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000319,
+     "5": -7e-05,
+     "25": 0.000338,
+     "50": 0.00078,
+     "75": 0.002494,
+     "95": 0.037416,
+     "99": 0.067175
+    },
+    "sat_p50": 0.67411,
+    "sat_cov_040": 0.75684,
+    "chroma_hi_luma": 0.75383,
+    "out_of_gamut": 0.0,
+    "code_max": 0.43906,
+    "near_floor": 0.50863,
+    "dynamic_range_stops": 16.036,
+    "motion": 0.23044,
+    "noise": 0.04926
+   },
+   "notes": "shoes on floor, deep shadow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0104",
+   "sha256": "f3c9c9eb2d55346eb06dc713fc53953e4ae03b1184304a3b039072310d566618",
+   "byte_size": 67383973,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0104.MP4",
+   "captured": "2026-07-22T23:03:26+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000262,
+     "5": 2.2e-05,
+     "25": 0.00051,
+     "50": 0.001191,
+     "75": 0.004843,
+     "95": 0.072473,
+     "99": 0.201921
+    },
+    "sat_p50": 0.68043,
+    "sat_cov_040": 0.75488,
+    "chroma_hi_luma": 0.6305,
+    "out_of_gamut": 0.0,
+    "code_max": 0.53138,
+    "near_floor": 0.37502,
+    "dynamic_range_stops": 13.148,
+    "motion": 0.39882,
+    "noise": 0.02617
+   },
+   "notes": "hand in deep shadow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0105",
+   "sha256": "853c33415509c2b35aed93e7b143ab316eb784da6e7aa46a33b40beaaa23acb9",
+   "byte_size": 67383721,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0105.MP4",
+   "captured": "2026-07-22T23:03:40+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000171,
+     "5": 8.8e-05,
+     "25": 0.000566,
+     "50": 0.001461,
+     "75": 0.005683,
+     "95": 0.06354,
+     "99": 1.664391
+    },
+    "sat_p50": 0.38758,
+    "sat_cov_040": 0.48263,
+    "chroma_hi_luma": 0.30855,
+    "out_of_gamut": 1e-05,
+    "code_max": 0.73639,
+    "near_floor": 0.38217,
+    "dynamic_range_stops": 14.208,
+    "motion": 0.24436,
+    "noise": 0.01132
+   },
+   "notes": "hand and phone screen, deep shadow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0106",
+   "sha256": "548e3b4f53851b3f57d4febd6f99677526486bd0a5fd777769f4ee49e24fe8fd",
+   "byte_size": 67383721,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0106.MP4",
+   "captured": "2026-07-22T23:04:22+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000171,
+     "5": 7.8e-05,
+     "25": 0.00052,
+     "50": 0.001019,
+     "75": 0.003137,
+     "95": 0.067332,
+     "99": 2.969857
+    },
+    "sat_p50": 0.7098,
+    "sat_cov_040": 0.78749,
+    "chroma_hi_luma": 0.87538,
+    "out_of_gamut": 0.00973,
+    "code_max": 0.73098,
+    "near_floor": 0.41412,
+    "dynamic_range_stops": 15.223,
+    "motion": 0.70054,
+    "noise": 0.00573
+   },
+   "notes": "Rubik's cube, spot lit",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0107",
+   "sha256": "dc04aece5636dbd700546aaae5f3891f0a41f34d19d9f46cc28612e1ad97dc34",
+   "byte_size": 67383973,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0107.MP4",
+   "captured": "2026-07-22T23:04:38+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": -4.5e-05,
+     "5": 0.000261,
+     "25": 0.000851,
+     "50": 0.001893,
+     "75": 0.007358,
+     "95": 0.337618,
+     "99": 2.98792
+    },
+    "sat_p50": 0.67641,
+    "sat_cov_040": 0.74719,
+    "chroma_hi_luma": 0.78491,
+    "out_of_gamut": 0.03246,
+    "code_max": 0.73922,
+    "near_floor": 0.25157,
+    "dynamic_range_stops": 13.484,
+    "motion": 1.50979,
+    "noise": 0.00341
+   },
+   "notes": "Rubik's cube, spot lit",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0108",
+   "sha256": "b1a6b80806fa1b42601558da75dc0415f76337c6da9cb6e5c480ae2762792c8a",
+   "byte_size": 67384225,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0108.MP4",
+   "captured": "2026-07-22T23:04:59+02:00",
+   "duration_s": 3.5035,
+   "probe_times_s": [
+    0.701,
+    1.752,
+    2.803
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 84
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000466,
+     "5": -0.000252,
+     "25": 7.8e-05,
+     "50": 0.000362,
+     "75": 0.001166,
+     "95": 0.044607,
+     "99": 0.124713
+    },
+    "sat_p50": 0.60535,
+    "sat_cov_040": 0.64585,
+    "chroma_hi_luma": 0.56466,
+    "out_of_gamut": 1e-05,
+    "code_max": 0.54063,
+    "near_floor": 0.71636,
+    "dynamic_range_stops": 16.928,
+    "motion": 1.30148,
+    "noise": 0.05086
+   },
+   "notes": "hanging fabric, near black",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0109",
+   "sha256": "92fe1ff45dbc91f1ec6ac7d35cab74d2a15b958b9855f7c0ceb9c4c35a4d07f9",
+   "byte_size": 67384349,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0109.MP4",
+   "captured": "2026-07-22T23:05:22+02:00",
+   "duration_s": 4.004,
+   "probe_times_s": [
+    0.801,
+    2.002,
+    3.203
+   ],
+   "categories": [
+    "deep_underexposure",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 96
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000319,
+     "5": -8e-05,
+     "25": 0.000281,
+     "50": 0.000587,
+     "75": 0.008721,
+     "95": 0.099744,
+     "99": 0.223546
+    },
+    "sat_p50": 0.53639,
+    "sat_cov_040": 0.6143,
+    "chroma_hi_luma": 0.47734,
+    "out_of_gamut": 0.00014,
+    "code_max": 0.59434,
+    "near_floor": 0.60041,
+    "dynamic_range_stops": 17.77,
+    "motion": 1.07476,
+    "noise": 0.01611
+   },
+   "notes": "hanging fabric, near black",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0110",
+   "sha256": "f60491a96555dc2091478be82abef3bb3518fb04040929fd57e938c15dc5fc47",
+   "byte_size": 67383845,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0110.MP4",
+   "captured": "2026-07-22T23:05:37+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.00041,
+     "5": -0.000161,
+     "25": 0.000271,
+     "50": 0.000668,
+     "75": 0.002589,
+     "95": 0.032619,
+     "99": 0.519557
+    },
+    "sat_p50": 0.68784,
+    "sat_cov_040": 0.80451,
+    "chroma_hi_luma": 0.87427,
+    "out_of_gamut": 7e-05,
+    "code_max": 0.72313,
+    "near_floor": 0.5344,
+    "dynamic_range_stops": 18.987,
+    "motion": 1.03289,
+    "noise": 0.00971
+   },
+   "notes": "fabric with magenta spill",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0111",
+   "sha256": "bf13bd9896cbd56308173749b4d50580efd2b1ebad9616fe6dabb6fc542e8222",
+   "byte_size": 67383973,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0111.MP4",
+   "captured": "2026-07-22T23:06:02+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000228,
+     "5": 4.3e-05,
+     "25": 0.000475,
+     "50": 0.000953,
+     "75": 0.003891,
+     "95": 0.36478,
+     "99": 2.063824
+    },
+    "sat_p50": 0.76539,
+    "sat_cov_040": 0.84979,
+    "chroma_hi_luma": 0.84119,
+    "out_of_gamut": 0.01885,
+    "code_max": 0.7491,
+    "near_floor": 0.39395,
+    "dynamic_range_stops": 15.555,
+    "motion": 1.17615,
+    "noise": 0.00422
+   },
+   "notes": "coloured pencils, spot lit",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0112",
+   "sha256": "8e3c0e00d5ddec8684d69e5e9b73a89386a632af4c03ed993c6fd1bb89e2041e",
+   "byte_size": 67383721,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0112.MP4",
+   "captured": "2026-07-22T23:06:10+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000161,
+     "5": 0.000124,
+     "25": 0.000566,
+     "50": 0.00109,
+     "75": 0.004282,
+     "95": 0.399649,
+     "99": 2.531218
+    },
+    "sat_p50": 0.75113,
+    "sat_cov_040": 0.85065,
+    "chroma_hi_luma": 0.81478,
+    "out_of_gamut": 0.01064,
+    "code_max": 0.74827,
+    "near_floor": 0.34355,
+    "dynamic_range_stops": 14.321,
+    "motion": 0.99306,
+    "noise": 0.00348
+   },
+   "notes": "coloured pencils, spot lit",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0113",
+   "sha256": "de76d6ae2c5d82afd4fca69ac7d30f4c4ab529aa57334887c80f1188a098ceb9",
+   "byte_size": 67385359,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0113.MP4",
+   "captured": "2026-07-22T23:06:44+02:00",
+   "duration_s": 8.008,
+   "probe_times_s": [
+    1.602,
+    4.004,
+    6.406
+   ],
+   "categories": [
+    "deep_underexposure",
+    "motion_or_noise",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 192
+   },
+   "measured": {
+    "luma_p": {
+     "1": -7e-05,
+     "5": 0.000201,
+     "25": 0.000668,
+     "50": 0.001314,
+     "75": 0.008155,
+     "95": 0.114469,
+     "99": 0.273801
+    },
+    "sat_p50": 0.41215,
+    "sat_cov_040": 0.51754,
+    "chroma_hi_luma": 0.37798,
+    "out_of_gamut": 8e-05,
+    "code_max": 0.72198,
+    "near_floor": 0.36713,
+    "dynamic_range_stops": 10.414,
+    "motion": 1.60974,
+    "noise": 0.0269,
+    "cast_warm_cool": 0.53268,
+    "cast_green_magenta": -0.09631,
+    "cast_disagreement": 0.25827
+   },
+   "notes": "face lit by phone screen",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0114",
+   "sha256": "32f3673e946ef9120e5b051a3f529510573c2195216025f26f12bc0b32710a91",
+   "byte_size": 67384479,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0114.MP4",
+   "captured": "2026-07-22T23:06:55+02:00",
+   "duration_s": 4.5045,
+   "probe_times_s": [
+    0.901,
+    2.252,
+    3.604
+   ],
+   "categories": [
+    "motion_or_noise",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 108
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000161,
+     "5": 0.000144,
+     "25": 0.000703,
+     "50": 0.001518,
+     "75": 0.005194,
+     "95": 0.07327,
+     "99": 0.236441
+    },
+    "sat_p50": 0.4212,
+    "sat_cov_040": 0.53577,
+    "chroma_hi_luma": 0.42247,
+    "out_of_gamut": 0.00029,
+    "code_max": 0.67759,
+    "near_floor": 0.33461,
+    "dynamic_range_stops": 10.678,
+    "motion": 1.52575,
+    "noise": 0.03052,
+    "cast_warm_cool": 0.5076,
+    "cast_green_magenta": -0.09484,
+    "cast_disagreement": 0.28197
+   },
+   "notes": "face, warm lamp",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0115",
+   "sha256": "ff013c615708acc9b75da3df71d8bcb1632fd726e62c921d58dac107152455ba",
+   "byte_size": 67383973,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0115.MP4",
+   "captured": "2026-07-22T23:07:08+02:00",
+   "duration_s": 2.5025,
+   "probe_times_s": [
+    0.501,
+    1.251,
+    2.002
+   ],
+   "categories": [
+    "deep_underexposure",
+    "motion_or_noise",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 60
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000171,
+     "5": 0.000124,
+     "25": 0.000566,
+     "50": 0.001009,
+     "75": 0.002315,
+     "95": 0.007243,
+     "99": 0.113761
+    },
+    "sat_p50": 0.52811,
+    "sat_cov_040": 0.68343,
+    "chroma_hi_luma": 0.64984,
+    "out_of_gamut": 0.00031,
+    "code_max": 0.7228,
+    "near_floor": 0.42594,
+    "dynamic_range_stops": 9.845,
+    "motion": 3.22751,
+    "noise": 0.15306,
+    "cast_warm_cool": 0.53939,
+    "cast_green_magenta": -0.02043,
+    "cast_disagreement": 0.29078
+   },
+   "notes": "face, very dim",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0116",
+   "sha256": "0d04c6e36c82d62e25f7f13e57734069bd6829d1a4d76df29f9c5adeb7c62e75",
+   "byte_size": 67383985,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0116.MP4",
+   "captured": "2026-07-22T23:27:48+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001426,
+     "5": -0.000483,
+     "25": 0.000998,
+     "50": 0.002494,
+     "75": 0.010286,
+     "95": 0.207165,
+     "99": 0.578636
+    },
+    "sat_p50": 0.45676,
+    "sat_cov_040": 0.5614,
+    "chroma_hi_luma": 0.38141,
+    "out_of_gamut": 0.01802,
+    "code_max": 0.75966,
+    "near_floor": 0.18153,
+    "dynamic_range_stops": 19.142,
+    "motion": 0.76266,
+    "noise": 0.0396
+   },
+   "notes": "striped shirt, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0117",
+   "sha256": "7f004fb439b0fc58f35dd0a13a48cc3c721a23a67f34d4a4bd6525d9895a08a8",
+   "byte_size": 67384113,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0117.MP4",
+   "captured": "2026-07-22T23:28:08+02:00",
+   "duration_s": 3.5035,
+   "probe_times_s": [
+    0.701,
+    1.752,
+    2.803
+   ],
+   "categories": [
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 84
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001292,
+     "5": -0.000395,
+     "25": 0.001039,
+     "50": 0.002511,
+     "75": 0.008758,
+     "95": 0.195689,
+     "99": 0.559166
+    },
+    "sat_p50": 0.44164,
+    "sat_cov_040": 0.54599,
+    "chroma_hi_luma": 0.364,
+    "out_of_gamut": 0.01379,
+    "code_max": 0.75853,
+    "near_floor": 0.17534,
+    "dynamic_range_stops": 19.093,
+    "motion": 0.77313,
+    "noise": 0.03598
+   },
+   "notes": "striped shirt and mirror, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0118",
+   "sha256": "27fe76bf06ed4821ba5a69d2c06772f905e267cbe94316fa3daa4be04d92f64e",
+   "byte_size": 67383679,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0118.MP4",
+   "captured": "2026-07-22T23:47:01+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.002103,
+     "5": -0.001361,
+     "25": -0.000305,
+     "50": 0.000432,
+     "75": 0.001212,
+     "95": 0.003387,
+     "99": 0.056894
+    },
+    "sat_p50": 0.7888,
+    "sat_cov_040": 0.71831,
+    "chroma_hi_luma": 0.70512,
+    "out_of_gamut": 0.06275,
+    "code_max": 0.7035,
+    "near_floor": 0.55148,
+    "dynamic_range_stops": 15.796,
+    "motion": 0.34216,
+    "noise": 0.15063
+   },
+   "notes": "Rubik's cube, single spot",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0119",
+   "sha256": "98054d9c3ee4521c43feff0e93ebef76113c5b9b0f2ebba2fef6a41fc9ebff99",
+   "byte_size": 67383679,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0119.MP4",
+   "captured": "2026-07-22T23:47:21+02:00",
+   "duration_s": 1.5015,
+   "probe_times_s": [
+    0.3,
+    0.751,
+    1.201
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 36
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.002058,
+     "5": -0.001302,
+     "25": -0.000228,
+     "50": 0.000542,
+     "75": 0.001395,
+     "95": 0.005953,
+     "99": 0.121271
+    },
+    "sat_p50": 0.78367,
+    "sat_cov_040": 0.72378,
+    "chroma_hi_luma": 0.68869,
+    "out_of_gamut": 0.06615,
+    "code_max": 0.725,
+    "near_floor": 0.50828,
+    "dynamic_range_stops": 16.888,
+    "motion": 0.59273,
+    "noise": 0.19774
+   },
+   "notes": "Rubik's cube, single spot",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0120",
+   "sha256": "2efe3c766c096c92d4681a05000681470fb47764c94c0309cf32d087a699834c",
+   "byte_size": 67384055,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0120.MP4",
+   "captured": "2026-07-22T23:48:06+02:00",
+   "duration_s": 3.003,
+   "probe_times_s": [
+    0.601,
+    1.502,
+    2.402
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 72
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001625,
+     "5": -0.000705,
+     "25": 0.000776,
+     "50": 0.002473,
+     "75": 0.016431,
+     "95": 0.19515,
+     "99": 1.795534
+    },
+    "sat_p50": 0.39303,
+    "sat_cov_040": 0.49289,
+    "chroma_hi_luma": 0.21455,
+    "out_of_gamut": 0.0225,
+    "code_max": 0.80165,
+    "near_floor": 0.21758,
+    "dynamic_range_stops": 20.776,
+    "motion": 0.84457,
+    "noise": 0.01338
+   },
+   "notes": "bright bare lamp, dark room",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0121",
+   "sha256": "6db3f082a3db54e9a236362de393002683217b3e617afa08b9a1a088fb58a1b7",
+   "byte_size": 67383803,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0121.MP4",
+   "captured": "2026-07-22T23:48:22+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001941,
+     "5": -0.001105,
+     "25": 0.000144,
+     "50": 0.001146,
+     "75": 0.002697,
+     "95": 0.02426,
+     "99": 0.345914
+    },
+    "sat_p50": 0.50375,
+    "sat_cov_040": 0.57396,
+    "chroma_hi_luma": 0.2039,
+    "out_of_gamut": 0.03992,
+    "code_max": 0.62225,
+    "near_floor": 0.35869,
+    "dynamic_range_stops": 18.4,
+    "motion": 0.71356,
+    "noise": 0.07777
+   },
+   "notes": "diffuse lamp glow",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0122",
+   "sha256": "b04071154b46fd5c57877b01dd009159aea26e0c1e382e02019296b13a758793",
+   "byte_size": 67383551,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0122.MP4",
+   "captured": "2026-07-22T23:48:51+02:00",
+   "duration_s": 1.001,
+   "probe_times_s": [
+    0.2,
+    0.5,
+    0.801
+   ],
+   "categories": [
+    "deep_underexposure",
+    "saturated_practical",
+    "difficult_shadows",
+    "skin_warm"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 24
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001776,
+     "5": -0.00095,
+     "25": 0.000292,
+     "50": 0.001303,
+     "75": 0.003491,
+     "95": 0.071666,
+     "99": 0.576419
+    },
+    "sat_p50": 0.60084,
+    "sat_cov_040": 0.67568,
+    "chroma_hi_luma": 0.47559,
+    "out_of_gamut": 0.02876,
+    "code_max": 0.6389,
+    "near_floor": 0.31022,
+    "dynamic_range_stops": 19.137,
+    "motion": 0.59758,
+    "noise": 0.04702,
+    "cast_warm_cool": 0.55298,
+    "cast_green_magenta": -0.16987,
+    "cast_disagreement": 0.41797
+   },
+   "notes": "shoulder and fabric, dark",
+   "face_labelled": true
+  },
+  {
+   "clip_id": "C0123",
+   "sha256": "d3dca7d0899c833f24a7c0c52d1f2b4a6e249073952ac9621f909f10fe8e94e3",
+   "byte_size": 67384743,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0123.MP4",
+   "captured": "2026-07-22T23:49:19+02:00",
+   "duration_s": 6.006,
+   "probe_times_s": [
+    1.201,
+    3.003,
+    4.805
+   ],
+   "categories": [
+    "saturated_practical",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 144
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001759,
+     "5": -0.000909,
+     "25": 0.000383,
+     "50": 0.001532,
+     "75": 0.007843,
+     "95": 0.111608,
+     "99": 0.650962
+    },
+    "sat_p50": 0.71715,
+    "sat_cov_040": 0.80342,
+    "chroma_hi_luma": 0.96337,
+    "out_of_gamut": 0.02855,
+    "code_max": 0.67613,
+    "near_floor": 0.29977,
+    "dynamic_range_stops": 19.312,
+    "motion": 0.51799,
+    "noise": 0.03176
+   },
+   "notes": "straw hat, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0124",
+   "sha256": "9a8ceb8fae6248d06908f5e1966e5e81d387557c4c3bebd625716b94c52ce756",
+   "byte_size": 67384491,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0124.MP4",
+   "captured": "2026-07-22T23:49:52+02:00",
+   "duration_s": 5.005,
+   "probe_times_s": [
+    1.001,
+    2.502,
+    4.004
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 120
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001622,
+     "5": -0.00073,
+     "25": 0.000622,
+     "50": 0.00184,
+     "75": 0.005387,
+     "95": 0.056909,
+     "99": 0.23999
+    },
+    "sat_p50": 0.57969,
+    "sat_cov_040": 0.6484,
+    "chroma_hi_luma": 0.52968,
+    "out_of_gamut": 0.04918,
+    "code_max": 0.87068,
+    "near_floor": 0.24423,
+    "dynamic_range_stops": 17.873,
+    "motion": 1.00914,
+    "noise": 0.05604
+   },
+   "notes": "pizza box, dark",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0125",
+   "sha256": "aceae0b4b4df4dea3df31724bdf06f6081658187357253f8300ffa4ea2ad6591",
+   "byte_size": 134494743,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0125.MP4",
+   "captured": "2026-07-23T00:05:06+02:00",
+   "duration_s": 10.5105,
+   "probe_times_s": [
+    2.102,
+    5.255,
+    8.408
+   ],
+   "categories": [
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 252
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.00094,
+     "5": 0.000201,
+     "25": 0.003021,
+     "50": 0.010175,
+     "75": 0.026481,
+     "95": 0.294598,
+     "99": 0.85766
+    },
+    "sat_p50": 0.71948,
+    "sat_cov_040": 0.91798,
+    "chroma_hi_luma": 0.98709,
+    "out_of_gamut": 0.00712,
+    "code_max": 0.71771,
+    "near_floor": 0.07538,
+    "dynamic_range_stops": 12.061,
+    "motion": 0.82568,
+    "noise": 0.03051
+   },
+   "notes": "straw hat under lamp",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0126",
+   "sha256": "98a52e600099d9c55c9feca64aa8221357b661d7f5e1587570eb77bf6aacaccf",
+   "byte_size": 67385751,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0126.MP4",
+   "captured": "2026-07-23T00:12:25+02:00",
+   "duration_s": 10.01,
+   "probe_times_s": [
+    2.002,
+    5.005,
+    8.008
+   ],
+   "categories": [
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 240
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001393,
+     "5": -0.000446,
+     "25": 0.001103,
+     "50": 0.002937,
+     "75": 0.009669,
+     "95": 0.042238,
+     "99": 0.074909
+    },
+    "sat_p50": 0.65188,
+    "sat_cov_040": 0.8061,
+    "chroma_hi_luma": 0.87291,
+    "out_of_gamut": 0.01381,
+    "code_max": 0.54772,
+    "near_floor": 0.16801,
+    "dynamic_range_stops": 16.193,
+    "motion": 1.14359,
+    "noise": 0.12239
+   },
+   "notes": "dark hat crown",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0127",
+   "sha256": "9feb134a9517e7d5ce58691671b1c90a024d0baf349692533ff20d987f39dff7",
+   "byte_size": 67383733,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0127.MP4",
+   "captured": "2026-07-23T00:13:52+02:00",
+   "duration_s": 2.002,
+   "probe_times_s": [
+    0.4,
+    1.001,
+    1.602
+   ],
+   "categories": [
+    "deep_underexposure",
+    "overexposure_clipped",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 48
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.00179,
+     "5": -0.000955,
+     "25": 0.000292,
+     "50": 0.001299,
+     "75": 0.002991,
+     "95": 0.034786,
+     "99": 0.142118
+    },
+    "sat_p50": 0.67156,
+    "sat_cov_040": 0.69219,
+    "chroma_hi_luma": 0.57431,
+    "out_of_gamut": 0.03124,
+    "code_max": 0.88258,
+    "near_floor": 0.32564,
+    "dynamic_range_stops": 17.117,
+    "motion": 1.04363,
+    "noise": 0.07633
+   },
+   "notes": "magnifier on dark surface",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0128",
+   "sha256": "a70ca493dbc5b3a01510604c13c299332d7027f8855c73eabc0a38b8390d3f28",
+   "byte_size": 67384689,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0128.MP4",
+   "captured": "2026-07-23T00:14:07+02:00",
+   "duration_s": 5.5055,
+   "probe_times_s": [
+    1.101,
+    2.753,
+    4.404
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 132
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.00159,
+     "5": -0.00073,
+     "25": 0.000591,
+     "50": 0.001782,
+     "75": 0.01006,
+     "95": 0.105686,
+     "99": 0.519753
+    },
+    "sat_p50": 0.74304,
+    "sat_cov_040": 0.74649,
+    "chroma_hi_luma": 0.80679,
+    "out_of_gamut": 0.01984,
+    "code_max": 0.88246,
+    "near_floor": 0.24891,
+    "dynamic_range_stops": 18.987,
+    "motion": 2.00442,
+    "noise": 0.02562
+   },
+   "notes": "magnifier on dark surface",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0129",
+   "sha256": "3abc0d498e587391f9aa20e1830340d6d77c6c2a65cd5944229e612fb064478c",
+   "byte_size": 134494937,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0129.MP4",
+   "captured": "2026-07-23T00:14:39+02:00",
+   "duration_s": 11.011,
+   "probe_times_s": [
+    2.202,
+    5.505,
+    8.809
+   ],
+   "categories": [
+    "saturated_practical",
+    "difficult_shadows"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 264
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001341,
+     "5": -0.000386,
+     "25": 0.001217,
+     "50": 0.003456,
+     "75": 0.020667,
+     "95": 0.059042,
+     "99": 0.233358
+    },
+    "sat_p50": 0.67507,
+    "sat_cov_040": 0.74769,
+    "chroma_hi_luma": 0.88521,
+    "out_of_gamut": 0.04535,
+    "code_max": 0.71144,
+    "near_floor": 0.16116,
+    "dynamic_range_stops": 17.832,
+    "motion": 0.71798,
+    "noise": 0.0733
+   },
+   "notes": "Rubik's cube on dark wood",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0130",
+   "sha256": "40852309625f5cdbacf0ae92491c21d43badd67e9a5fa02b065a8242e7922632",
+   "byte_size": 67385499,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0130.MP4",
+   "captured": "2026-07-23T00:15:24+02:00",
+   "duration_s": 9.009,
+   "probe_times_s": [
+    1.802,
+    4.505,
+    7.207
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 216
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.00117,
+     "5": -0.000203,
+     "25": 0.001405,
+     "50": 0.003558,
+     "75": 0.012801,
+     "95": 0.121282,
+     "99": 0.3662
+    },
+    "sat_p50": 0.33461,
+    "sat_cov_040": 0.45306,
+    "chroma_hi_luma": 0.19586,
+    "out_of_gamut": 0.01007,
+    "code_max": 0.86903,
+    "near_floor": 0.13734,
+    "dynamic_range_stops": 18.482,
+    "motion": 1.29937,
+    "noise": 0.05054
+   },
+   "notes": "dark case lid",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0131",
+   "sha256": "382ec4558568f151d0076c34bf0d0a75d064e7dcda585be80d725ac6d879fda6",
+   "byte_size": 67385445,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0131.MP4",
+   "captured": "2026-07-23T00:15:54+02:00",
+   "duration_s": 8.5085,
+   "probe_times_s": [
+    1.702,
+    4.254,
+    6.807
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 204
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.000797,
+     "5": 0.000397,
+     "25": 0.00289,
+     "50": 0.007631,
+     "75": 0.023278,
+     "95": 0.143536,
+     "99": 0.61427
+    },
+    "sat_p50": 0.61474,
+    "sat_cov_040": 0.68578,
+    "chroma_hi_luma": 0.61937,
+    "out_of_gamut": 0.00597,
+    "code_max": 0.59983,
+    "near_floor": 0.06344,
+    "dynamic_range_stops": 10.594,
+    "motion": 0.75219,
+    "noise": 0.06104
+   },
+   "notes": "book cover, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0132",
+   "sha256": "50f28eeb3755d4361206d48ad126f25e740b214729d6e3d10cef8f4dde09a613",
+   "byte_size": 67384689,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0132.MP4",
+   "captured": "2026-07-23T00:16:08+02:00",
+   "duration_s": 5.5055,
+   "probe_times_s": [
+    1.101,
+    2.753,
+    4.404
+   ],
+   "categories": [
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 132
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001021,
+     "5": 6.8e-05,
+     "25": 0.002111,
+     "50": 0.005673,
+     "75": 0.018137,
+     "95": 0.218245,
+     "99": 0.747569
+    },
+    "sat_p50": 0.41628,
+    "sat_cov_040": 0.51495,
+    "chroma_hi_luma": 0.35502,
+    "out_of_gamut": 0.00801,
+    "code_max": 0.65754,
+    "near_floor": 0.09127,
+    "dynamic_range_stops": 13.429,
+    "motion": 1.43278,
+    "noise": 0.03651
+   },
+   "notes": "book cover, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0133",
+   "sha256": "d0dde0d3cd19e46d8bd254a5162b2e1295c90be3c432337e1d317b4d58d8b89d",
+   "byte_size": 67385751,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0133.MP4",
+   "captured": "2026-07-23T00:22:48+02:00",
+   "duration_s": 10.01,
+   "probe_times_s": [
+    2.002,
+    5.005,
+    8.008
+   ],
+   "categories": [],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 240
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001021,
+     "5": 0.000134,
+     "25": 0.00261,
+     "50": 0.008712,
+     "75": 0.04462,
+     "95": 0.184389,
+     "99": 0.40158
+    },
+    "sat_p50": 0.6313,
+    "sat_cov_040": 0.6629,
+    "chroma_hi_luma": 0.78007,
+    "out_of_gamut": 0.00804,
+    "code_max": 0.56584,
+    "near_floor": 0.081,
+    "dynamic_range_stops": 11.549,
+    "motion": 0.67866,
+    "noise": 0.04023
+   },
+   "notes": "book cover, gold foil, dim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0134",
+   "sha256": "27fbe591df2e6ec9b53303fe88f5a526a5b6ea9895f5eb77ea4e9fd160a53846",
+   "byte_size": 67385697,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0134.MP4",
+   "captured": "2026-07-23T00:23:17+02:00",
+   "duration_s": 9.5095,
+   "probe_times_s": [
+    1.902,
+    4.755,
+    7.608
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 228
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001239,
+     "5": -0.000192,
+     "25": 0.001791,
+     "50": 0.010097,
+     "75": 0.057458,
+     "95": 0.191324,
+     "99": 0.448448
+    },
+    "sat_p50": 0.77079,
+    "sat_cov_040": 0.76028,
+    "chroma_hi_luma": 0.88596,
+    "out_of_gamut": 0.04476,
+    "code_max": 0.82033,
+    "near_floor": 0.11722,
+    "dynamic_range_stops": 18.775,
+    "motion": 0.67061,
+    "noise": 0.02826
+   },
+   "notes": "Rubik's cube, dark wood",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0135",
+   "sha256": "e7202629463f126aa01ff1fd4ba41cdec15aac53ad1f342ecbe0bb964c6a2ba7",
+   "byte_size": 67385247,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0135.MP4",
+   "captured": "2026-07-23T00:23:35+02:00",
+   "duration_s": 8.008,
+   "probe_times_s": [
+    1.602,
+    4.004,
+    6.406
+   ],
+   "categories": [
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 192
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001478,
+     "5": -0.000466,
+     "25": 0.001223,
+     "50": 0.003414,
+     "75": 0.014692,
+     "95": 0.093947,
+     "99": 0.310318
+    },
+    "sat_p50": 0.69449,
+    "sat_cov_040": 0.83227,
+    "chroma_hi_luma": 0.97887,
+    "out_of_gamut": 0.01633,
+    "code_max": 0.72885,
+    "near_floor": 0.15708,
+    "dynamic_range_stops": 18.243,
+    "motion": 1.25632,
+    "noise": 0.06952
+   },
+   "notes": "dark hat brim",
+   "face_labelled": false
+  },
+  {
+   "clip_id": "C0136",
+   "sha256": "afdb748539fcff1a06db37f15cf1a48172a784ef90c8dfdd775162e71be4ac47",
+   "byte_size": 67385751,
+   "shoot": "samples_dd_dark",
+   "path_hint": "~/Movies/samples_dd_dark/C0136.MP4",
+   "captured": "2026-07-23T00:24:03+02:00",
+   "duration_s": 10.01,
+   "probe_times_s": [
+    2.002,
+    5.005,
+    8.008
+   ],
+   "categories": [
+    "overexposure_clipped",
+    "saturated_practical",
+    "difficult_shadows",
+    "motion_or_noise"
+   ],
+   "stream": {
+    "codec": "h264",
+    "profile": "High 4:2:2",
+    "width": 1920,
+    "height": 1080,
+    "pixel_format": "yuv422p10le",
+    "frame_rate": "24000/1001",
+    "frames": 240
+   },
+   "measured": {
+    "luma_p": {
+     "1": -0.001569,
+     "5": -0.000638,
+     "25": 0.000882,
+     "50": 0.002564,
+     "75": 0.011431,
+     "95": 0.062038,
+     "99": 0.238902
+    },
+    "sat_p50": 0.68873,
+    "sat_cov_040": 0.76486,
+    "chroma_hi_luma": 0.82857,
+    "out_of_gamut": 0.01981,
+    "code_max": 0.88383,
+    "near_floor": 0.19853,
+    "dynamic_range_stops": 17.866,
+    "motion": 1.226,
+    "noise": 0.05328
+   },
+   "notes": "magnifier and glass, dark",
+   "face_labelled": false
+  }
+ ]
+}
