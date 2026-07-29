@@ -88,6 +88,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="re-hash resolved files; slower, but proves the sample is the one recorded",
     )
+    cat.add_argument(
+        "--json",
+        action="store_true",
+        help="machine-readable output, for another tool or agent consuming the catalogue",
+    )
     cat.set_defaults(handler=_catalogue)
 
     return parser
@@ -192,32 +197,108 @@ def _compare(args: argparse.Namespace) -> int:
     return 0
 
 
+def _resolved_path(clip: catalogue.CatalogueClip, *, verify: bool) -> tuple[str, str]:
+    """``(path, error)`` — resolution failure is reported, never raised past the caller."""
+    try:
+        return str(clip.locate(verify=verify)), ""
+    except FilmAnalysisError as error:
+        return "", str(error)
+
+
 def _catalogue(args: argparse.Namespace) -> int:
     cat = catalogue.bundled()
+    counts = cat.counts()
+
+    # Every response carries the catalogue identity. The skin labels will change when face
+    # detection lands, so a consumer that does not record which version it queried cannot tell
+    # two incomparable result sets apart.
+    identity = {
+        "catalogue_id": cat.catalogue_id,
+        "generated": cat.generated,
+        "clip_count": len(cat),
+    }
+
     if not args.category:
-        counts = cat.counts()
-        print(f"{cat.catalogue_id}: {len(cat)} clips, {cat.camera.get('model', '?')}")
+        empty = [name for name, count in counts.items() if count == 0]
+        if args.json:
+            print(
+                io.json_text(
+                    {
+                        **identity,
+                        "camera": dict(cat.camera),
+                        "decode": dict(cat.decode),
+                        "categories": [
+                            {**dict(entry), "count": counts.get(name, 0)}
+                            for name, entry in cat.categories.items()
+                        ],
+                        "empty_categories": empty,
+                        "uncategorised_count": len(cat.uncategorised()),
+                    }
+                )
+            )
+            return 0
+        print(
+            f"{cat.catalogue_id} ({cat.generated}): {len(cat)} clips, "
+            f"{cat.camera.get('model', '?')}"
+        )
         print(f"decode: {cat.decode.get('transfer')} / {cat.decode.get('primaries')}\n")
         for name, entry in cat.categories.items():
             flag = " (human-labelled)" if entry.get("human_labelled") else ""
             print(f"  {name:26s} {counts.get(name, 0):3d}{flag}")
             print(f"  {'':26s}     provokes: {entry.get('provokes', '')}")
-        empty = [name for name, count in counts.items() if count == 0]
         if empty:
             print(f"\nno material for: {', '.join(empty)} — a gap in the corpus, not a bug")
         print(f"uncategorised (ordinary material): {len(cat.uncategorised())}")
         return 0
 
     clips = cat.select(*args.category, require_all=args.all, shoot=args.shoot, limit=args.limit)
+
+    if args.json:
+        rows = []
+        for clip in clips:
+            row: dict[str, object] = {
+                "clip_id": clip.clip_id,
+                "shoot": clip.shoot,
+                "sha256": clip.sha256,
+                "byte_size": clip.byte_size,
+                "duration_s": clip.duration_s,
+                "probe_times_s": list(clip.probe_times_s),
+                "categories": list(clip.categories),
+                "notes": clip.notes,
+                "measured": dict(clip.measured),
+            }
+            if args.paths:
+                path, error = _resolved_path(clip, verify=args.verify)
+                row["path"] = path
+                if error:
+                    row["unresolved"] = error
+            rows.append(row)
+        print(
+            io.json_text(
+                {
+                    **identity,
+                    "query": {
+                        "categories": list(args.category),
+                        "require_all": bool(args.all),
+                        "shoot": args.shoot,
+                        "limit": args.limit,
+                        "verified": bool(args.paths and args.verify),
+                    },
+                    "decode": dict(cat.decode),
+                    "count": len(rows),
+                    "clips": rows,
+                }
+            )
+        )
+        return 0
+
     joiner = " AND " if args.all else " OR "
     print(f"{joiner.join(args.category)} -> {len(clips)} clips")
     for clip in clips:
         line = f"  {clip.clip_id}  {clip.shoot:16s} {clip.duration_s:5.1f}s  {clip.notes}"
         if args.paths:
-            try:
-                line += f"\n      {clip.locate(verify=args.verify)}"
-            except FilmAnalysisError as error:
-                line += f"\n      UNRESOLVED: {error}"
+            path, error = _resolved_path(clip, verify=args.verify)
+            line += f"\n      {path}" if path else f"\n      UNRESOLVED: {error}"
         print(line)
     return 0
 

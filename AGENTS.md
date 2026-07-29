@@ -31,6 +31,38 @@ it, including advice here.
 - **Do not** configure a Git remote, push, or select an open-source license without user
   authorization.
 
+## Camera material comes from the catalogue, and only from the catalogue
+
+`capabilities/catalogue` is the single route to camera samples. It was rebuilt by re-measuring the
+original files; the legacy catalogues in `obs-art-plugin` — `findings/reference_camera_corpus/`
+and `findings/reference_slog3_source_intake/` — are superseded and must not be read, imported, or
+mirrored. They went through several generations, together covered only 74 of 105 clips, and the
+older one has no content hashes at all.
+
+```python
+from film_analysis_tools.capabilities import catalogue
+
+cat = catalogue.bundled()
+for clip in cat.select("deep_underexposure", "saturated_practical", require_all=True):
+    path = clip.locate()  # verified against its content hash
+```
+
+Other repositories and other agents consume it through the CLI rather than by importing:
+`film-analysis catalogue <categories> --paths --verify --json`. That keeps the contract about
+behaviour rather than code, and works from `obs-art-plugin` — which must not grow its own copy.
+
+When working on it:
+
+- **Never copy the manifest into another repository.** One source of truth. A duplicated
+  catalogue drifts, and drift across generations is the exact problem this replaced.
+- **A new category must name the failure it provokes**, not just describe a scene, and its
+  threshold must be chosen *after* looking at the measured distribution. Absolute thresholds
+  guessed in advance have failed here three times — see `docs/camera-corpus-recovery.md` §4.
+- **Keep `human_labelled` honest.** Face presence is a human label until `capabilities/detect`
+  exists. Anything not decided by measurement says so in the manifest.
+- **Bump nothing silently.** Consumers record `catalogue_id` and `generated`; changing labels
+  without changing those makes two incomparable result sets look comparable.
+
 ## Before you open a change
 
 ```sh

@@ -188,3 +188,65 @@ def test_locate_finds_a_clip_by_content_when_the_path_hint_is_stale(tmp_path: Pa
         categories=(),
     )
     assert clip.locate(roots=[tmp_path]) == moved
+
+
+# ------------------------------------------------------- the cross-repo JSON contract
+
+
+def test_json_taxonomy_output_is_parseable_and_carries_identity() -> None:
+    """Other repos consume the catalogue through this, so its shape is a contract."""
+    import io as _io
+    import json
+    from contextlib import redirect_stdout
+
+    from film_analysis_tools.cli import main
+
+    buffer = _io.StringIO()
+    with redirect_stdout(buffer):
+        assert main(["catalogue", "--json"]) == 0
+    payload = json.loads(buffer.getvalue())
+
+    assert payload["catalogue_id"]
+    assert payload["generated"], "consumers need the version to tell result sets apart"
+    assert payload["clip_count"] == 105
+    assert payload["decode"]["transfer"] == "slog3_to_linear"
+    assert {entry["id"] for entry in payload["categories"]} == USER_REQUESTED
+    assert all("count" in entry for entry in payload["categories"])
+    assert "skin_green" in payload["empty_categories"]
+
+
+def test_json_query_output_reports_the_query_it_answered() -> None:
+    import io as _io
+    import json
+    from contextlib import redirect_stdout
+
+    from film_analysis_tools.cli import main
+
+    buffer = _io.StringIO()
+    with redirect_stdout(buffer):
+        assert (
+            main(["catalogue", "deep_underexposure", "saturated_practical", "--all", "--json"]) == 0
+        )
+    payload = json.loads(buffer.getvalue())
+
+    assert payload["query"]["require_all"] is True
+    assert payload["query"]["categories"] == ["deep_underexposure", "saturated_practical"]
+    assert payload["count"] == len(payload["clips"])
+    for clip in payload["clips"]:
+        assert len(clip["sha256"]) == 64
+        assert {"deep_underexposure", "saturated_practical"} <= set(clip["categories"])
+
+
+def test_json_output_never_contains_non_finite_tokens() -> None:
+    """Measured values are embedded, so the strict-JSON guarantee has to hold here too."""
+    import io as _io
+    from contextlib import redirect_stdout
+
+    from film_analysis_tools.cli import main
+
+    buffer = _io.StringIO()
+    with redirect_stdout(buffer):
+        main(["catalogue", "motion_or_noise", "--json"])
+    text = buffer.getvalue()
+    assert "NaN" not in text
+    assert "Infinity" not in text

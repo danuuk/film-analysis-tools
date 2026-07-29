@@ -93,6 +93,18 @@ def write_json(path: Path, payload: Any) -> None:
     _atomic_write_bytes(path, (text + "\n").encode("utf-8"))
 
 
+def json_text(payload: Any, *, indent: int | None = JSON_INDENT) -> str:
+    """Serialise to a JSON string with the same guarantees as :func:`write_json`.
+
+    Shared so that anything printing JSON — the CLI included — cannot reintroduce the bare
+    ``NaN`` tokens that :func:`write_json` exists to prevent.
+    """
+    try:
+        return json.dumps(_normalise(payload), indent=indent, ensure_ascii=False, allow_nan=False)
+    except (TypeError, ValueError) as exc:
+        raise DataError(f"cannot serialise payload: {exc}") from exc
+
+
 def _normalise(value: Any) -> Any:
     """Convert a payload into strictly JSON-representable values.
 
@@ -251,6 +263,7 @@ __all__ = [
     "as_int",
     "coerce_scalar",
     "iter_json_lines",
+    "json_text",
     "read_arrays",
     "read_csv",
     "read_json",
