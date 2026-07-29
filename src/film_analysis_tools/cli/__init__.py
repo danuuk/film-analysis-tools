@@ -16,7 +16,7 @@ from film_analysis_tools.capabilities import report, sample
 from film_analysis_tools.capabilities.colour import metrics, transforms
 from film_analysis_tools.capabilities.sample import cohorts as cohorts_module
 from film_analysis_tools.capabilities.statistics import compare_cohorts
-from film_analysis_tools.core import FilmAnalysisError, Tier, Workspace
+from film_analysis_tools.core import FilmAnalysisError, Tier, Workspace, io
 
 DEFAULT_COHORTS = "neutral,skin_like,foliage_like,shadows,highlights"
 
@@ -31,6 +31,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--workspace",
         default=None,
         help="dataset root; defaults to the FILM_ANALYSIS_WORKSPACE environment variable",
+    )
+    parser.add_argument(
+        "--output",
+        default=None,
+        help="result root; defaults to FILM_ANALYSIS_OUTPUT, else ./results",
     )
     parser.set_defaults(handler=None)
 
@@ -59,13 +64,19 @@ def build_parser() -> argparse.ArgumentParser:
     comparison.add_argument("--cohorts", default=DEFAULT_COHORTS)
     comparison.add_argument("--resamples", type=int, default=200)
     comparison.add_argument("--seed", type=int, default=0)
+    comparison.add_argument(
+        "--save",
+        default=None,
+        metavar="NAME",
+        help="also write summary.json and comparisons.csv under the result root",
+    )
     comparison.set_defaults(handler=_compare)
 
     return parser
 
 
 def _workspace(args: argparse.Namespace) -> Workspace:
-    return Workspace.from_env(args.workspace)
+    return Workspace.from_env(args.workspace, args.output)
 
 
 def _packs(args: argparse.Namespace) -> int:
@@ -111,6 +122,26 @@ def _compare(args: argparse.Namespace) -> int:
     )
     title = f"{args.pack}: {args.baseline} -> {args.candidate}"
     print(report.format_comparisons(results, title=title))
+
+    if args.save:
+        records = [result.as_record() for result in results]
+        io.write_csv(workspace.output(args.save, "comparisons.csv"), records)
+        io.write_json(
+            workspace.output(args.save, "summary.json"),
+            {
+                "pack": args.pack,
+                "baseline": args.baseline,
+                "candidate": args.candidate,
+                "metric": args.metric,
+                "cohorts": list(selected),
+                "tier": Tier.COMPARISON.value,
+                "resamples": args.resamples,
+                "seed": args.seed,
+                "workspace": workspace.describe(),
+                "results": records,
+            },
+        )
+        print(f"\nwrote {workspace.output(args.save, 'summary.json', create=False).parent}")
     return 0
 
 

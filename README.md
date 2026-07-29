@@ -71,6 +71,17 @@ accumulated in its previous life.
 
 ## Status
 
+**P3 — core foundation.** Typed IO that raises instead of exiting, writes atomically, and never
+coerces silently; a `Workspace` with separate read and write roots, so results are addressed by
+name and nothing writes into the corpus. Two defects found by having built P1 first: the
+permutation null allocated the full `resamples × n` matrix and peaked at **1.25 GB** on a
+260k-row cohort — now batched to a budget, **189 MB and flat**, with bit-identical results — and
+non-finite metrics were written as bare `NaN`, which is invalid JSON that Python reads back
+happily and other parsers reject.
+
+Parallel and native-thread control was deliberately not built; there is nothing to parallelise
+yet, and the reasoning is recorded in `core/__init__.py` and the plan.
+
 **P2 — triage complete.** [`ledger.toml`](ledger.toml) carries the disposition of all 218 legacy
 modules with the reason for each: **keep 126** (145,786 LOC), **archive 56** (58,685),
 **plugin 22** (27,867), **remove 14** (814). CI checks that every module is claimed exactly once,

@@ -466,9 +466,24 @@ One exception is pulled forward: the `campaign.joint` archaeology (8 modules, ze
 documentation), because that reasoning is perishable in a way the rest is not.
 
 **P3 — Core foundation.** Harden what P1 established: `errors`, typed IO (replacing
-`core.contract`, in-degree 153), `Workspace` (replacing 90 hardcoded paths + 39 `parents[N]`),
-parallel/thread control (`core/native_threads.py`, in-degree 44 — BLAS threads, unrelated to OBS
-"native"). Shaped by what P1 actually needed rather than guessed upfront.
+`core.contract`, in-degree 153), and `Workspace` gaining a **write root** — the concrete
+replacement for 90 hardcoded `findings/…` literals and 39 `parents[N]` root-walks. Read and
+write roots are separate so nothing writes into the corpus.
+
+**Parallel/thread control was deliberately not built.** The legacy equivalent
+(`core/native_threads.py`, in-degree 44) capped BLAS threads by setting environment variables at
+*module import time*, which only works before NumPy is imported — a global side effect that is
+part of why those modules could not be used as libraries. There is nothing to parallelise here
+yet, so a worker pool would be speculation (§2.2). When a parallel workload arrives, the
+environment capping belongs in `cli` as a pre-import concern and worker-plan resolution belongs
+in `core` as a pure function.
+
+What P1 *did* turn up, which no upfront design would have: the permutation null allocated the
+whole `resamples × n` matrix, peaking at **1.25 GB** on a 260k-row cohort and growing linearly
+with the corpus. Resampling is now batched to a memory budget — 189 MB and flat — and because a
+batched draw consumes the generator in the same order, results are bit-identical. Writing
+non-finite metrics as JSON was also emitting bare `NaN` tokens, which Python reads back happily
+and stricter parsers reject; they are now `null`.
 
 **P4 — Controls and tiers.** Promote the scattered null/baseline/holdout/perturbation code to
 first-class `capabilities/statistics/`. Implement the tier ladder and rule 7. Permutation/null

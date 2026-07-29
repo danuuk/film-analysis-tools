@@ -11,13 +11,13 @@ pixel it came from. That is the property the legacy extract-and-store approach l
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
 from film_analysis_tools.capabilities.sample.table import SampleTable
+from film_analysis_tools.core import io
 from film_analysis_tools.core.errors import DataError
 from film_analysis_tools.core.workspace import Workspace
 
@@ -68,11 +68,7 @@ def load_pack(
 
 
 def _load_scene(path: Path) -> dict[str, np.ndarray]:
-    try:
-        with np.load(path, allow_pickle=False) as handle:
-            return {key: handle[key] for key in handle.files}
-    except (OSError, ValueError) as exc:
-        raise DataError(f"cannot read scene samples at {path}: {exc}") from exc
+    return io.read_arrays(path)
 
 
 def pack_manifest(name: str, *, workspace: Workspace) -> dict[str, Any]:
@@ -80,13 +76,7 @@ def pack_manifest(name: str, *, workspace: Workspace) -> dict[str, Any]:
     path = workspace.resolve(name) / MANIFEST_NAME
     if not path.is_file():
         return {}
-    try:
-        loaded: Any = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise DataError(f"cannot read manifest at {path}: {exc}") from exc
-    if not isinstance(loaded, dict):
-        raise DataError(f"manifest at {path} is not an object")
-    return loaded
+    return io.read_json(path)
 
 
 def describe_pack(name: str, *, workspace: Workspace) -> dict[str, Any]:

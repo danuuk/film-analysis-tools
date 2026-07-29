@@ -18,6 +18,12 @@ import numpy as np
 
 DEFAULT_RESAMPLES = 200
 
+#: Peak working-set budget for the resampling matrix, in bytes. Resamples are drawn in
+#: batches sized to fit, so memory is bounded by this rather than by ``resamples x n``.
+#: Drawing in batches consumes the generator in exactly the same order as one large draw,
+#: so results are bit-identical to the unbatched version.
+DEFAULT_MEMORY_BUDGET_BYTES = 64_000_000
+
 
 @dataclass(frozen=True)
 class NullResult:
@@ -46,12 +52,18 @@ def shuffled_labels(
     *,
     resamples: int = DEFAULT_RESAMPLES,
     seed: int = 0,
+    memory_budget_bytes: int = DEFAULT_MEMORY_BUDGET_BYTES,
 ) -> NullResult:
     """Permutation null for a paired difference, by random sign flip.
 
     ``per_sample`` holds one signed value per row (candidate minus baseline). Flipping signs
     at random is exactly the exchange of the two labels, so the resulting distribution is
     what this metric produces when the two renderings are interchangeable.
+
+    Resamples are drawn in batches sized to ``memory_budget_bytes``. Drawn in one block, a
+    260k-row cohort at 200 resamples peaks above a gigabyte and grows linearly with the
+    corpus; batching bounds it at roughly the budget while consuming the random stream in the
+    same order, so the result is unchanged.
     """
     values = np.asarray(per_sample, dtype=np.float64)
     values = values[np.isfinite(values)]
@@ -59,8 +71,16 @@ def shuffled_labels(
         return NullResult(effect=0.0, spread=0.0, p_value=1.0, resamples=0)
 
     generator = np.random.default_rng(seed)
-    signs = generator.choice(np.asarray([-1.0, 1.0]), size=(resamples, values.size))
-    effects = np.median(signs * values, axis=1)
+    pool = np.asarray([-1.0, 1.0])
+    row_bytes = max(1, values.size * values.itemsize)
+    batch = max(1, min(resamples, memory_budget_bytes // row_bytes))
+
+    effects = np.empty(resamples, dtype=np.float64)
+    for start in range(0, resamples, batch):
+        size = min(batch, resamples - start)
+        signs = generator.choice(pool, size=(size, values.size))
+        np.multiply(signs, values, out=signs)
+        effects[start : start + size] = np.median(signs, axis=1)
 
     at_least_as_extreme = int(np.count_nonzero(np.abs(effects) >= abs(observed)))
     return NullResult(

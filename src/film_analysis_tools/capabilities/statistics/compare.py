@@ -9,6 +9,7 @@ and robust-scale style already dominant in the legacy analysis (57 and 37 module
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 
@@ -74,6 +75,27 @@ class Comparison:
         if not self.is_directional:
             return "moves, no net direction"
         return "clear of null" if self.exceeds_null else "within null"
+
+    def as_record(self) -> dict[str, Any]:
+        """A flat, JSON- and CSV-friendly record. Reports the components, never a lone verdict."""
+        return {
+            "cohort": self.cohort,
+            "metric": self.metric,
+            "unit": self.unit,
+            "effect": self.effect,
+            "magnitude": self.magnitude,
+            "spread": self.spread,
+            "count": self.count,
+            "null_effect": self.null.effect,
+            "null_spread": self.null.spread,
+            "null_p_value": self.null.p_value,
+            "null_resamples": self.null.resamples,
+            "null_is_clean": self.null.is_clean,
+            "is_directional": self.is_directional,
+            "exceeds_null": self.exceeds_null,
+            "verdict": self.verdict,
+            "tier": self.tier.value,
+        }
 
     def summary(self) -> str:
         unit = f" {self.unit}" if self.unit else ""
