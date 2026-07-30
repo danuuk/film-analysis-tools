@@ -207,13 +207,29 @@ shadow/midtone/highlight windows, because nearly every scene spans a wide level 
 §2 point restated — the potential exists almost everywhere, and whether *static* windows actually
 land in each band is a window-level question that screening cannot answer.
 
+## 7.3 Correction: the screening unit is wrong
+
+`scene-extractor-reconstruction.md` traced the original extractor and found that scene detection
+under-segments badly — 21 ranges longer than 120 s hold **52.8%** of the running time, and the
+longest is 878 s. Every per-scene metric is an aggregate over such a range, so the `static_score`
+that justified a five-second sample describes 20–60× more material than was measured.
+
+The 46-of-304 result in §7.2 therefore screens the wrong objects. The criteria in §3 and §4 stand
+unchanged — they are properties of a measured *interval*, and a two-second window is one — but
+they should be applied to windows rather than detected scenes.
+
+Re-aggregating the existing per-frame survey into 2 s windows at 1 s stride yields 8,659 cut-free
+windows, of which 3,662 are stable, against the 20 seconds of material currently in use. No
+re-decoding is needed; the survey output is already on disk.
+
 ## 8. Sequencing
 
 1. ~~Add the three missing scene metrics~~ — done; see §7.1.
 2. ~~Encode §3 and §4 as a per-measurement admissibility filter~~ — done, in
    `capabilities/measure/screening.py`. See §7.2 for what running it on the real catalogue found.
-3. Encode §5 as a coverage-driven selector: choose the set that maximises band, texture and
-   position coverage subject to §6's cap, rather than taking the highest-scoring scenes.
+3. Re-aggregate the survey into fixed time windows and screen those, per §7.3 — then encode §5 as
+   a coverage-driven selector over them, maximising band, texture and position coverage subject to
+   §6's cap rather than taking the highest-scoring candidates.
 4. Report accepted, rejected and the reason for every rejection — and the unmeasured range.
 
 Step 3 is where the actual gain sits. A greedy coverage selection over 42 admissible scenes should
