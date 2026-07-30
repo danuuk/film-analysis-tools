@@ -5,7 +5,13 @@ Engine-free by construction. Nothing here needs a forward model or a reference.
 
 from __future__ import annotations
 
-from film_analysis_tools.capabilities.measure import residual, synthetic, windows
+from film_analysis_tools.capabilities.measure import (
+    chroma,
+    evidence,
+    residual,
+    synthetic,
+    windows,
+)
 from film_analysis_tools.capabilities.measure.residual import ResidualEstimate, extract
 from film_analysis_tools.capabilities.measure.synthetic import SyntheticSpec
 from film_analysis_tools.capabilities.measure.windows import (
@@ -21,6 +27,8 @@ __all__ = [
     "SyntheticSpec",
     "Window",
     "WindowGate",
+    "chroma",
+    "evidence",
     "extract",
     "residual",
     "select_windows",

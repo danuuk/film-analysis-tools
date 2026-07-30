@@ -265,6 +265,9 @@ class ResidualEstimate:
     """Largest fractional offset remaining after whole-pixel alignment."""
 
     max_integer_shift: int
+    structure_snr: float
+    """Median low-pass structure over expected low-pass grain across the pairs. 1.0 means flat."""
+
     at_bound: bool
     """A shift hit the search boundary — the window is moving more than a static window may."""
 
@@ -299,8 +302,20 @@ class ResidualEstimate:
         return not self.drifting and self.correlation_consistent
 
     @property
+    def has_alignable_structure(self) -> bool:
+        return self.structure_snr >= MIN_STRUCTURE_SNR
+
+    @property
     def drifting(self) -> bool:
-        """Whether this window should be rejected rather than measured."""
+        """Whether this window should be rejected rather than measured.
+
+        Conditional on there being structure to misalign. On a flat window the shift estimate is
+        noise-driven — including its fractional part — so treating that residue as drift would
+        reject exactly the windows best suited to measuring grain, and would mark a perfectly
+        clean measurement as untrustworthy.
+        """
+        if not self.has_alignable_structure:
+            return False
         return self.subpixel_residual > SUBPIXEL_REJECT or self.at_bound
 
     @property
@@ -322,6 +337,7 @@ class ResidualEstimate:
             "max_integer_shift": self.max_integer_shift,
             "at_bound": self.at_bound,
             "structure": self.structure,
+            "structure_snr": self.structure_snr,
             "alignment_applied": self.alignment_applied,
             "drifting": self.drifting,
             "motion_energy": self.motion_energy,
@@ -484,6 +500,9 @@ def extract(
             default=0,
         ),
         structure=float(np.mean([shift.structure for shift in all_shifts])) if all_shifts else 0.0,
+        structure_snr=(
+            float(np.median([shift.structure_snr for shift in all_shifts])) if all_shifts else 0.0
+        ),
         alignment_applied=bool(lag1_drifting),
         motion_energy=float(np.sqrt(np.mean(low_pass**2))),
         grain_hp_std=float(np.sqrt(np.mean(high_pass**2) / (2.0 * max(1.0 - rho, EPS)))),

@@ -287,9 +287,14 @@ def select_windows(
                 position=_position_of(x, y, size, width, height),
             )
 
+            # Sub-pixel drift only means something where there is structure to misalign. On a
+            # flat window the shift estimate is noise-driven, including its fractional part, and
+            # rejecting on it would discard exactly the windows best suited to measuring grain.
+            drift_is_meaningful = shift.structure_snr >= MIN_STRUCTURE_SNR
+
             if motion > gate.max_motion_energy:
                 rejected.append(Rejection(window, "motion above gate"))
-            elif window.subpixel_residual > gate.max_subpixel_residual:
+            elif drift_is_meaningful and window.subpixel_residual > gate.max_subpixel_residual:
                 rejected.append(Rejection(window, "sub-pixel drift"))
             else:
                 accepted.append(window)
