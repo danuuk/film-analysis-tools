@@ -580,6 +580,7 @@ class SourceOutcome:
     seconds: Seconds
     per_interval: tuple[IntervalEvidence, ...]
     deep: tuple[DeepProbe, ...] = ()
+    duration_vs_pooling: FrameCountComparison | None = None
     screen_anchoring: dict[str, Any] = field(default_factory=dict)
     notes: tuple[str, ...] = ()
 
@@ -667,13 +668,14 @@ class SourceOutcome:
         return identified, trusted, total
 
     def saturated_points(self) -> int:
-        return sum(
-            1
-            for one in self.per_interval
-            if one.amplitude
-            for point in one.amplitude.trusted
-            if abs(point.rho) >= residual.RHO_BOUND - 1e-9
-        )
+        """Saturated points over **all** points, not within the trusted set.
+
+        Counting inside ``trusted`` is zero by construction, because a saturated estimate can
+        never be trusted — the same by-construction error as ``trusted_fraction``. The rerun has
+        25 saturated points rejected and 0 accepted, which the previous report rendered as "0
+        rejected at the rho bound".
+        """
+        return sum(len(one.amplitude.saturated) for one in self.per_interval if one.amplitude)
 
     def as_record(self) -> dict[str, Any]:
         identified, trusted, total = self.trusted_points()
@@ -712,6 +714,9 @@ class SourceOutcome:
             },
             "per_interval": [one.as_record() for one in self.per_interval],
             "deep_probes": [one.as_record() for one in self.deep],
+            "duration_vs_pooling": (
+                self.duration_vs_pooling.as_record() if self.duration_vs_pooling else None
+            ),
             "screen_anchoring": self.screen_anchoring,
             "notes": list(self.notes),
         }
@@ -738,8 +743,10 @@ class TailDiagnostics:
     * **genuinely non-Gaussian grain** — what is left after the other three are accounted for.
 
     ``kurtosis_normalised`` is the one that answers "after accounting for its changing strength,
-    what shape does this residual have": each window is divided by its own robust scale before
-    pooling, so mixing cannot contribute.
+    what shape does this residual have": each window is standardised to zero mean and unit
+    variance before pooling, so amplitude differences cannot contribute at all.
+    ``kurtosis_per_window`` — each window on its own — is often the clearer statement of the same
+    thing, and does not depend on the pooling working.
     """
 
     kurtosis_pooled: float
@@ -789,18 +796,23 @@ def _skew(values: np.ndarray) -> float:
 
 
 def _robust_scale(values: np.ndarray) -> float:
-    """1.4826 x MAD, with a floor at a fraction of the standard deviation.
-
-    MAD collapses toward zero on a zero-inflated window — where a third of pixels do not change
-    between frames, the median absolute deviation can be a single quantisation step or less.
-    Dividing by that *amplifies* the tails instead of removing the scale, which is exactly what
-    happened on Pulp Fiction: per-window normalisation reported a median excess kurtosis of
-    +1481 against +24.8 pooled. The floor keeps the normalisation a scale correction rather than
-    an outlier magnifier.
-    """
+    """1.4826 x MAD — a robust *tail magnitude*, reported separately from standardisation."""
     median = float(np.median(values))
-    mad = float(1.4826 * np.median(np.abs(values - median)))
-    return max(mad, 0.25 * float(np.std(values)))
+    return float(1.4826 * np.median(np.abs(values - median)))
+
+
+def _standardise(values: np.ndarray) -> np.ndarray:
+    """``(r - mean) / std``, so the window contributes exactly unit variance.
+
+    This is what "per-window scale removed" has to mean. A MAD-based scale — even floored — does
+    not standardise variance: a zero-inflated window came out with a normalised standard
+    deviation near 4 while a clean one came out near 1, so pooling them reintroduced the scale
+    mixing the metric claimed to remove. That is why Pulp's "normalised" kurtosis read +173
+    against +24.8 pooled, which is the wrong direction for a mixing correction.
+    """
+    centred = values - values.mean()
+    scale = float(np.std(centred))
+    return centred / scale if scale > 1e-15 else centred
 
 
 def tail_diagnostics(
@@ -823,11 +835,7 @@ def tail_diagnostics(
     )
 
     normalised = np.concatenate(
-        [
-            (stack / scale).ravel()
-            for stack, scale in ((s, _robust_scale(s.ravel())) for s in stacks)
-            if scale > 1e-15
-        ]
+        [_standardise(stack.ravel()) for stack in stacks if float(np.std(stack)) > 1e-15]
         or [np.zeros(1)]
     )
 
@@ -885,7 +893,16 @@ class DeepProbe:
     rho_from_lag4: float
     identified: bool
     trustworthy: bool
+    trust_reasons: tuple[str, ...]
+    """Why the estimate is not trustworthy. Empty when it is.
+
+    Printed, not merely stored: the previous report showed "identified" and omitted trust
+    entirely, so five of six probes that had **failed** the drift gate were presented as accepted
+    measurements.
+    """
+
     tails: TailDiagnostics
+    zeros: ZeroInflation | None = None
 
     def as_record(self) -> dict[str, Any]:
         return {
@@ -900,18 +917,22 @@ class DeepProbe:
             "rho_from_lag4": self.rho_from_lag4,
             "parameter_identified": self.identified,
             "trustworthy": self.trustworthy,
+            "trust_reasons": list(self.trust_reasons),
             "tails": self.tails.as_record(),
+            "zeros": self.zeros.as_record() if self.zeros else None,
         }
 
     def line(self) -> str:
-        flag = "identified" if self.identified else "SATURATED"
-        return (
+        verdict = "TRUSTED" if self.trustworthy else "rejected"
+        head = (
             f"    t={self.interval_start_s:7.0f}s ({self.x},{self.y})  {self.frames}f  "
-            f"level {self.level:.4f}  sigma {self.sigma:.5f}  rho {self.rho:+.3f} "
-            f"(raw {self.raw_rho:+.3f}, {flag})  kurt {self.tails.kurtosis_pooled:+.1f} -> "
-            f"{self.tails.kurtosis_normalised:+.1f} norm  zeros "
-            f"{self.tails.exact_zero_fraction:.1%}"
+            f"level {self.level:.4f}  sigma {self.sigma:.5f}  rho {self.rho:+.3f}  "
+            f"kurt {self.tails.kurtosis_pooled:+.1f}  zeros "
+            f"{self.tails.exact_zero_fraction:.1%}   [{verdict}]"
         )
+        if self.trust_reasons:
+            head += "\n        " + "; ".join(self.trust_reasons)
+        return head
 
 
 def decode_tile(
@@ -962,11 +983,24 @@ def deep_probe(
     crop: Crop,
     interval: iv.Interval,
     window: windows.Window,
-) -> DeepProbe:
-    """Follow one tile for ``plan.deep_frames`` frames and re-ask the temporal question."""
+) -> tuple[DeepProbe, np.ndarray]:
+    """Follow one tile for ``plan.deep_frames`` frames and re-ask the temporal question.
+
+    Returns the probe and the decoded linear tile, so the duration-versus-pooling comparison can
+    reuse the same pixels rather than decoding them again.
+    """
     container = decode_tile(plan, stream, crop, window, interval.start_s, plan.deep_frames)
     linear = to_linear(plan, container)
     estimate = residual.extract(linear)
+    reasons: list[str] = []
+    if estimate.drifting:
+        reasons.append(f"drifting: sub-pixel residual {estimate.subpixel_residual:.3f}")
+    if estimate.rho_saturated:
+        reasons.append(f"rho saturated at the clamp (raw {estimate.raw_rho:+.3f})")
+    elif not estimate.correlation_consistent:
+        reasons.append(f"lag-4 disagrees: rho {estimate.rho:+.3f} vs {estimate.rho_from_lag4:+.3f}")
+    if estimate.at_bound:
+        reasons.append("a shift hit the search boundary")
     whole = windows.Window(
         x=0,
         y=0,
@@ -979,7 +1013,7 @@ def deep_probe(
         texture=window.texture,
         position=window.position,
     )
-    return DeepProbe(
+    probe_record = DeepProbe(
         interval_start_s=interval.start_s,
         x=window.x,
         y=window.y,
@@ -993,7 +1027,204 @@ def deep_probe(
         rho_from_lag4=estimate.rho_from_lag4,
         identified=estimate.parameter_identified,
         trustworthy=estimate.correlation_trustworthy,
+        trust_reasons=tuple(reasons),
         tails=tail_diagnostics(linear, container, [whole]),
+        zeros=zero_inflation(_centre_128(container)),
+    )
+    return probe_record, linear
+
+
+# ------------------------------------------- duration versus pooling, held apart
+
+
+@dataclass(frozen=True)
+class FrameCountComparison:
+    """A 2x2 that separates sequence length from tile pooling.
+
+    The wide/deep comparison changed four things at once — 10 frames to 60, many tiles to one,
+    all accepted tiles to the lowest-motion ones, and a 128 px tile to a 160 px decode including
+    the alignment margin. "Short sequences explain the rest" was therefore not an experimental
+    result. This runs the same tiles four ways, on the exact central 128x128 crop in every cell,
+    so only one factor changes at a time.
+
+    ``a`` first 10 frames, single tile      ``b`` all frames, single tile
+    ``c`` first 10 frames, tiles pooled     ``d`` all frames, tiles pooled
+    """
+
+    a_short_single: Spread
+    b_long_single: Spread
+    c_short_pooled: float
+    d_long_pooled: float
+    frames_short: int
+    frames_long: int
+    tiles: int
+
+    @property
+    def duration_effect(self) -> float:
+        """Change in single-tile kurtosis from lengthening the sequence."""
+        return self.b_long_single.median - self.a_short_single.median
+
+    @property
+    def pooling_effect(self) -> float:
+        """Change in kurtosis from pooling tiles, at the long duration."""
+        return self.d_long_pooled - self.b_long_single.median
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "a_short_single": self.a_short_single.as_record(),
+            "b_long_single": self.b_long_single.as_record(),
+            "c_short_pooled": self.c_short_pooled,
+            "d_long_pooled": self.d_long_pooled,
+            "frames_short": self.frames_short,
+            "frames_long": self.frames_long,
+            "tiles": self.tiles,
+            "duration_effect": self.duration_effect,
+            "pooling_effect": self.pooling_effect,
+        }
+
+    def lines(self) -> list[str]:
+        return [
+            f"  duration vs pooling ({self.tiles} tiles, exact central 128px, excess kurtosis):",
+            f"    A {self.frames_short:2d}f single   {self.a_short_single.line()}",
+            f"    B {self.frames_long:2d}f single   {self.b_long_single.line()}",
+            f"    C {self.frames_short:2d}f pooled   {self.c_short_pooled:+.2f}",
+            f"    D {self.frames_long:2d}f pooled   {self.d_long_pooled:+.2f}",
+            f"    duration effect (B-A) {self.duration_effect:+.2f}   "
+            f"pooling effect (D-B) {self.pooling_effect:+.2f}",
+        ]
+
+
+def _centre_128(stack: np.ndarray, size: int = 128) -> np.ndarray:
+    """The exact central tile, so the alignment margin is decoded but never measured."""
+    top = (stack.shape[1] - size) // 2
+    left = (stack.shape[2] - size) // 2
+    if top < 0 or left < 0:
+        return stack
+    return stack[:, top : top + size, left : left + size]
+
+
+def _pooled_kurtosis(stacks: Sequence[np.ndarray]) -> float:
+    residuals = [residual.aligned_residuals(one).ravel() for one in stacks]
+    return _excess_kurtosis(np.concatenate(residuals)) if residuals else 0.0
+
+
+def frame_count_comparison(tiles: Sequence[np.ndarray], *, short: int = 10) -> FrameCountComparison:
+    """Run the same tiles at two durations, singly and pooled."""
+    cropped = [_centre_128(one) for one in tiles]
+    long_frames = min(one.shape[0] for one in cropped)
+    return FrameCountComparison(
+        a_short_single=Spread(tuple(_pooled_kurtosis([one[:short]]) for one in cropped)),
+        b_long_single=Spread(tuple(_pooled_kurtosis([one]) for one in cropped)),
+        c_short_pooled=_pooled_kurtosis([one[:short] for one in cropped]),
+        d_long_pooled=_pooled_kurtosis(cropped),
+        frames_short=short,
+        frames_long=long_frames,
+        tiles=len(cropped),
+    )
+
+
+# ------------------------------------------------------------- zero inflation
+
+
+@dataclass(frozen=True)
+class ZeroInflation:
+    """Where the unchanged pixels are, which says what put them there.
+
+    28-34% of Sony pixels do not change between frames against ~3% on Pulp Fiction, and the
+    candidate causes leave different fingerprints:
+
+    * **codec block freezing** — zeros clump into the coder's block grid, so the per-block zero
+      fraction is bimodal and aligned to 8 or 16 px.
+    * **temporal noise reduction** — zeros are spread evenly, correlate with *low local texture*,
+      and persist as long runs at the same pixel.
+    * **quantisation of a dark signal** — zeros concentrate at low code levels and the non-zero
+      transitions are dominated by +/-1.
+    """
+
+    zero_fraction: float
+    by_level: dict[str, float]
+    """Zero fraction within each quintile of local code level."""
+
+    by_texture: dict[str, float]
+    """Zero fraction in the flattest and most textured thirds of the tile."""
+
+    block_bimodality: float
+    """Share of 16px blocks that are almost entirely frozen or almost entirely live."""
+
+    max_run_share: float
+    """Share of pixels whose longest unchanged run covers most of the sequence."""
+
+    step_occupancy: dict[str, float]
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "zero_fraction": self.zero_fraction,
+            "by_level": self.by_level,
+            "by_texture": self.by_texture,
+            "block_bimodality": self.block_bimodality,
+            "max_run_share": self.max_run_share,
+            "step_occupancy": self.step_occupancy,
+        }
+
+    def lines(self) -> list[str]:
+        return [
+            f"  zero inflation: {self.zero_fraction:.1%} of frame-to-frame steps are exactly zero",
+            "    by level   : " + ", ".join(f"{k} {v:.1%}" for k, v in self.by_level.items()),
+            "    by texture : " + ", ".join(f"{k} {v:.1%}" for k, v in self.by_texture.items()),
+            f"    16px blocks almost all-frozen or all-live: {self.block_bimodality:.1%}"
+            f"   long unchanged runs: {self.max_run_share:.1%}",
+            "    steps      : " + ", ".join(f"{k}:{v:.1%}" for k, v in self.step_occupancy.items()),
+        ]
+
+
+def zero_inflation(container: np.ndarray, *, block: int = 16) -> ZeroInflation:
+    """Decompose the exactly-unchanged pixels by level, texture, block geometry and run length."""
+    code = container * 1023.0
+    steps = np.rint(np.diff(code, axis=0))
+    zero = steps == 0.0
+
+    level = code[:-1]
+    edges = np.quantile(level, np.linspace(0.0, 1.0, 6))
+    by_level: dict[str, float] = {}
+    for index in range(5):
+        low, high = edges[index], edges[index + 1]
+        mask = (level >= low) & (level <= high if index == 4 else level < high)
+        if mask.any():
+            by_level[f"q{index + 1}"] = float(zero[mask].mean())
+
+    # Local texture from the spatial gradient of the first frame.
+    rows = np.abs(np.diff(code[0], axis=0, prepend=code[0][:1]))
+    flat_mask = rows < np.quantile(rows, 1 / 3)
+    rough_mask = rows > np.quantile(rows, 2 / 3)
+    by_texture = {
+        "flattest third": float(zero[:, flat_mask].mean()) if flat_mask.any() else 0.0,
+        "roughest third": float(zero[:, rough_mask].mean()) if rough_mask.any() else 0.0,
+    }
+
+    height = zero.shape[1] // block * block
+    width = zero.shape[2] // block * block
+    tiles = zero[:, :height, :width].reshape(zero.shape[0], height // block, block, -1, block)
+    per_block = tiles.mean(axis=(0, 2, 4))
+    bimodal = float(np.mean((per_block > 0.9) | (per_block < 0.1)))
+
+    runs = zero.astype(np.int8)
+    longest = np.zeros(runs.shape[1:], dtype=np.int32)
+    current = np.zeros(runs.shape[1:], dtype=np.int32)
+    for frame in runs:
+        current = (current + 1) * frame
+        longest = np.maximum(longest, current)
+    max_run_share = float(np.mean(longest >= max(1, int(0.8 * runs.shape[0]))))
+
+    occupancy = {
+        str(int(step)): float(np.mean(steps == step)) for step in (-2.0, -1.0, 0.0, 1.0, 2.0)
+    }
+    return ZeroInflation(
+        zero_fraction=float(zero.mean()),
+        by_level=by_level,
+        by_texture=by_texture,
+        block_bimodality=bimodal,
+        max_run_share=max_run_share,
+        step_occupancy=occupancy,
     )
 
 
@@ -1222,16 +1453,24 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
 
     # Follow a few tiles for much longer. Ten frames gives nine difference pairs, which is why so
     # many correlation estimates ran to the clamp; deep_frames gives an actually constrained one.
+    # One tile per interval, spread across the film rather than two from whichever interval came
+    # first: three tiles from one scene answer a narrower question than three from three scenes.
     deep: list[DeepProbe] = []
-    candidates: list[tuple[iv.Interval, windows.Window]] = []
-    for interval, _, _, accepted in measurable:
-        ranked = sorted(accepted, key=lambda w: w.motion_energy)
-        candidates.extend((interval, window) for window in ranked[:2])
-    for interval, window in candidates[: plan.deep_tiles]:
+    deep_stacks: list[np.ndarray] = []
+    candidates = [
+        (interval, min(accepted, key=lambda w: w.motion_energy))
+        for interval, _, _, accepted in measurable
+        if accepted
+    ]
+    step = max(1, len(candidates) // max(plan.deep_tiles, 1))
+    for interval, window in candidates[::step][: plan.deep_tiles]:
         try:
-            deep.append(deep_probe(plan, stream, active, interval, window))
+            probe_record, stack = deep_probe(plan, stream, active, interval, window)
         except DataError as error:
             notes.append(f"deep probe skipped: {error}")
+            continue
+        deep.append(probe_record)
+        deep_stacks.append(stack)
 
     return SourceOutcome(
         plan=plan,
@@ -1241,6 +1480,11 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
         seconds=Seconds(candidate=candidate_s, decoded=decoded_s, evidence=evidence_s),
         per_interval=tuple(per_interval),
         deep=tuple(deep),
+        duration_vs_pooling=(
+            frame_count_comparison(deep_stacks, short=plan.frames_per_interval)
+            if len(deep_stacks) >= 2
+            else None
+        ),
         screen_anchoring=_screen_anchoring(measurable),
         notes=tuple(notes),
     )
@@ -1407,7 +1651,7 @@ def report(result: StudyResult) -> str:
                 f"    rho          {outcome.rho().line()}",
                 f"    envelope     {outcome.envelope().line()}",
                 f"    amplitude    {identified} identified / {trusted} trustworthy / {total} "
-                f"points   ({outcome.saturated_points()} rejected at the rho bound)",
+                f"points   ({outcome.saturated_points()} saturated, all rejected)",
             ]
             routed = [
                 f"{one.flat_windows}f/{one.unclipped_windows}u/{one.trustworthy_windows}t "
@@ -1424,6 +1668,12 @@ def report(result: StudyResult) -> str:
         if outcome.deep:
             lines.append(f"  deep probe ({outcome.deep[0].frames} frames per tile):")
             lines += [one.line() for one in outcome.deep]
+            worst = max(outcome.deep, key=lambda one: one.zeros.zero_fraction if one.zeros else 0.0)
+            if worst.zeros and worst.zeros.zero_fraction > 0.10:
+                lines += worst.zeros.lines()
+
+        if outcome.duration_vs_pooling:
+            lines += outcome.duration_vs_pooling.lines()
 
         anchoring = outcome.screen_anchoring
         if anchoring.get("available"):
@@ -1471,6 +1721,7 @@ __all__ = [
     "MAX_WINDOW_CLIPPED",
     "MIN_ANCHOR_SEPARATION_S",
     "DeepProbe",
+    "FrameCountComparison",
     "IntervalEvidence",
     "Seconds",
     "SourceOutcome",
@@ -1479,10 +1730,12 @@ __all__ = [
     "StageCount",
     "StudyResult",
     "TailDiagnostics",
+    "ZeroInflation",
     "decode_signal",
     "decode_tile",
     "deep_probe",
     "detect_crop",
+    "frame_count_comparison",
     "load_survey",
     "probe",
     "report",
@@ -1493,4 +1746,5 @@ __all__ = [
     "tail_diagnostics",
     "to_linear",
     "write_outputs",
+    "zero_inflation",
 ]

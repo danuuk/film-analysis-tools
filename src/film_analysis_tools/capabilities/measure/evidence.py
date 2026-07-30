@@ -59,6 +59,12 @@ class AmplitudePoint:
     trustworthy: bool
     sample_count: int
     band: str
+    raw_rho: float = 0.0
+    """The unclamped correlation solution. Kept so a rejected point can say how far outside the
+    model it fell, rather than only that it was rejected."""
+
+    identified: bool = True
+    """False when the correlation sat on the clamp and was therefore never determined."""
 
 
 @dataclass(frozen=True)
@@ -70,6 +76,16 @@ class AmplitudeEvidence:
     @property
     def trusted(self) -> tuple[AmplitudePoint, ...]:
         return tuple(point for point in self.points if point.trustworthy)
+
+    @property
+    def saturated(self) -> tuple[AmplitudePoint, ...]:
+        """Points whose correlation was never identified, over **all** points.
+
+        Counted here rather than inside :attr:`trusted`: a saturated estimate can never be
+        trusted, so counting saturation within the trusted set is zero by construction — which is
+        exactly what the study reported before this existed.
+        """
+        return tuple(point for point in self.points if not point.identified)
 
     def level_range(self) -> tuple[float, float]:
         if not self.points:
@@ -83,6 +99,7 @@ class AmplitudeEvidence:
             "evidence": "amplitude_vs_level",
             "point_count": len(self.points),
             "trusted_count": len(self.trusted),
+            "saturated_count": len(self.saturated),
             "level_min": low,
             "level_max": high,
             "points": [
@@ -91,6 +108,8 @@ class AmplitudeEvidence:
                     "sigma": point.sigma,
                     "rho": point.rho,
                     "trustworthy": point.trustworthy,
+                    "identified": point.identified,
+                    "raw_rho": point.raw_rho,
                     "sample_count": point.sample_count,
                     "band": point.band,
                 }
@@ -114,6 +133,8 @@ def amplitude_evidence(
                 trustworthy=estimate.correlation_trustworthy,
                 sample_count=estimate.sample_count,
                 band=window.band,
+                raw_rho=estimate.raw_rho,
+                identified=estimate.parameter_identified,
             )
         )
     return AmplitudeEvidence(points=tuple(points))

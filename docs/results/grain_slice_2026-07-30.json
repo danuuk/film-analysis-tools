@@ -128,7 +128,7 @@
         "identified": 1,
         "trustworthy": 1,
         "total": 267,
-        "saturated_rho": 0
+        "saturated_rho": 3
       },
       "aggregate": {
         "raw_sigma": {
@@ -199,17 +199,17 @@
           ]
         },
         "kurtosis_normalised": {
-          "median": 172.83604707950076,
-          "min": 32.281363737262836,
-          "max": 520.2774762272996,
+          "median": 23.81370778348436,
+          "min": 6.912257438816155,
+          "max": 53.73993384214981,
           "n": 6,
           "values": [
-            134.20567827001167,
-            252.39113086416697,
-            211.46641588898981,
-            520.2774762272996,
-            96.60120672884588,
-            32.281363737262836
+            19.18436523568171,
+            53.73993384214981,
+            6.912257438816155,
+            49.8984022502525,
+            28.443050331287015,
+            8.705754673939689
           ]
         },
         "kurtosis_trustworthy": {
@@ -280,6 +280,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 69,
             "trusted_count": 0,
+            "saturated_count": 0,
             "level_min": 0.002369084416504858,
             "level_max": 0.16623453233492697,
             "points": [
@@ -288,6 +289,8 @@
                 "sigma": 0.0004945607871968789,
                 "rho": 0.14894694801164965,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14894694801164965,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -296,6 +299,8 @@
                 "sigma": 0.0005589570654984,
                 "rho": 0.1405811794246694,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1405811794246694,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -304,6 +309,8 @@
                 "sigma": 0.0006708613418496494,
                 "rho": 0.1550950973022116,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1550950973022116,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -312,6 +319,8 @@
                 "sigma": 0.004910336529867206,
                 "rho": -0.10051204308657469,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.10051204308657469,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -320,6 +329,8 @@
                 "sigma": 0.0008986811153446345,
                 "rho": 0.24465266218811954,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.24465266218811954,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -328,6 +339,8 @@
                 "sigma": 0.0017575984023982347,
                 "rho": 0.22427370572237026,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.22427370572237026,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -336,6 +349,8 @@
                 "sigma": 0.004590671743671205,
                 "rho": 0.22888119298304943,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.22888119298304943,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -344,6 +359,8 @@
                 "sigma": 0.0017735991365808094,
                 "rho": 0.20970973317351382,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.20970973317351382,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -352,6 +369,8 @@
                 "sigma": 0.0014651333105408053,
                 "rho": 0.1481016191877269,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1481016191877269,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -360,6 +379,8 @@
                 "sigma": 0.001719778075913553,
                 "rho": 0.14075769737174415,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14075769737174415,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -368,6 +389,8 @@
                 "sigma": 0.0016247796438588836,
                 "rho": 0.15210009051210127,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15210009051210127,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -376,6 +399,8 @@
                 "sigma": 0.0031188002739291447,
                 "rho": 0.13853772852824586,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13853772852824586,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -384,6 +409,8 @@
                 "sigma": 0.0029924842655550702,
                 "rho": 0.17432018246883296,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17432018246883296,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -392,6 +419,8 @@
                 "sigma": 0.001986541805837455,
                 "rho": 0.18992407964881441,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18992407964881441,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -400,6 +429,8 @@
                 "sigma": 0.001221941204218678,
                 "rho": 0.12950328608514883,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12950328608514883,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -408,6 +439,8 @@
                 "sigma": 0.0009013164975337106,
                 "rho": 0.15176851650602785,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15176851650602785,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -416,6 +449,8 @@
                 "sigma": 0.0009821868616840344,
                 "rho": 0.16335496031597674,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16335496031597674,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -424,6 +459,8 @@
                 "sigma": 0.0011220719949323822,
                 "rho": 0.1902896670481653,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1902896670481653,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -432,6 +469,8 @@
                 "sigma": 0.0008367596323377105,
                 "rho": 0.20091894129944343,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.20091894129944343,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -440,6 +479,8 @@
                 "sigma": 0.0013372604232313307,
                 "rho": 0.21623170877858167,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.21623170877858167,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -448,6 +489,8 @@
                 "sigma": 0.0025185197616128282,
                 "rho": 0.1875199282247617,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1875199282247617,
                 "sample_count": 129600,
                 "band": "midtone"
               },
@@ -456,6 +499,8 @@
                 "sigma": 0.002443298826416651,
                 "rho": 0.15443429746658444,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15443429746658444,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -464,6 +509,8 @@
                 "sigma": 0.002344646736085913,
                 "rho": 0.14121872649496026,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14121872649496026,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -472,6 +519,8 @@
                 "sigma": 0.0016661459466295826,
                 "rho": 0.1661391780749144,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1661391780749144,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -480,6 +529,8 @@
                 "sigma": 0.007307983046109909,
                 "rho": 0.08570596195293478,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08570596195293478,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -488,6 +539,8 @@
                 "sigma": 0.008917495144636266,
                 "rho": 0.15049100120516834,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15049100120516834,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -496,6 +549,8 @@
                 "sigma": 0.008182449062199816,
                 "rho": 0.03614410816579783,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03614410816579783,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -504,6 +559,8 @@
                 "sigma": 0.004344055904416962,
                 "rho": 0.13092307289236138,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13092307289236138,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -512,6 +569,8 @@
                 "sigma": 0.0011850517525381237,
                 "rho": 0.1366301026460468,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1366301026460468,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -520,6 +579,8 @@
                 "sigma": 0.0012454384288939737,
                 "rho": 0.16045090314759136,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16045090314759136,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -528,6 +589,8 @@
                 "sigma": 0.0014228039057644476,
                 "rho": 0.1557141645283584,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1557141645283584,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -536,6 +599,8 @@
                 "sigma": 0.0008106355055293572,
                 "rho": 0.14165072668037126,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14165072668037126,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -544,6 +609,8 @@
                 "sigma": 0.015022106370253318,
                 "rho": 0.1976209576245187,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1976209576245187,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -552,6 +619,8 @@
                 "sigma": 0.0020650221460183494,
                 "rho": 0.5493723996335653,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5493723996335653,
                 "sample_count": 129600,
                 "band": "shadow"
               },
@@ -560,6 +629,8 @@
                 "sigma": 0.00856696041977866,
                 "rho": 0.16323750927883096,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16323750927883096,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -568,6 +639,8 @@
                 "sigma": 0.006668579706800428,
                 "rho": 0.16729827583243573,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16729827583243573,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -576,6 +649,8 @@
                 "sigma": 0.0028456622501379643,
                 "rho": 0.16865980301349892,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16865980301349892,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -584,6 +659,8 @@
                 "sigma": 0.007093206090818455,
                 "rho": 0.08715585738839748,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08715585738839748,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -592,6 +669,8 @@
                 "sigma": 0.01126098121648879,
                 "rho": 0.1481976905535105,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1481976905535105,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -600,6 +679,8 @@
                 "sigma": 0.005528587026484184,
                 "rho": 0.09847329803483129,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.09847329803483129,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -608,6 +689,8 @@
                 "sigma": 0.0017614233250750802,
                 "rho": 0.14638227441329232,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14638227441329232,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -616,6 +699,8 @@
                 "sigma": 0.001552375144077255,
                 "rho": 0.1544479999220243,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1544479999220243,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -624,6 +709,8 @@
                 "sigma": 0.0015029216585114827,
                 "rho": 0.17041702726007668,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17041702726007668,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -632,6 +719,8 @@
                 "sigma": 0.006729789136874816,
                 "rho": -0.3787998105910748,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.3787998105910748,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -640,6 +729,8 @@
                 "sigma": 0.0007624019501369106,
                 "rho": 0.11600612306828872,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.11600612306828872,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -648,6 +739,8 @@
                 "sigma": 0.001596449666084914,
                 "rho": 0.4487487668814778,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4487487668814778,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -656,6 +749,8 @@
                 "sigma": 0.010922309969032939,
                 "rho": 0.16753580050267103,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16753580050267103,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -664,6 +759,8 @@
                 "sigma": 0.008492464697743549,
                 "rho": 0.15728480112895582,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15728480112895582,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -672,6 +769,8 @@
                 "sigma": 0.003025633879704529,
                 "rho": 0.15523151178873618,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15523151178873618,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -680,6 +779,8 @@
                 "sigma": 0.012359082003935703,
                 "rho": 0.05578141802979464,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05578141802979464,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -688,6 +789,8 @@
                 "sigma": 0.006579508136721416,
                 "rho": 0.11093263364967654,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.11093263364967654,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -696,6 +799,8 @@
                 "sigma": 0.012718264044961977,
                 "rho": 0.14469969093183832,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14469969093183832,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -704,6 +809,8 @@
                 "sigma": 0.00168645528330443,
                 "rho": 0.14277536929923862,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14277536929923862,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -712,6 +819,8 @@
                 "sigma": 0.002827777124015,
                 "rho": 0.1452179637009905,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1452179637009905,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -720,6 +829,8 @@
                 "sigma": 0.0027404473833222815,
                 "rho": 0.17397687465663214,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17397687465663214,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -728,6 +839,8 @@
                 "sigma": 0.010484539613525967,
                 "rho": 0.17291775677816013,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17291775677816013,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -736,6 +849,8 @@
                 "sigma": 0.009646016648547534,
                 "rho": -0.06773873444007139,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.06773873444007139,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -744,6 +859,8 @@
                 "sigma": 0.0020754930400164336,
                 "rho": 0.16964106687500036,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16964106687500036,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -752,6 +869,8 @@
                 "sigma": 0.005225726338707005,
                 "rho": 0.14520068790520746,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14520068790520746,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -760,6 +879,8 @@
                 "sigma": 0.0028915655704784093,
                 "rho": 0.130598580222417,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.130598580222417,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -768,6 +889,8 @@
                 "sigma": 0.0055500400584615976,
                 "rho": 0.18454987588384486,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18454987588384486,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -776,6 +899,8 @@
                 "sigma": 0.013491915379434045,
                 "rho": 0.4535268958532628,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4535268958532628,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -784,6 +909,8 @@
                 "sigma": 0.005525500959692471,
                 "rho": 0.18093177702122842,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18093177702122842,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -792,6 +919,8 @@
                 "sigma": 0.0015860379096888186,
                 "rho": 0.16108226879568077,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16108226879568077,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -800,6 +929,8 @@
                 "sigma": 0.0012998862880286143,
                 "rho": 0.17996207243483742,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17996207243483742,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -808,6 +939,8 @@
                 "sigma": 0.0034505279217729888,
                 "rho": 0.26226273256261656,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.26226273256261656,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -816,6 +949,8 @@
                 "sigma": 0.0052203562217193284,
                 "rho": 0.14673192399794321,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14673192399794321,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -824,6 +959,8 @@
                 "sigma": 0.00480416353073876,
                 "rho": 0.12888431282250123,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12888431282250123,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -832,6 +969,8 @@
                 "sigma": 0.0052331741596325625,
                 "rho": 0.27630470302710597,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.27630470302710597,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -861,7 +1000,7 @@
           "distribution_trustworthy": null,
           "tails": {
             "kurtosis_pooled": 67.06434398580345,
-            "kurtosis_normalised": 134.20567827001167,
+            "kurtosis_normalised": 19.18436523568171,
             "kurtosis_per_window": {
               "median": 2.4324003597789927,
               "min": 0.5904275496785911,
@@ -952,14 +1091,14 @@
             },
             "outlier_fraction_per_pair": [
               0.0,
-              0.10551227858293076,
-              0.10559782608695652,
-              0.11059883252818035,
-              0.10366747181964574,
-              0.10721316425120773,
-              0.10469504830917874,
-              0.10410628019323671,
-              0.09986211755233494
+              0.11093297101449276,
+              0.11090579710144928,
+              0.11611312399355878,
+              0.10898248792270532,
+              0.11269726247987118,
+              0.11013184380032207,
+              0.10941626409017713,
+              0.10502113526570048
             ],
             "windows_used": 69
           },
@@ -993,6 +1132,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 49,
             "trusted_count": 0,
+            "saturated_count": 2,
             "level_min": 0.0003304013444162753,
             "level_max": 0.1865333244725314,
             "points": [
@@ -1001,6 +1141,8 @@
                 "sigma": 0.002878734636291312,
                 "rho": 0.19293969092161345,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.19293969092161345,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1009,6 +1151,8 @@
                 "sigma": 0.004554880456970784,
                 "rho": 0.1357479129000414,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1357479129000414,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1017,6 +1161,8 @@
                 "sigma": 0.003001335332017869,
                 "rho": 0.21734359815337934,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.21734359815337934,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1025,6 +1171,8 @@
                 "sigma": 0.0017136870063182224,
                 "rho": 0.12632737909721325,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12632737909721325,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1033,6 +1181,8 @@
                 "sigma": 0.001547067136077978,
                 "rho": 0.13447313828870056,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13447313828870056,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1041,6 +1191,8 @@
                 "sigma": 0.0012708569728881653,
                 "rho": 0.1298763939223473,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1298763939223473,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1049,6 +1201,8 @@
                 "sigma": 0.000829424887784895,
                 "rho": 0.1361635852789751,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1361635852789751,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1057,6 +1211,8 @@
                 "sigma": 0.00039829084134639136,
                 "rho": 0.1456863312449681,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1456863312449681,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1065,6 +1221,8 @@
                 "sigma": 0.0017039751975389322,
                 "rho": 0.1437524253118898,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1437524253118898,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1073,6 +1231,8 @@
                 "sigma": 0.001322506851495838,
                 "rho": 0.1650401014011964,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1650401014011964,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1081,6 +1241,8 @@
                 "sigma": 0.010958008113930247,
                 "rho": 0.9457726040608931,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.9457726040608931,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1089,6 +1251,8 @@
                 "sigma": 0.0031910772572270093,
                 "rho": 0.15709703297746747,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15709703297746747,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1097,6 +1261,8 @@
                 "sigma": 0.015586266790972716,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.0576133362700988,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1105,6 +1271,8 @@
                 "sigma": 0.006216560304629965,
                 "rho": 0.12547961817119124,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12547961817119124,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1113,6 +1281,8 @@
                 "sigma": 0.00011098092209184849,
                 "rho": 0.17520088635087006,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17520088635087006,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1121,6 +1291,8 @@
                 "sigma": 0.0001206400293641573,
                 "rho": 0.17126758413762966,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17126758413762966,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1129,6 +1301,8 @@
                 "sigma": 0.0002336420047413387,
                 "rho": 0.10336488991245729,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.10336488991245729,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1137,6 +1311,8 @@
                 "sigma": 0.009974901491903608,
                 "rho": 0.16511178270358862,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16511178270358862,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1145,6 +1321,8 @@
                 "sigma": 0.01707015101995838,
                 "rho": 0.67186265847317,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.67186265847317,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1153,6 +1331,8 @@
                 "sigma": 0.0033992754407478555,
                 "rho": 0.2390331956502818,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.2390331956502818,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1161,6 +1341,8 @@
                 "sigma": 0.016985969317703742,
                 "rho": 0.9443617660742314,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.9443617660742314,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1169,6 +1351,8 @@
                 "sigma": 0.003618746297412279,
                 "rho": 0.666544372703922,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.666544372703922,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1177,6 +1361,8 @@
                 "sigma": 0.0034130930975704594,
                 "rho": 0.387868419559694,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.387868419559694,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1185,6 +1371,8 @@
                 "sigma": 0.0033261401407437743,
                 "rho": 0.3745742650246904,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3745742650246904,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1193,6 +1381,8 @@
                 "sigma": 0.010067407668141643,
                 "rho": 0.7241198538454248,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.7241198538454248,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1201,6 +1391,8 @@
                 "sigma": 0.00507697227933688,
                 "rho": 0.20556371916470195,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.20556371916470195,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1209,6 +1401,8 @@
                 "sigma": 0.0015727693997042514,
                 "rho": 0.11860122736035228,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.11860122736035228,
                 "sample_count": 138384,
                 "band": "shadow"
               },
@@ -1217,6 +1411,8 @@
                 "sigma": 0.010532539717191534,
                 "rho": 0.8371247323795967,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 0.8371247323795967,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1225,6 +1421,8 @@
                 "sigma": 0.00554760562822784,
                 "rho": 0.4687049525780749,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4687049525780749,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1233,6 +1431,8 @@
                 "sigma": 0.002262594819507723,
                 "rho": 0.16489899355589221,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16489899355589221,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1241,6 +1441,8 @@
                 "sigma": 0.001179881995245419,
                 "rho": 0.13377845180667203,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13377845180667203,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1249,6 +1451,8 @@
                 "sigma": 0.00016904673526313264,
                 "rho": 0.1424353269326848,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1424353269326848,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1257,6 +1461,8 @@
                 "sigma": 0.004083786622561893,
                 "rho": 0.13955464910312765,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13955464910312765,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1265,6 +1471,8 @@
                 "sigma": 0.0007352937523021595,
                 "rho": 0.15732662817419807,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15732662817419807,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1273,6 +1481,8 @@
                 "sigma": 0.009966038085861804,
                 "rho": 0.16519052752116603,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16519052752116603,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1281,6 +1491,8 @@
                 "sigma": 0.0035925659722696257,
                 "rho": 0.6440099014199223,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.6440099014199223,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1289,6 +1501,8 @@
                 "sigma": 0.0019054896199533905,
                 "rho": 0.18561583829064499,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18561583829064499,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1297,6 +1511,8 @@
                 "sigma": 0.007019853135078558,
                 "rho": 0.34283122660152765,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.34283122660152765,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1305,6 +1521,8 @@
                 "sigma": 0.01080742518530753,
                 "rho": 0.2739829454067533,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.2739829454067533,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1313,6 +1531,8 @@
                 "sigma": 0.013347203157484971,
                 "rho": 0.375301700122864,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.375301700122864,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1321,6 +1541,8 @@
                 "sigma": 0.009502445378209462,
                 "rho": 0.19079447313751174,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.19079447313751174,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1329,6 +1551,8 @@
                 "sigma": 0.01299762156885507,
                 "rho": 0.30730926232395683,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.30730926232395683,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1337,6 +1561,8 @@
                 "sigma": 0.0062782938250739275,
                 "rho": 0.218213788564263,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.218213788564263,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1345,6 +1571,8 @@
                 "sigma": 0.005558268206078416,
                 "rho": 0.20683341644177222,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.20683341644177222,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1353,6 +1581,8 @@
                 "sigma": 0.006679078505636971,
                 "rho": 0.18328168060956407,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18328168060956407,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1361,6 +1591,8 @@
                 "sigma": 0.007671690900459279,
                 "rho": 0.33523410586627467,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.33523410586627467,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1369,6 +1601,8 @@
                 "sigma": 0.009749631435061544,
                 "rho": 0.4574322356405589,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4574322356405589,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1377,6 +1611,8 @@
                 "sigma": 0.016654925591005225,
                 "rho": 0.2268430485983035,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.2268430485983035,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1385,6 +1621,8 @@
                 "sigma": 0.010566358098798781,
                 "rho": 0.19522972597473243,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.19522972597473243,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -1414,7 +1652,7 @@
           "distribution_trustworthy": null,
           "tails": {
             "kurtosis_pooled": 493.0092984680545,
-            "kurtosis_normalised": 252.39113086416697,
+            "kurtosis_normalised": 53.73993384214981,
             "kurtosis_per_window": {
               "median": 5.046822409246133,
               "min": 0.7457636847771805,
@@ -1485,14 +1723,14 @@
             },
             "outlier_fraction_per_pair": [
               0.0,
-              0.11986536281179139,
-              0.10959467120181406,
-              0.12623015873015872,
-              0.11412414965986395,
-              0.10982993197278912,
-              0.11171060090702947,
-              0.10670068027210884,
-              0.1086422902494331
+              0.20538832199546486,
+              0.1928968253968254,
+              0.21273526077097504,
+              0.1982582199546485,
+              0.19137755102040815,
+              0.19581490929705214,
+              0.18814767573696145,
+              0.19095379818594105
             ],
             "windows_used": 49
           },
@@ -1526,6 +1764,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 17,
             "trusted_count": 0,
+            "saturated_count": 0,
             "level_min": 0.00024376647772880372,
             "level_max": 0.18025963683789398,
             "points": [
@@ -1534,6 +1773,8 @@
                 "sigma": 0.011110170515175431,
                 "rho": 0.010783822936234921,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.010783822936234921,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1542,6 +1783,8 @@
                 "sigma": 0.00014429829890281342,
                 "rho": 0.05151261317063627,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05151261317063627,
                 "sample_count": 138384,
                 "band": "shadow"
               },
@@ -1550,6 +1793,8 @@
                 "sigma": 0.010240843713273388,
                 "rho": 0.06519303170035418,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06519303170035418,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1558,6 +1803,8 @@
                 "sigma": 0.00616425338573517,
                 "rho": 0.019411372040238684,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.019411372040238684,
                 "sample_count": 138384,
                 "band": "midtone"
               },
@@ -1566,6 +1813,8 @@
                 "sigma": 0.006271442077826594,
                 "rho": 0.05159211847079215,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05159211847079215,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1574,6 +1823,8 @@
                 "sigma": 0.014008047522044152,
                 "rho": 0.023190131182375007,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.023190131182375007,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1582,6 +1833,8 @@
                 "sigma": 0.00676295017645991,
                 "rho": 0.05390832373970866,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05390832373970866,
                 "sample_count": 138384,
                 "band": "midtone"
               },
@@ -1590,6 +1843,8 @@
                 "sigma": 0.011626481683990764,
                 "rho": 0.031764754477089374,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.031764754477089374,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1598,6 +1853,8 @@
                 "sigma": 0.008346384952374133,
                 "rho": 0.09518960842490687,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.09518960842490687,
                 "sample_count": 138384,
                 "band": "midtone"
               },
@@ -1606,6 +1863,8 @@
                 "sigma": 0.007788403423470173,
                 "rho": 0.04410132101899755,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04410132101899755,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1614,6 +1873,8 @@
                 "sigma": 0.007326462949878614,
                 "rho": 0.00660260373118815,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.00660260373118815,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1622,6 +1883,8 @@
                 "sigma": 0.004941739742016504,
                 "rho": 0.0006331964084329567,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0006331964084329567,
                 "sample_count": 138384,
                 "band": "midtone"
               },
@@ -1630,6 +1893,8 @@
                 "sigma": 0.000502189976839593,
                 "rho": 0.008477087607041245,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.008477087607041245,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1638,6 +1903,8 @@
                 "sigma": 0.003930963207233814,
                 "rho": 0.10567055266018599,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.10567055266018599,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1646,6 +1913,8 @@
                 "sigma": 0.006857531749355417,
                 "rho": 0.028547358812820667,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.028547358812820667,
                 "sample_count": 142884,
                 "band": "midtone"
               },
@@ -1654,6 +1923,8 @@
                 "sigma": 0.002746647762965778,
                 "rho": 0.01677558736199769,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01677558736199769,
                 "sample_count": 142884,
                 "band": "shadow"
               },
@@ -1662,6 +1933,8 @@
                 "sigma": 9.185701821292841e-05,
                 "rho": 0.03223917063217452,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03223917063217452,
                 "sample_count": 147456,
                 "band": "shadow"
               }
@@ -1691,7 +1964,7 @@
           "distribution_trustworthy": null,
           "tails": {
             "kurtosis_pooled": 4.574607687795782,
-            "kurtosis_normalised": 211.46641588898981,
+            "kurtosis_normalised": 6.912257438816155,
             "kurtosis_per_window": {
               "median": 0.9528998267107847,
               "min": 0.29217893682878815,
@@ -1771,6 +2044,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 22,
             "trusted_count": 0,
+            "saturated_count": 0,
             "level_min": 0.002779002344582872,
             "level_max": 0.11743153910049982,
             "points": [
@@ -1779,6 +2053,8 @@
                 "sigma": 0.002941452830339093,
                 "rho": 0.25973580592885726,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.25973580592885726,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1787,6 +2063,8 @@
                 "sigma": 0.0063026359165226685,
                 "rho": 0.03908385579566964,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03908385579566964,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1795,6 +2073,8 @@
                 "sigma": 0.004401476864325081,
                 "rho": 0.035204119569223646,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.035204119569223646,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1803,6 +2083,8 @@
                 "sigma": 0.009732244921994792,
                 "rho": 0.042899805168056915,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.042899805168056915,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1811,6 +2093,8 @@
                 "sigma": 0.0032652129957719458,
                 "rho": 0.012585278457828197,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.012585278457828197,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1819,6 +2103,8 @@
                 "sigma": 0.009962236272624679,
                 "rho": 0.036778906506800935,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.036778906506800935,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1827,6 +2113,8 @@
                 "sigma": 0.005470263179874232,
                 "rho": 0.34688238812325833,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.34688238812325833,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1835,6 +2123,8 @@
                 "sigma": 0.006922818821555725,
                 "rho": 0.1069601575617467,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1069601575617467,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1843,6 +2133,8 @@
                 "sigma": 0.0031213265067083036,
                 "rho": 0.4781136513330606,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4781136513330606,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1851,6 +2143,8 @@
                 "sigma": 0.001966284816967184,
                 "rho": 0.04725262707504907,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04725262707504907,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1859,6 +2153,8 @@
                 "sigma": 0.006789489456695908,
                 "rho": 0.0006034569600290585,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0006034569600290585,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1867,6 +2163,8 @@
                 "sigma": 0.008866154201144835,
                 "rho": 0.039643528694983,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.039643528694983,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1875,6 +2173,8 @@
                 "sigma": 0.0035015755086211997,
                 "rho": 0.01852392336046127,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01852392336046127,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -1883,6 +2183,8 @@
                 "sigma": 0.00693187177798058,
                 "rho": 0.10617315444807107,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.10617315444807107,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1891,6 +2193,8 @@
                 "sigma": 0.012929017786945845,
                 "rho": 0.031712970136298146,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.031712970136298146,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1899,6 +2203,8 @@
                 "sigma": 0.013497217252850767,
                 "rho": 0.056959547749451556,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.056959547749451556,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1907,6 +2213,8 @@
                 "sigma": 0.009421850456827316,
                 "rho": 0.04339217056962519,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04339217056962519,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1915,6 +2223,8 @@
                 "sigma": 0.007956111374978021,
                 "rho": 0.035621176411910316,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.035621176411910316,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1923,6 +2233,8 @@
                 "sigma": 0.006584032108762382,
                 "rho": 0.03221546222448901,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03221546222448901,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1931,6 +2243,8 @@
                 "sigma": 0.008516898112396906,
                 "rho": 0.027038305377352634,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.027038305377352634,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1939,6 +2253,8 @@
                 "sigma": 0.004946858136856952,
                 "rho": 0.023957068782121116,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.023957068782121116,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -1947,6 +2263,8 @@
                 "sigma": 0.004743721777948135,
                 "rho": 0.014000003675890271,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.014000003675890271,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -1976,7 +2294,7 @@
           "distribution_trustworthy": null,
           "tails": {
             "kurtosis_pooled": 8.060417755920708,
-            "kurtosis_normalised": 520.2774762272996,
+            "kurtosis_normalised": 49.8984022502525,
             "kurtosis_per_window": {
               "median": 3.8270599097657367,
               "min": 0.61468159825443,
@@ -2061,6 +2379,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 42,
             "trusted_count": 1,
+            "saturated_count": 1,
             "level_min": 8.105786845967679e-05,
             "level_max": 0.15384390481589547,
             "points": [
@@ -2069,6 +2388,8 @@
                 "sigma": 0.008093461320351233,
                 "rho": 0.06932587097266785,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06932587097266785,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2077,6 +2398,8 @@
                 "sigma": 0.004327421774407186,
                 "rho": 0.04984453411314882,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04984453411314882,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2085,6 +2408,8 @@
                 "sigma": 0.0006172696256695843,
                 "rho": 0.051099365943953146,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.051099365943953146,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2093,6 +2418,8 @@
                 "sigma": 0.0004442960872163483,
                 "rho": 0.47251085033618234,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.47251085033618234,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2101,6 +2428,8 @@
                 "sigma": 0.00040997357122387696,
                 "rho": 0.008990315451133934,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.008990315451133934,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2109,6 +2438,8 @@
                 "sigma": 0.0008508823497315333,
                 "rho": 0.03947227365319139,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03947227365319139,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2117,6 +2448,8 @@
                 "sigma": 7.815224947766405e-05,
                 "rho": 0.06958292347929862,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06958292347929862,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2125,6 +2458,8 @@
                 "sigma": 0.0010968534736974147,
                 "rho": 0.017121592389099716,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.017121592389099716,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2133,6 +2468,8 @@
                 "sigma": 0.01098085678534427,
                 "rho": 0.0644793747250294,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0644793747250294,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2141,6 +2478,8 @@
                 "sigma": 0.0007443700234917845,
                 "rho": 0.030273354742216485,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.030273354742216485,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2149,6 +2488,8 @@
                 "sigma": 0.00041282474289312793,
                 "rho": 0.03886697713699738,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03886697713699738,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2157,6 +2498,8 @@
                 "sigma": 3.4289903542004796e-05,
                 "rho": 0.04850893883810814,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04850893883810814,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2165,6 +2508,8 @@
                 "sigma": 0.00022663476718873225,
                 "rho": 0.0434347484335853,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0434347484335853,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2173,6 +2518,8 @@
                 "sigma": 0.00032769251742725174,
                 "rho": 0.01608204161946869,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01608204161946869,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2181,6 +2528,8 @@
                 "sigma": 0.013180141072843111,
                 "rho": 0.5149253072230662,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5149253072230662,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2189,6 +2538,8 @@
                 "sigma": 0.00650753521843615,
                 "rho": 0.07844568275720332,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.07844568275720332,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2197,6 +2548,8 @@
                 "sigma": 0.0036902701562583464,
                 "rho": 0.04878124173263787,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04878124173263787,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2205,6 +2558,8 @@
                 "sigma": 0.002470230954802929,
                 "rho": 0.03832730767887793,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03832730767887793,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2213,6 +2568,8 @@
                 "sigma": 0.0030288525383867877,
                 "rho": 0.01992598121956113,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01992598121956113,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2221,6 +2578,8 @@
                 "sigma": 0.000671597589408967,
                 "rho": 0.007074958235405271,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.007074958235405271,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2229,6 +2588,8 @@
                 "sigma": 0.0031146378530213983,
                 "rho": 0.137125702603214,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.137125702603214,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2237,6 +2598,8 @@
                 "sigma": 0.00014598367458738425,
                 "rho": -0.0008483082601299374,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0008483082601299374,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2245,6 +2608,8 @@
                 "sigma": 0.009879335698162262,
                 "rho": 0.7501867604930876,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 0.7501867604930876,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2253,6 +2618,8 @@
                 "sigma": 0.0016811393347980293,
                 "rho": 0.012240597289729482,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.012240597289729482,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2261,6 +2628,8 @@
                 "sigma": 0.002220727430275032,
                 "rho": -0.1828135681028552,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.1828135681028552,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2269,6 +2638,8 @@
                 "sigma": 0.009146088489824967,
                 "rho": 0.1314054705212322,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1314054705212322,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2277,6 +2648,8 @@
                 "sigma": 0.005991571980894114,
                 "rho": 0.05035356314662209,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05035356314662209,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2285,6 +2658,8 @@
                 "sigma": 0.004485549672875204,
                 "rho": 0.0328455939868455,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0328455939868455,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2293,6 +2668,8 @@
                 "sigma": 0.00011698110305248257,
                 "rho": 0.032454008902540465,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.032454008902540465,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2301,6 +2678,8 @@
                 "sigma": 0.007128581619278263,
                 "rho": 0.1562254977023665,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1562254977023665,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2309,6 +2688,8 @@
                 "sigma": 0.008246033389289828,
                 "rho": 0.03526799185493101,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03526799185493101,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2317,6 +2698,8 @@
                 "sigma": 0.0010166192770437509,
                 "rho": 0.06187230801908017,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06187230801908017,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2325,6 +2708,8 @@
                 "sigma": 0.002185635455173674,
                 "rho": 0.5216927712511377,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5216927712511377,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2333,6 +2718,8 @@
                 "sigma": 0.008803069328679728,
                 "rho": 0.45866627761064493,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.45866627761064493,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2341,6 +2728,8 @@
                 "sigma": 0.010256258892558068,
                 "rho": 0.06552823008760011,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06552823008760011,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2349,6 +2738,8 @@
                 "sigma": 0.005479187952040852,
                 "rho": 0.16708765170464668,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16708765170464668,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2357,6 +2748,8 @@
                 "sigma": 0.00020277657055814633,
                 "rho": 0.03832399916122897,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03832399916122897,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2365,6 +2758,8 @@
                 "sigma": 0.003002668073987553,
                 "rho": 0.07432753402290748,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.07432753402290748,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2373,6 +2768,8 @@
                 "sigma": 0.0005708254748454972,
                 "rho": -0.105009720054967,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.105009720054967,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2381,6 +2778,8 @@
                 "sigma": 0.001169431887452403,
                 "rho": 0.035858973088841006,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.035858973088841006,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2389,6 +2788,8 @@
                 "sigma": 0.006749379774186694,
                 "rho": 0.04818722503543249,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04818722503543249,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2397,6 +2798,8 @@
                 "sigma": 0.003470741515978544,
                 "rho": 0.022111887514539186,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.022111887514539186,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -2445,7 +2848,7 @@
           },
           "tails": {
             "kurtosis_pooled": 25.35223881907945,
-            "kurtosis_normalised": 96.60120672884588,
+            "kurtosis_normalised": 28.443050331287015,
             "kurtosis_per_window": {
               "median": 8.854425328311937,
               "min": 0.5833863438875819,
@@ -2508,15 +2911,15 @@
               "2": 0.04502069382440476
             },
             "outlier_fraction_per_pair": [
-              0.10918320105820106,
-              0.10697420634920635,
-              0.11776785714285715,
-              0.10760085978835979,
-              0.10688161375661376,
-              0.10708333333333334,
-              0.10849537037037037,
-              0.10912698412698413,
-              0.11058366402116403
+              0.20276785714285714,
+              0.19943617724867724,
+              0.21191798941798942,
+              0.20032572751322753,
+              0.19811838624338624,
+              0.20049768518518518,
+              0.20009093915343915,
+              0.2027496693121693,
+              0.20376157407407408
             ],
             "windows_used": 42
           },
@@ -2563,6 +2966,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 68,
             "trusted_count": 0,
+            "saturated_count": 0,
             "level_min": 0.0006210827032473253,
             "level_max": 0.15318284613363226,
             "points": [
@@ -2571,6 +2975,8 @@
                 "sigma": 0.0016566357406250396,
                 "rho": 0.1468589311965438,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1468589311965438,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2579,6 +2985,8 @@
                 "sigma": 0.001901949790915258,
                 "rho": 0.12409852914932795,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12409852914932795,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2587,6 +2995,8 @@
                 "sigma": 0.007036007242697778,
                 "rho": 0.10724473924174815,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.10724473924174815,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2595,6 +3005,8 @@
                 "sigma": 0.009687725025086963,
                 "rho": 0.12463512197975946,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12463512197975946,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2603,6 +3015,8 @@
                 "sigma": 0.0031787775415924504,
                 "rho": 0.15984459679192553,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15984459679192553,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2611,6 +3025,8 @@
                 "sigma": 0.004054139991431663,
                 "rho": 0.17553452798168823,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17553452798168823,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2619,6 +3035,8 @@
                 "sigma": 0.0009484961682318045,
                 "rho": 0.14849246035951813,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14849246035951813,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2627,6 +3045,8 @@
                 "sigma": 0.0038833969255844007,
                 "rho": 0.13750550135702366,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13750550135702366,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2635,6 +3055,8 @@
                 "sigma": 0.0033240211737398393,
                 "rho": 0.10718071427856946,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.10718071427856946,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2643,6 +3065,8 @@
                 "sigma": 0.003113766791841599,
                 "rho": 0.14209913323561096,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14209913323561096,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2651,6 +3075,8 @@
                 "sigma": 0.011084712353375789,
                 "rho": 0.08752850943401369,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08752850943401369,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2659,6 +3085,8 @@
                 "sigma": 0.015203180471533373,
                 "rho": 0.1517717617663421,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1517717617663421,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2667,6 +3095,8 @@
                 "sigma": 0.005816050521199168,
                 "rho": 0.12741923901525398,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12741923901525398,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2675,6 +3105,8 @@
                 "sigma": 0.0035353127132994678,
                 "rho": 0.12972436983241886,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12972436983241886,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2683,6 +3115,8 @@
                 "sigma": 0.0013941289919715645,
                 "rho": 0.1467764135240721,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1467764135240721,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2691,6 +3125,8 @@
                 "sigma": 0.0053208446154953916,
                 "rho": 0.14682940097696395,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14682940097696395,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2699,6 +3135,8 @@
                 "sigma": 0.0023009161660763524,
                 "rho": 0.09491337228913688,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.09491337228913688,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2707,6 +3145,8 @@
                 "sigma": 0.003612657717068367,
                 "rho": 0.1599546291795948,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1599546291795948,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2715,6 +3155,8 @@
                 "sigma": 0.008769010364663625,
                 "rho": 0.1499061079704176,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1499061079704176,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2723,6 +3165,8 @@
                 "sigma": 0.008678167606254998,
                 "rho": 0.14241752090406323,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14241752090406323,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2731,6 +3175,8 @@
                 "sigma": 0.008556368707451821,
                 "rho": 0.13964739650624214,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13964739650624214,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2739,6 +3185,8 @@
                 "sigma": 0.0040806265742817215,
                 "rho": 0.17250945953057095,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17250945953057095,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2747,6 +3195,8 @@
                 "sigma": 0.010508163267796527,
                 "rho": 0.21325924601069146,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.21325924601069146,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2755,6 +3205,8 @@
                 "sigma": 0.0010872829262018957,
                 "rho": 0.1452033093807421,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1452033093807421,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2763,6 +3215,8 @@
                 "sigma": 0.005448856514476186,
                 "rho": 0.14645366261490622,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14645366261490622,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2771,6 +3225,8 @@
                 "sigma": 0.012994541851211754,
                 "rho": 0.1392641155691714,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1392641155691714,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2779,6 +3235,8 @@
                 "sigma": 0.001007017761725906,
                 "rho": 0.12767045171710878,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12767045171710878,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2787,6 +3245,8 @@
                 "sigma": 0.003761896356745699,
                 "rho": 0.16153870389317104,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16153870389317104,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2795,6 +3255,8 @@
                 "sigma": 0.005183303932818696,
                 "rho": 0.13757695617343346,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13757695617343346,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2803,6 +3265,8 @@
                 "sigma": 0.004883941779650555,
                 "rho": 0.13712402457597173,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13712402457597173,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2811,6 +3275,8 @@
                 "sigma": 0.008451795624997987,
                 "rho": 0.1722720843416199,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1722720843416199,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2819,6 +3285,8 @@
                 "sigma": 0.006242991502330459,
                 "rho": 0.268455315186108,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.268455315186108,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2827,6 +3295,8 @@
                 "sigma": 0.002203544907764388,
                 "rho": 0.1963750669426414,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1963750669426414,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2835,6 +3305,8 @@
                 "sigma": 0.008046842142894353,
                 "rho": 0.1196592068273783,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1196592068273783,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2843,6 +3315,8 @@
                 "sigma": 0.008858895265430895,
                 "rho": -0.05013517665440326,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.05013517665440326,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2851,6 +3325,8 @@
                 "sigma": 0.012899731994712244,
                 "rho": 0.6377356443956175,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.6377356443956175,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2859,6 +3335,8 @@
                 "sigma": 0.0007625855423925186,
                 "rho": 0.14172016586618352,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14172016586618352,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2867,6 +3345,8 @@
                 "sigma": 0.005055371974689101,
                 "rho": 0.14529602679991482,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14529602679991482,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2875,6 +3355,8 @@
                 "sigma": 0.005459810425981455,
                 "rho": 0.15197707364905133,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15197707364905133,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2883,6 +3365,8 @@
                 "sigma": 0.00047092089437020116,
                 "rho": 0.09985619368532173,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.09985619368532173,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2891,6 +3375,8 @@
                 "sigma": 0.003696272707758381,
                 "rho": 0.15662416436314097,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15662416436314097,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2899,6 +3385,8 @@
                 "sigma": 0.003913131031864241,
                 "rho": 0.13148107143822907,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13148107143822907,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2907,6 +3395,8 @@
                 "sigma": 0.004708483584564711,
                 "rho": 0.15885624199434534,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15885624199434534,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2915,6 +3405,8 @@
                 "sigma": 0.005179960320381993,
                 "rho": 0.1469752452246056,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1469752452246056,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2923,6 +3415,8 @@
                 "sigma": 0.013840225498205938,
                 "rho": 0.1838785371006031,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1838785371006031,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2931,6 +3425,8 @@
                 "sigma": 0.008387289780175217,
                 "rho": 0.21424176193219813,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.21424176193219813,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2939,6 +3435,8 @@
                 "sigma": 0.005712766561004666,
                 "rho": 0.13596725616956817,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13596725616956817,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2947,6 +3445,8 @@
                 "sigma": 0.005572777906764469,
                 "rho": 0.17944636929752655,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.17944636929752655,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2955,6 +3455,8 @@
                 "sigma": 0.00895123090121762,
                 "rho": 0.4776089903565601,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4776089903565601,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2963,6 +3465,8 @@
                 "sigma": 0.00863197987564376,
                 "rho": 0.4590012193158026,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4590012193158026,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2971,6 +3475,8 @@
                 "sigma": 0.0006533491630044414,
                 "rho": 0.1637702262807179,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1637702262807179,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -2979,6 +3485,8 @@
                 "sigma": 0.004602336027749583,
                 "rho": 0.1395788617985716,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1395788617985716,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2987,6 +3495,8 @@
                 "sigma": 0.0031388352867851364,
                 "rho": 0.14052424744321268,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14052424744321268,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -2995,6 +3505,8 @@
                 "sigma": 0.0001906976276554053,
                 "rho": 0.13052219293899325,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13052219293899325,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -3003,6 +3515,8 @@
                 "sigma": 0.003187625725056598,
                 "rho": 0.15129952734242114,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15129952734242114,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3011,6 +3525,8 @@
                 "sigma": 0.0027869478962292585,
                 "rho": 0.14261060409040094,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14261060409040094,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -3019,6 +3535,8 @@
                 "sigma": 0.0033765483848406572,
                 "rho": 0.13001108381783433,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13001108381783433,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3027,6 +3545,8 @@
                 "sigma": 0.011720737663581135,
                 "rho": 0.11938337142278299,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.11938337142278299,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3035,6 +3555,8 @@
                 "sigma": 0.005826278391010546,
                 "rho": 0.18694471395422085,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18694471395422085,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3043,6 +3565,8 @@
                 "sigma": 0.006118342555864957,
                 "rho": 0.15496470562523923,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.15496470562523923,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3051,6 +3575,8 @@
                 "sigma": 0.003151619137511317,
                 "rho": 0.19729285368736593,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.19729285368736593,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3059,6 +3585,8 @@
                 "sigma": 0.003244891444091463,
                 "rho": 0.20138358093313236,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.20138358093313236,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3067,6 +3595,8 @@
                 "sigma": 0.00476000527812137,
                 "rho": 0.16952805423414663,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16952805423414663,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3075,6 +3605,8 @@
                 "sigma": 0.005974319700501907,
                 "rho": 0.1638412729602048,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1638412729602048,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3083,6 +3615,8 @@
                 "sigma": 0.006158355579057847,
                 "rho": 0.14252666721485419,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14252666721485419,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3091,6 +3625,8 @@
                 "sigma": 0.0005865512337139636,
                 "rho": 0.1311019062211638,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1311019062211638,
                 "sample_count": 147456,
                 "band": "shadow"
               },
@@ -3099,6 +3635,8 @@
                 "sigma": 0.003615350958962467,
                 "rho": 0.13286864337954385,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13286864337954385,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -3107,6 +3645,8 @@
                 "sigma": 0.0025389815611188086,
                 "rho": 0.14272658477495948,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.14272658477495948,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -3136,7 +3676,7 @@
           "distribution_trustworthy": null,
           "tails": {
             "kurtosis_pooled": 24.325098113552645,
-            "kurtosis_normalised": 32.281363737262836,
+            "kurtosis_normalised": 8.705754673939689,
             "kurtosis_per_window": {
               "median": 5.206879338720477,
               "min": 0.7297683769897367,
@@ -3270,6 +3810,10 @@
           "rho_from_lag4": 0.06964824120603019,
           "parameter_identified": true,
           "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.634",
+            "a shift hit the search boundary"
+          ],
           "tails": {
             "kurtosis_pooled": 0.9621766471573259,
             "kurtosis_normalised": 0.9621766471573285,
@@ -3355,215 +3899,323 @@
               0.0001298476454293629
             ],
             "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.06827558097192797,
+            "by_level": {
+              "q1": 0.06178568091931114,
+              "q2": 0.06717414944850085,
+              "q3": 0.06834586117536746,
+              "q4": 0.07412684858739896,
+              "q5": 0.06997294399918322
+            },
+            "by_texture": {
+              "flattest third": 0.06890710433939713,
+              "roughest third": 0.06769896591585585
+            },
+            "block_bimodality": 1.0,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.0416114936440678,
+              "-1": 0.0445949748411017,
+              "0": 0.06827558097192797,
+              "1": 0.04444600768008475,
+              "2": 0.04171390856726695
+            }
           }
         },
         {
-          "interval_start_s": 1114.0,
+          "interval_start_s": 4024.0,
           "tile": {
-            "x": 256,
-            "y": 0,
+            "x": 3072,
+            "y": 1280,
             "size": 128
           },
           "frames": 60,
-          "level": 0.0033280510552060735,
-          "sigma": 0.0006129277657017578,
-          "legacy_sigma": 0.0005982050282109157,
-          "rho": 0.047463716524757116,
-          "raw_rho": 0.047463716524757116,
-          "rho_from_lag4": 0.08457286432160793,
+          "level": 0.00025028769320856984,
+          "sigma": 9.90680402168687e-05,
+          "legacy_sigma": 9.83375378447191e-05,
+          "rho": 0.014693115999793616,
+          "raw_rho": 0.014693115999793616,
+          "rho_from_lag4": 0.030844221105527536,
           "parameter_identified": true,
           "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 1.097",
+            "a shift hit the search boundary"
+          ],
           "tails": {
-            "kurtosis_pooled": 0.7301069517375063,
-            "kurtosis_normalised": 0.7301069517375058,
+            "kurtosis_pooled": 3.323600687350379,
+            "kurtosis_normalised": 3.323600687350379,
             "kurtosis_per_window": {
-              "median": 0.7301069517375063,
-              "min": 0.7301069517375063,
-              "max": 0.7301069517375063,
+              "median": 3.323600687350379,
+              "min": 3.323600687350379,
+              "max": 3.323600687350379,
               "n": 1,
               "values": [
-                0.7301069517375063
+                3.323600687350379
               ]
             },
             "mixing_prediction": 0.0,
             "mixing_explains": 0.0,
-            "skew_pooled": -0.0046526826377669165,
-            "exact_zero_fraction": 0.02780323093220339,
+            "skew_pooled": -0.004948832193679979,
+            "exact_zero_fraction": 0.03861758474576271,
             "step_occupancy": {
-              "-2": 0.04145855402542373,
-              "-1": 0.04516816737288135,
-              "0": 0.07010527012711865,
-              "1": 0.04511520127118644,
-              "2": 0.04160884533898305
+              "-2": 0.05645060911016949,
+              "-1": 0.06146782309322034,
+              "0": 0.07201800847457628,
+              "1": 0.0614552436440678,
+              "2": 0.056250662076271184
             },
             "outlier_fraction_per_pair": [
-              0.0,
-              0.00017313019390581717,
-              0.00021641274238227146,
-              0.00038954293628808866,
-              0.00030297783933518004,
-              0.00021641274238227146,
-              8.656509695290859e-05,
-              0.00017313019390581717,
-              0.00021641274238227146,
-              0.00030297783933518004,
-              0.00017313019390581717,
-              0.00017313019390581717,
-              0.00021641274238227146,
-              0.00021641274238227146,
-              0.00034626038781163435,
-              0.00034626038781163435,
-              8.656509695290859e-05,
-              0.00034626038781163435,
-              0.00021641274238227146,
-              0.00038954293628808866,
-              0.0001298476454293629,
-              0.0001298476454293629,
-              0.00021641274238227146,
-              0.0002596952908587258,
-              0.0004328254847645429,
-              0.0002596952908587258,
-              0.00017313019390581717,
-              0.0002596952908587258,
-              4.3282548476454294e-05,
-              0.00021641274238227146,
-              8.656509695290859e-05,
-              0.00030297783933518004,
-              0.00034626038781163435,
-              0.00021641274238227146,
-              0.00030297783933518004,
-              0.00021641274238227146,
-              0.00021641274238227146,
-              0.0002596952908587258,
-              0.0004328254847645429,
-              8.656509695290859e-05,
-              8.656509695290859e-05,
-              0.00030297783933518004,
-              0.0,
-              0.00030297783933518004,
-              8.656509695290859e-05,
-              0.00021641274238227146,
-              0.00021641274238227146,
-              8.656509695290859e-05,
-              4.3282548476454294e-05,
-              0.0001298476454293629,
-              8.656509695290859e-05,
-              0.00017313019390581717,
-              0.0002596952908587258,
-              0.0001298476454293629,
-              8.656509695290859e-05,
-              8.656509695290859e-05,
-              4.3282548476454294e-05,
-              0.00017313019390581717,
-              0.0001298476454293629
+              0.0051073407202216065,
+              0.005453601108033241,
+              0.004068559556786704,
+              0.004241689750692521,
+              0.0036357340720221606,
+              0.003246191135734072,
+              0.004414819944598338,
+              0.005064058171745153,
+              0.004155124653739612,
+              0.004155124653739612,
+              0.004717797783933518,
+              0.004198407202216066,
+              0.004414819944598338,
+              0.003679016620498615,
+              0.0038954293628808865,
+              0.0029864958448753464,
+              0.0035924515235457063,
+              0.0037222991689750693,
+              0.004198407202216066,
+              0.0035058864265927977,
+              0.0033760387811634348,
+              0.0038954293628808865,
+              0.003419321329639889,
+              0.004198407202216066,
+              0.004025277008310249,
+              0.004025277008310249,
+              0.0031596260387811636,
+              0.0035924515235457063,
+              0.004717797783933518,
+              0.004111842105263158,
+              0.005193905817174515,
+              0.002770083102493075,
+              0.003981994459833795,
+              0.004761080332409972,
+              0.0046312326869806094,
+              0.003073060941828255,
+              0.0036357340720221606,
+              0.004544667590027701,
+              0.005496883656509696,
+              0.004977493074792244,
+              0.005064058171745153,
+              0.0045879501385041556,
+              0.004198407202216066,
+              0.005756578947368421,
+              0.006059556786703601,
+              0.005843144044321329,
+              0.0069684903047091415,
+              0.0069684903047091415,
+              0.006925207756232687,
+              0.006016274238227147,
+              0.004804362880886427,
+              0.00432825484764543,
+              0.005929709141274238,
+              0.004890927977839335,
+              0.0043715373961218836,
+              0.004501385041551247,
+              0.005064058171745153,
+              0.006795360110803324,
+              0.005280470914127424
             ],
             "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.07052870928230932,
+            "by_level": {
+              "q1": 0.07144934158600923,
+              "q2": 0.07889467149235199,
+              "q3": 0.0812727977445166,
+              "q4": 0.07567634220326025,
+              "q5": 0.045606826312067354
+            },
+            "by_texture": {
+              "flattest third": 0.07234921976657892,
+              "roughest third": 0.06746931618936294
+            },
+            "block_bimodality": 0.96875,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.05572509765625,
+              "-1": 0.06037307997881356,
+              "0": 0.07052870928230932,
+              "1": 0.0603492866128178,
+              "2": 0.05569406283103814
+            }
           }
         },
         {
-          "interval_start_s": 2289.0,
+          "interval_start_s": 6473.0,
           "tile": {
-            "x": 2816,
-            "y": 256,
+            "x": 512,
+            "y": 512,
             "size": 128
           },
           "frames": 60,
-          "level": 0.0016076064526621954,
-          "sigma": 0.01096433189381332,
-          "legacy_sigma": 0.003401037703142755,
-          "rho": 0.9037815079477574,
-          "raw_rho": 0.9037815079477574,
-          "rho_from_lag4": 0.7840402010050249,
+          "level": 9.213932223060458e-05,
+          "sigma": 4.264230961894369e-05,
+          "legacy_sigma": 4.176820432083506e-05,
+          "rho": 0.040576899445268655,
+          "raw_rho": 0.040576899445268655,
+          "rho_from_lag4": 0.06069346733668346,
           "parameter_identified": true,
           "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.675",
+            "a shift hit the search boundary"
+          ],
           "tails": {
-            "kurtosis_pooled": 198.28352165570954,
-            "kurtosis_normalised": 198.2835216557096,
+            "kurtosis_pooled": 23.533130069647633,
+            "kurtosis_normalised": 23.533130069647655,
             "kurtosis_per_window": {
-              "median": 198.28352165570954,
-              "min": 198.28352165570954,
-              "max": 198.28352165570954,
+              "median": 23.533130069647633,
+              "min": 23.533130069647633,
+              "max": 23.533130069647633,
               "n": 1,
               "values": [
-                198.28352165570954
+                23.533130069647633
               ]
             },
-            "mixing_prediction": 0.0,
-            "mixing_explains": 0.0,
-            "skew_pooled": 13.125096135245718,
-            "exact_zero_fraction": 0.032871424788135595,
+            "mixing_prediction": 4.440892098500626e-16,
+            "mixing_explains": 1.887080930312948e-17,
+            "skew_pooled": -0.013992081358614076,
+            "exact_zero_fraction": 0.051195709745762714,
             "step_occupancy": {
-              "-2": 0.053077330508474574,
-              "-1": 0.059088320974576274,
-              "0": 0.08889698093220338,
-              "1": 0.059130693855932205,
-              "2": 0.05298993644067797
+              "-2": 0.07978085275423728,
+              "-1": 0.09194253177966101,
+              "0": 0.10792902542372881,
+              "1": 0.09267677436440679,
+              "2": 0.08013572563559322
             },
             "outlier_fraction_per_pair": [
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.0,
-              0.6830418975069252,
-              0.16642139889196675,
-              0.1829553324099723
+              0.01289819944598338,
+              0.017010041551246538,
+              0.017659279778393353,
+              0.01289819944598338,
+              0.015538434903047092,
+              0.015581717451523546,
+              0.01402354570637119,
+              0.013850415512465374,
+              0.017356301939058173,
+              0.01631752077562327,
+              0.014672783933518006,
+              0.017918975069252076,
+              0.015798130193905816,
+              0.01471606648199446,
+              0.015105609418282548,
+              0.015235457063711912,
+              0.017053324099722992,
+              0.017789127423822715,
+              0.01501904432132964,
+              0.014196675900277008,
+              0.015668282548476454,
+              0.016707063711911357,
+              0.015711565096952908,
+              0.013417590027700831,
+              0.014369806094182825,
+              0.01662049861495845,
+              0.016966759002770084,
+              0.01289819944598338,
+              0.012162396121883657,
+              0.015884695290858727,
+              0.01575484764542936,
+              0.013850415512465374,
+              0.015581717451523546,
+              0.013980263157894737,
+              0.014283240997229918,
+              0.016360803324099723,
+              0.013028047091412743,
+              0.014499653739612189,
+              0.015884695290858727,
+              0.017399584487534626,
+              0.020905470914127425,
+              0.017486149584487534,
+              0.011599722991689751,
+              0.013417590027700831,
+              0.012725069252077562,
+              0.01532202216066482,
+              0.013287742382271468,
+              0.014499653739612189,
+              0.016101108033240996,
+              0.016533933518005542,
+              0.018351800554016622,
+              0.013850415512465374,
+              0.012508656509695291,
+              0.014672783933518006,
+              0.01471606648199446,
+              0.014975761772853185,
+              0.014239958448753462,
+              0.015148891966759002,
+              0.012422091412742382
             ],
             "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.10857637049788135,
+            "by_level": {
+              "q1": 0.07887123677230592,
+              "q2": 0.13499331002203466,
+              "q3": 0.14243000398662944,
+              "q4": 0.11515599777570225,
+              "q5": 0.07032639332649736
+            },
+            "by_texture": {
+              "flattest third": 0.11116640785689762,
+              "roughest third": 0.10429066707608374
+            },
+            "block_bimodality": 0.203125,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.0825122897907839,
+              "-1": 0.0946872517213983,
+              "0": 0.10857637049788135,
+              "1": 0.09537001787605932,
+              "2": 0.0824833239539195
+            }
           }
         }
       ],
+      "duration_vs_pooling": {
+        "a_short_single": {
+          "median": 2.2126200557438045,
+          "min": 1.135665594387306,
+          "max": 10.637907757862926,
+          "n": 3,
+          "values": [
+            1.135665594387306,
+            2.2126200557438045,
+            10.637907757862926
+          ]
+        },
+        "b_long_single": {
+          "median": 2.246570565712969,
+          "min": 0.7793527347846698,
+          "max": 12.230072045575643,
+          "n": 3,
+          "values": [
+            0.7793527347846698,
+            2.246570565712969,
+            12.230072045575643
+          ]
+        },
+        "c_short_pooled": 8.571857395410406,
+        "d_long_pooled": 7.534471114024852,
+        "frames_short": 10,
+        "frames_long": 60,
+        "tiles": 3,
+        "duration_effect": 0.0339505099691646,
+        "pooling_effect": 5.287900548311883
+      },
       "screen_anchoring": {
         "available": true,
         "pairs": 15,
@@ -4029,7 +4681,7 @@
         "identified": 20,
         "trustworthy": 20,
         "total": 94,
-        "saturated_rho": 0
+        "saturated_rho": 27
       },
       "aggregate": {
         "raw_sigma": {
@@ -4098,15 +4750,15 @@
           ]
         },
         "kurtosis_normalised": {
-          "median": 34.513997810087204,
-          "min": 18.41287173020528,
-          "max": 67.23971485313858,
+          "median": 18.206130281058314,
+          "min": 12.009448612657803,
+          "max": 31.83326155643003,
           "n": 4,
           "values": [
-            67.23971485313858,
-            30.87458329414777,
-            18.41287173020528,
-            38.15341232602664
+            31.83326155643003,
+            22.058640751972796,
+            12.009448612657803,
+            14.35361981014383
           ]
         },
         "kurtosis_trustworthy": {
@@ -4173,6 +4825,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 23,
             "trusted_count": 10,
+            "saturated_count": 5,
             "level_min": 0.030356014876634703,
             "level_max": 0.5488530602474715,
             "points": [
@@ -4181,6 +4834,8 @@
                 "sigma": 0.001227398009726078,
                 "rho": 0.2555125514675445,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.2555125514675445,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4189,6 +4844,8 @@
                 "sigma": 0.001283989033077924,
                 "rho": 0.27446228588112165,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.27446228588112165,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4197,6 +4854,8 @@
                 "sigma": 0.0008933577110375096,
                 "rho": 0.4847724838673124,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4847724838673124,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4205,6 +4864,8 @@
                 "sigma": 0.0023476659564165636,
                 "rho": 0.5643779705148573,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.5643779705148573,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4213,6 +4874,8 @@
                 "sigma": 0.0011405764043344597,
                 "rho": 0.2934601341013572,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.2934601341013572,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4221,6 +4884,8 @@
                 "sigma": 0.0014088909941038592,
                 "rho": 0.3796281013385865,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3796281013385865,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4229,6 +4894,8 @@
                 "sigma": 0.001648902964660149,
                 "rho": 0.4750901417491993,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4750901417491993,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4237,6 +4904,8 @@
                 "sigma": 0.007036984836350973,
                 "rho": 0.7236853499242484,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.7236853499242484,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4245,6 +4914,8 @@
                 "sigma": 0.0016253486433754866,
                 "rho": 0.3873282041469932,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.3873282041469932,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4253,6 +4924,8 @@
                 "sigma": 0.05240093433800615,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.4135662692442201,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4261,6 +4934,8 @@
                 "sigma": 0.08310200616904234,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.5567291730130632,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4269,6 +4944,8 @@
                 "sigma": 0.001447387678115608,
                 "rho": 0.5080570842975627,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.5080570842975627,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4277,6 +4954,8 @@
                 "sigma": 0.011669972498809128,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.0052379128678557,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4285,6 +4964,8 @@
                 "sigma": 0.011715749882749054,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.3051494872876996,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4293,6 +4974,8 @@
                 "sigma": 0.0008264625620803091,
                 "rho": 0.38823212795788575,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.38823212795788575,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4301,6 +4984,8 @@
                 "sigma": 0.014181732896550867,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.2237944492728965,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4309,6 +4994,8 @@
                 "sigma": 0.005527903492322406,
                 "rho": 0.9572499895208191,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.9572499895208191,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4317,6 +5004,8 @@
                 "sigma": 0.001207500525773914,
                 "rho": 0.4399599943557335,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4399599943557335,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4325,6 +5014,8 @@
                 "sigma": 0.0005624181550747633,
                 "rho": 0.34835650577298605,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.34835650577298605,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4333,6 +5024,8 @@
                 "sigma": 0.0007466742767376738,
                 "rho": 0.3500898740069114,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.3500898740069114,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4341,6 +5034,8 @@
                 "sigma": 0.0007156865211893963,
                 "rho": 0.33940290444312304,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.33940290444312304,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4349,6 +5044,8 @@
                 "sigma": 0.0005365772282345321,
                 "rho": 0.4293105984813306,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.4293105984813306,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4357,6 +5054,8 @@
                 "sigma": 0.0005723531857755705,
                 "rho": 0.3788505795297483,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3788505795297483,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -4405,7 +5104,7 @@
           },
           "tails": {
             "kurtosis_pooled": 3029.547861533113,
-            "kurtosis_normalised": 67.23971485313858,
+            "kurtosis_normalised": 31.83326155643003,
             "kurtosis_per_window": {
               "median": 2.1380565890938934,
               "min": 0.6767227434294263,
@@ -4449,15 +5148,15 @@
               "2": 0.044081535892210144
             },
             "outlier_fraction_per_pair": [
-              0.04520531400966184,
-              0.012379227053140096,
-              0.015818236714975845,
-              0.04168478260869565,
-              0.050353260869565215,
-              0.023118961352657005,
-              0.09160929951690822,
-              0.035727657004830916,
-              0.02833635265700483
+              0.26407306763285027,
+              0.1511201690821256,
+              0.15855374396135266,
+              0.3342814009661836,
+              0.23694142512077296,
+              0.20574275362318842,
+              0.4240157004830918,
+              0.2415247584541063,
+              0.22696256038647342
             ],
             "windows_used": 23
           },
@@ -4513,6 +5212,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 27,
             "trusted_count": 7,
+            "saturated_count": 5,
             "level_min": 0.029863811662117445,
             "level_max": 0.54776997780758,
             "points": [
@@ -4521,6 +5221,8 @@
                 "sigma": 0.0015158154362713023,
                 "rho": 0.3255453592534494,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3255453592534494,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4529,6 +5231,8 @@
                 "sigma": 0.0015975894573159732,
                 "rho": 0.3740510122437892,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3740510122437892,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4537,6 +5241,8 @@
                 "sigma": 0.0005579025087061416,
                 "rho": 0.3837616673950659,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3837616673950659,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4545,6 +5251,8 @@
                 "sigma": 0.002106586616995918,
                 "rho": 0.6836815958742486,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.6836815958742486,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4553,6 +5261,8 @@
                 "sigma": 0.0012672184218961247,
                 "rho": 0.3915100490257635,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3915100490257635,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4561,6 +5271,8 @@
                 "sigma": 0.01829528115356221,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.1516443078574539,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4569,6 +5281,8 @@
                 "sigma": 0.011921339541605309,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.3592519794867366,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4577,6 +5291,8 @@
                 "sigma": 0.0015106654111929796,
                 "rho": 0.4477760585938535,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.4477760585938535,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4585,6 +5301,8 @@
                 "sigma": 0.004018684003063916,
                 "rho": 0.49536944139094996,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.49536944139094996,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4593,6 +5311,8 @@
                 "sigma": 0.0043818758722503435,
                 "rho": 0.5765086157986659,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5765086157986659,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4601,6 +5321,8 @@
                 "sigma": 0.0016704454958718924,
                 "rho": 0.3680994325693372,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.3680994325693372,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4609,6 +5331,8 @@
                 "sigma": 0.012388173051701467,
                 "rho": 0.9496667010389828,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 0.9496667010389828,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4617,6 +5341,8 @@
                 "sigma": 0.04008923168361604,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.1875209801034798,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4625,6 +5351,8 @@
                 "sigma": 0.0013216977281398778,
                 "rho": 0.43449402777585755,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.43449402777585755,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4633,6 +5361,8 @@
                 "sigma": 0.0013118126034054986,
                 "rho": 0.5373305605024308,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5373305605024308,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4641,6 +5371,8 @@
                 "sigma": 0.001144094338991799,
                 "rho": 0.48319964726247266,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.48319964726247266,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4649,6 +5381,8 @@
                 "sigma": 0.000816330418682007,
                 "rho": 0.37076786511445703,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.37076786511445703,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4657,6 +5391,8 @@
                 "sigma": 0.0010808456702037766,
                 "rho": 0.40632425032208186,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.40632425032208186,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4665,6 +5401,8 @@
                 "sigma": 0.0012984311182139732,
                 "rho": 0.6827192589450184,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.6827192589450184,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4673,6 +5411,8 @@
                 "sigma": 0.005764151578686057,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 0.9915752930429322,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4681,6 +5421,8 @@
                 "sigma": 0.0011428510720222667,
                 "rho": 0.4263691961162206,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4263691961162206,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4689,6 +5431,8 @@
                 "sigma": 0.0010443359814175709,
                 "rho": 0.3165674510026737,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.3165674510026737,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4697,6 +5441,8 @@
                 "sigma": 0.0005683042116728487,
                 "rho": 0.34596363584100476,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.34596363584100476,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4705,6 +5451,8 @@
                 "sigma": 0.0007587172167418838,
                 "rho": 0.36429250353356113,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.36429250353356113,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4713,6 +5461,8 @@
                 "sigma": 0.0007305941971129695,
                 "rho": 0.3481525683398352,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3481525683398352,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4721,6 +5471,8 @@
                 "sigma": 0.0004936981567891023,
                 "rho": 0.33947839544328184,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.33947839544328184,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4729,6 +5481,8 @@
                 "sigma": 0.0005552222351322129,
                 "rho": 0.3571212916122686,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3571212916122686,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -4777,7 +5531,7 @@
           },
           "tails": {
             "kurtosis_pooled": 416.1409657090051,
-            "kurtosis_normalised": 30.87458329414777,
+            "kurtosis_normalised": 22.058640751972796,
             "kurtosis_per_window": {
               "median": 3.3271519500131177,
               "min": 0.6771357521142791,
@@ -4825,15 +5579,15 @@
               "2": 0.05057202248906893
             },
             "outlier_fraction_per_pair": [
-              0.09225565843621399,
-              0.04840792181069959,
-              0.0511522633744856,
-              0.12084619341563786,
-              0.08770318930041152,
-              0.05744598765432099,
-              0.12120627572016461,
-              0.04896347736625514,
-              0.06553497942386831
+              0.14668981481481483,
+              0.08263374485596708,
+              0.07971965020576131,
+              0.18718364197530865,
+              0.1257741769547325,
+              0.09803755144032922,
+              0.1885082304526749,
+              0.0859593621399177,
+              0.10719135802469136
             ],
             "windows_used": 27
           },
@@ -4886,6 +5640,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 25,
             "trusted_count": 0,
+            "saturated_count": 13,
             "level_min": 0.02627836188013415,
             "level_max": 0.5433793666010072,
             "points": [
@@ -4894,6 +5649,8 @@
                 "sigma": 0.0015179542581057882,
                 "rho": 0.41453531198656135,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.41453531198656135,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4902,6 +5659,8 @@
                 "sigma": 0.001696072942635941,
                 "rho": 0.48877662860586946,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.48877662860586946,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4910,6 +5669,8 @@
                 "sigma": 0.007360619584659169,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.918313669078863,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4918,6 +5679,8 @@
                 "sigma": 0.014231654031173189,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.1410710398179926,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4926,6 +5689,8 @@
                 "sigma": 0.0014608553965005631,
                 "rho": 0.5160598074133265,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5160598074133265,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4934,6 +5699,8 @@
                 "sigma": 0.006357040562592329,
                 "rho": 0.9601076172512761,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 0.9601076172512761,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4942,6 +5709,8 @@
                 "sigma": 0.04722199238591899,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.8446639210466755,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4950,6 +5719,8 @@
                 "sigma": 0.04917305387262395,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 2.0383105980773304,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4958,6 +5729,8 @@
                 "sigma": 0.0016542594688978992,
                 "rho": 0.4022186371269554,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4022186371269554,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -4966,6 +5739,8 @@
                 "sigma": 0.002581259747207369,
                 "rho": 0.7940608184773208,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 0.7940608184773208,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4974,6 +5749,8 @@
                 "sigma": 0.01847135619831148,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 2.2578862136845914,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4982,6 +5759,8 @@
                 "sigma": 0.021711160742897473,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 2.5084128592915844,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4990,6 +5769,8 @@
                 "sigma": 0.0009900850426796356,
                 "rho": 0.5317001338974541,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5317001338974541,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -4998,6 +5779,8 @@
                 "sigma": 0.025845290142187546,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 2.5861710778735705,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5006,6 +5789,8 @@
                 "sigma": 0.01440112310528871,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 2.2059470769047964,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5014,6 +5799,8 @@
                 "sigma": 0.013037588298175518,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 2.6851553156151726,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5022,6 +5809,8 @@
                 "sigma": 0.008769712811487994,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.9017367306943553,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5030,6 +5819,8 @@
                 "sigma": 0.0194086783702909,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.8434134335600185,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5038,6 +5829,8 @@
                 "sigma": 0.0012416298658898903,
                 "rho": 0.16116367252511865,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.16116367252511865,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5046,6 +5839,8 @@
                 "sigma": 0.0006087632337954822,
                 "rho": 0.38956769796392976,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.38956769796392976,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5054,6 +5849,8 @@
                 "sigma": 0.0007771602861663115,
                 "rho": 0.35220485834435467,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.35220485834435467,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5062,6 +5859,8 @@
                 "sigma": 0.0007540466365356988,
                 "rho": 0.4099775585674439,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4099775585674439,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5070,6 +5869,8 @@
                 "sigma": 0.0008910620607346938,
                 "rho": 0.7386693428886375,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.7386693428886375,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5078,6 +5879,8 @@
                 "sigma": 0.0006955620154940164,
                 "rho": 0.5203736987877838,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5203736987877838,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5086,6 +5889,8 @@
                 "sigma": 0.0004902583526510054,
                 "rho": 0.34830386236676625,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.34830386236676625,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -5115,7 +5920,7 @@
           "distribution_trustworthy": null,
           "tails": {
             "kurtosis_pooled": 81.89534126507645,
-            "kurtosis_normalised": 18.41287173020528,
+            "kurtosis_normalised": 12.009448612657803,
             "kurtosis_per_window": {
               "median": 2.2544037279998292,
               "min": 0.41173854711372515,
@@ -5161,15 +5966,15 @@
               "2": 0.059832628038194446
             },
             "outlier_fraction_per_pair": [
-              0.050775,
-              0.02733611111111111,
-              0.062108333333333335,
-              0.10839444444444445,
-              0.07336666666666666,
-              0.09485833333333334,
-              0.083425,
-              0.02398611111111111,
-              0.03178333333333333
+              0.05756666666666667,
+              0.031655555555555555,
+              0.06795833333333333,
+              0.11987222222222223,
+              0.07993888888888889,
+              0.10246666666666666,
+              0.09440277777777778,
+              0.02848611111111111,
+              0.036844444444444444
             ],
             "windows_used": 25
           },
@@ -5203,6 +6008,7 @@
             "evidence": "amplitude_vs_level",
             "point_count": 19,
             "trusted_count": 3,
+            "saturated_count": 4,
             "level_min": 0.027044509006295226,
             "level_max": 0.3227818958040635,
             "points": [
@@ -5211,6 +6017,8 @@
                 "sigma": 0.0016058656386262738,
                 "rho": 0.43717583877452193,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.43717583877452193,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -5219,6 +6027,8 @@
                 "sigma": 0.00641257815617682,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.0393582304852576,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5227,6 +6037,8 @@
                 "sigma": 0.0025367200605354214,
                 "rho": 0.3696229730426237,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3696229730426237,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5235,6 +6047,8 @@
                 "sigma": 0.001284747016983165,
                 "rho": 0.30727498580620427,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.30727498580620427,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5243,6 +6057,8 @@
                 "sigma": 0.0032490523967229953,
                 "rho": 0.8058650861380052,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.8058650861380052,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5251,6 +6067,8 @@
                 "sigma": 0.0016495121456973497,
                 "rho": 0.39370898150739975,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.39370898150739975,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -5259,6 +6077,8 @@
                 "sigma": 0.08044133085568225,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.129601849139922,
                 "sample_count": 147456,
                 "band": "highlight"
               },
@@ -5267,6 +6087,8 @@
                 "sigma": 0.0014649518778005238,
                 "rho": 0.41959807750106437,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.41959807750106437,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5275,6 +6097,8 @@
                 "sigma": 0.0033667865651729393,
                 "rho": 0.7640086062606668,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.7640086062606668,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5283,6 +6107,8 @@
                 "sigma": 0.018011818172288405,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.3403991243586142,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5291,6 +6117,8 @@
                 "sigma": 0.0010107454580092936,
                 "rho": 0.524006661691057,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.524006661691057,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5299,6 +6127,8 @@
                 "sigma": 0.0006001195479399221,
                 "rho": 0.4368050635896561,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4368050635896561,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5307,6 +6137,8 @@
                 "sigma": 0.016995139200984517,
                 "rho": 0.99,
                 "trustworthy": false,
+                "identified": false,
+                "raw_rho": 1.1935365399043287,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5315,6 +6147,8 @@
                 "sigma": 0.0016458995782999107,
                 "rho": 0.5885669391798447,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5885669391798447,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5323,6 +6157,8 @@
                 "sigma": 0.0005759579223446809,
                 "rho": 0.3420839396304829,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.3420839396304829,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5331,6 +6167,8 @@
                 "sigma": 0.000755579041399581,
                 "rho": 0.37910405721973484,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.37910405721973484,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5339,6 +6177,8 @@
                 "sigma": 0.0007186048394904368,
                 "rho": 0.30499704524150495,
                 "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.30499704524150495,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5347,6 +6187,8 @@
                 "sigma": 0.0006107035348268536,
                 "rho": 0.5182811791707138,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5182811791707138,
                 "sample_count": 147456,
                 "band": "midtone"
               },
@@ -5355,6 +6197,8 @@
                 "sigma": 0.0005785121247673331,
                 "rho": 0.3587681139417924,
                 "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3587681139417924,
                 "sample_count": 147456,
                 "band": "midtone"
               }
@@ -5403,7 +6247,7 @@
           },
           "tails": {
             "kurtosis_pooled": 916.4207073544382,
-            "kurtosis_normalised": 38.15341232602664,
+            "kurtosis_normalised": 14.35361981014383,
             "kurtosis_per_window": {
               "median": 2.542376097828636,
               "min": 0.6834370931692937,
@@ -5443,15 +6287,15 @@
               "2": 0.05548416940789474
             },
             "outlier_fraction_per_pair": [
-              0.0429422514619883,
-              0.0718530701754386,
-              0.02946637426900585,
-              0.045975877192982455,
-              0.017701023391812867,
-              0.02072733918128655,
-              0.07183114035087719,
-              0.011871345029239765,
-              0.0464546783625731
+              0.08858552631578948,
+              0.1096125730994152,
+              0.05162280701754386,
+              0.10426535087719298,
+              0.044853801169590646,
+              0.04779970760233918,
+              0.13918859649122808,
+              0.037225877192982454,
+              0.09265350877192982
             ],
             "windows_used": 19
           },
@@ -5503,9 +6347,10 @@
           "rho_from_lag4": 0.4248542713567838,
           "parameter_identified": true,
           "trustworthy": true,
+          "trust_reasons": [],
           "tails": {
             "kurtosis_pooled": 0.735552585001471,
-            "kurtosis_normalised": 0.7355525850014715,
+            "kurtosis_normalised": 0.7355525850014737,
             "kurtosis_per_window": {
               "median": 0.735552585001471,
               "min": 0.735552585001471,
@@ -5588,109 +6433,29 @@
               0.0
             ],
             "windows_used": 1
-          }
-        },
-        {
-          "interval_start_s": 0.0,
-          "tile": {
-            "x": 1536,
-            "y": 768,
-            "size": 128
           },
-          "frames": 60,
-          "level": 0.040162895892953306,
-          "sigma": 0.000586258724755609,
-          "legacy_sigma": 0.00045791162774568185,
-          "rho": 0.389922925387032,
-          "raw_rho": 0.389922925387032,
-          "rho_from_lag4": 0.451718592964824,
-          "parameter_identified": true,
-          "trustworthy": false,
-          "tails": {
-            "kurtosis_pooled": 0.7259552836069862,
-            "kurtosis_normalised": 0.7259552836069898,
-            "kurtosis_per_window": {
-              "median": 0.7259552836069862,
-              "min": 0.7259552836069862,
-              "max": 0.7259552836069862,
-              "n": 1,
-              "values": [
-                0.7259552836069862
-              ]
+          "zeros": {
+            "zero_fraction": 0.3260549771583686,
+            "by_level": {
+              "q1": 0.30635946232314626,
+              "q2": 0.30332074847741614,
+              "q3": 0.3222676888014089,
+              "q4": 0.33557925693164536,
+              "q5": 0.35966216854765304
             },
-            "mixing_prediction": -4.440892098500626e-16,
-            "mixing_explains": -6.117308047453805e-16,
-            "skew_pooled": -0.005998583759255782,
-            "exact_zero_fraction": 0.30460672669491523,
+            "by_texture": {
+              "flattest third": 0.32790297279718406,
+              "roughest third": 0.32435823998993446
+            },
+            "block_bimodality": 0.0,
+            "max_run_share": 0.0,
             "step_occupancy": {
-              "-2": 0.09338387182203389,
-              "-1": 0.21593485169491525,
-              "0": 0.30460672669491523,
-              "1": 0.2126271186440678,
-              "2": 0.09082958156779661
-            },
-            "outlier_fraction_per_pair": [
-              4.3282548476454294e-05,
-              0.0,
-              0.0,
-              0.0001298476454293629,
-              0.0,
-              0.0,
-              0.0001298476454293629,
-              0.0,
-              0.0,
-              0.00021641274238227146,
-              0.0,
-              0.0,
-              0.00021641274238227146,
-              0.0,
-              0.0,
-              0.00034626038781163435,
-              0.0,
-              4.3282548476454294e-05,
-              0.00021641274238227146,
-              0.0,
-              4.3282548476454294e-05,
-              0.00017313019390581717,
-              0.0,
-              0.00017313019390581717,
-              4.3282548476454294e-05,
-              4.3282548476454294e-05,
-              0.0,
-              4.3282548476454294e-05,
-              0.0,
-              4.3282548476454294e-05,
-              0.0001298476454293629,
-              0.0,
-              0.0,
-              0.0002596952908587258,
-              0.0,
-              0.0,
-              0.00021641274238227146,
-              0.0,
-              0.0,
-              0.0002596952908587258,
-              0.0,
-              0.0,
-              8.656509695290859e-05,
-              0.0,
-              0.0,
-              0.00017313019390581717,
-              0.0,
-              0.00021641274238227146,
-              0.0001298476454293629,
-              0.0,
-              0.00017313019390581717,
-              0.00047610803324099724,
-              4.3282548476454294e-05,
-              0.0,
-              0.0002596952908587258,
-              0.0,
-              0.0,
-              0.0001298476454293629,
-              4.3282548476454294e-05
-            ],
-            "windows_used": 1
+              "-2": 0.08775924423993645,
+              "-1": 0.22226003873146186,
+              "0": 0.3260549771583686,
+              "1": 0.215869968220339,
+              "2": 0.08318988347457627
+            }
           }
         },
         {
@@ -5709,9 +6474,13 @@
           "rho_from_lag4": 0.5522110552763819,
           "parameter_identified": true,
           "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.479",
+            "lag-4 disagrees: rho +0.443 vs +0.552"
+          ],
           "tails": {
             "kurtosis_pooled": 1.4324295156476525,
-            "kurtosis_normalised": 1.4324295156476508,
+            "kurtosis_normalised": 1.432429515647649,
             "kurtosis_per_window": {
               "median": 1.4324295156476525,
               "min": 1.4324295156476525,
@@ -5794,9 +6563,192 @@
               0.0
             ],
             "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.2692167637711864,
+            "by_level": {
+              "q1": 0.18449418913866553,
+              "q2": 0.1964348918925851,
+              "q3": 0.27707497522378094,
+              "q4": 0.32279816561680613,
+              "q5": 0.3611335630872982
+            },
+            "by_texture": {
+              "flattest third": 0.284623344069254,
+              "roughest third": 0.23787201387962098
+            },
+            "block_bimodality": 0.0,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.10425735732256355,
+              "-1": 0.2013363595736229,
+              "0": 0.2692167637711864,
+              "1": 0.18837725105932204,
+              "2": 0.09208653336864407
+            }
+          }
+        },
+        {
+          "interval_start_s": 2.0,
+          "tile": {
+            "x": 1792,
+            "y": 768,
+            "size": 128
+          },
+          "frames": 60,
+          "level": 0.02582567262643299,
+          "sigma": 0.0004882681718609111,
+          "legacy_sigma": 0.00039854691046401495,
+          "rho": 0.3337425736205004,
+          "raw_rho": 0.3337425736205004,
+          "rho_from_lag4": 0.35620100502512564,
+          "parameter_identified": true,
+          "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.534"
+          ],
+          "tails": {
+            "kurtosis_pooled": 0.43772836127337733,
+            "kurtosis_normalised": 0.43772836127337733,
+            "kurtosis_per_window": {
+              "median": 0.43772836127337733,
+              "min": 0.43772836127337733,
+              "max": 0.43772836127337733,
+              "n": 1,
+              "values": [
+                0.43772836127337733
+              ]
+            },
+            "mixing_prediction": 0.0,
+            "mixing_explains": 0.0,
+            "skew_pooled": 0.003992916350666727,
+            "exact_zero_fraction": 0.24506303620004186,
+            "step_occupancy": {
+              "-2": 0.11163096359070936,
+              "-1": 0.20019224733207783,
+              "0": 0.24506303620004186,
+              "1": 0.19641677783008998,
+              "2": 0.1080582038606403
+            },
+            "outlier_fraction_per_pair": [
+              0.00010813148788927336,
+              0.0,
+              0.0,
+              0.0004865916955017301,
+              0.0,
+              0.00016219723183391003,
+              0.00010813148788927336,
+              5.406574394463668e-05,
+              0.0,
+              0.0002703287197231834,
+              0.0,
+              0.0,
+              0.00021626297577854672,
+              0.0,
+              0.0,
+              0.00021626297577854672,
+              0.0,
+              5.406574394463668e-05,
+              0.00032439446366782005,
+              0.0,
+              5.406574394463668e-05,
+              5.406574394463668e-05,
+              0.0,
+              0.00021626297577854672,
+              0.00010813148788927336,
+              0.0,
+              0.0,
+              0.00016219723183391003,
+              0.0,
+              0.0,
+              5.406574394463668e-05,
+              0.0,
+              5.406574394463668e-05,
+              0.00032439446366782005,
+              0.00010813148788927336,
+              0.00010813148788927336,
+              0.00037846020761245675,
+              5.406574394463668e-05,
+              0.0,
+              0.00043252595155709344,
+              0.0,
+              5.406574394463668e-05,
+              0.00032439446366782005,
+              5.406574394463668e-05,
+              0.0,
+              0.00016219723183391003,
+              0.0,
+              5.406574394463668e-05,
+              0.00021626297577854672,
+              5.406574394463668e-05,
+              5.406574394463668e-05,
+              0.00032439446366782005,
+              5.406574394463668e-05,
+              0.0,
+              0.00037846020761245675,
+              5.406574394463668e-05,
+              0.0,
+              0.00010813148788927336,
+              5.406574394463668e-05
+            ],
+            "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.24598409361758475,
+            "by_level": {
+              "q1": 0.23400644043757773,
+              "q2": 0.24093566604532304,
+              "q3": 0.24359891501982175,
+              "q4": 0.25168258903913426,
+              "q5": 0.25676379371523633
+            },
+            "by_texture": {
+              "flattest third": 0.24858607914377248,
+              "roughest third": 0.2427746023086556
+            },
+            "block_bimodality": 0.0,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.1108615681276483,
+              "-1": 0.2006980766684322,
+              "0": 0.24598409361758475,
+              "1": 0.19726769398834745,
+              "2": 0.1082836086467161
+            }
           }
         }
       ],
+      "duration_vs_pooling": {
+        "a_short_single": {
+          "median": 0.6767227434294263,
+          "min": 0.4087683691005961,
+          "max": 1.3911710570402542,
+          "n": 3,
+          "values": [
+            0.6767227434294263,
+            1.3911710570402542,
+            0.4087683691005961
+          ]
+        },
+        "b_long_single": {
+          "median": 0.6582839262236209,
+          "min": 0.41937588133091586,
+          "max": 1.5779038781993764,
+          "n": 3,
+          "values": [
+            0.6582839262236209,
+            1.5779038781993764,
+            0.41937588133091586
+          ]
+        },
+        "c_short_pooled": 0.8501008017848233,
+        "d_long_pooled": 0.9444920116033715,
+        "frames_short": 10,
+        "frames_long": 60,
+        "tiles": 3,
+        "duration_effect": -0.018438817205805424,
+        "pooling_effect": 0.2862080853797506
+      },
       "screen_anchoring": {
         "available": false,
         "separation_s": 3.0,

@@ -351,30 +351,55 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
      the letterbox was damping every frame's motion, so cut-free intervals fell from 2,671 to
      **2,095** and detected cuts rose from 610 to 1,522.
 
-   **The heavy tails were an artefact of the wide pass.** Ten frames gives nine difference pairs,
-   and pooling tiles at different amplitudes adds scale mixing on top. Following three tiles for
-   **60 frames** each says something entirely different:
+   **The heavy tails: what actually causes them.** A third review round showed my previous
+   explanation was wrong, and the four-way experiment that settles it is cheap. Running the *same*
+   three tiles at two durations, singly and pooled, on the exact central 128 px crop:
 
-   | | wide pass (10 frames, pooled) | deep probe (60 frames, one tile) |
-   |---|---|---|
-   | Pulp Fiction | kurtosis +24.8, σ 0.0044 raw | **kurtosis +1.0 / +0.7**, ρ +0.038 / +0.047, σ 0.00050 / 0.00061 |
-   | Sony C0014 | kurtosis +666, σ 0.0015 raw | **kurtosis +0.7 / +0.7 / +1.4**, ρ +0.372 / +0.390 / +0.443, σ ≈ 0.0006 |
+   | excess kurtosis | A: 10f single | B: 60f single | C: 10f pooled | D: 60f pooled | duration (B−A) | pooling (D−B) |
+   |---|---|---|---|---|---|---|
+   | Pulp Fiction | +2.21 | +2.25 | +8.57 | +7.53 | **+0.03** | **+5.29** |
+   | Sony C0014 | +0.68 | +0.66 | +0.85 | +0.94 | **−0.02** | **+0.29** |
 
-   Both sources are **near-Gaussian** when a tile is followed properly. The +2989 excess kurtosis
-   was the measurement, not the material. One Pulp tile remains pathological (kurtosis +198,
-   ρ +0.904) and is exactly the kind of contaminated tile the trust gates exist to catch.
+   **Sequence length has no effect at all.** The earlier claim that "short duration explains the
+   rest" is withdrawn — it was never isolated, because the wide/deep comparison changed four
+   things at once. Pooling contributes +5.29 on Pulp, which matches the independently computed
+   scale-mixing prediction of +5.5 almost exactly, so mixing is quantitatively confirmed as the
+   pooling mechanism. The remaining gap to the wide pass (+24.8 Pulp, +666 Sony) is therefore
+   **tile selection**: the wide pass pools every accepted tile, the deep probe takes the
+   lowest-motion tile per interval.
 
-   Two real differences between the sources survive:
+   **Most deep probes are not trustworthy, and the report now says so.** Printing only
+   "identified" while omitting trust presented five of six probes that had *failed* the drift gate
+   as accepted measurements. With tiles now spread one per interval, **all three Pulp probes are
+   rejected** — sub-pixel residual 0.63–1.10 with shifts at the search boundary — and one of three
+   Sony probes is trusted. So *"Pulp is effectively independent" is not supportable*: the wide
+   pass has 1 trustworthy point in 267, and no long Pulp tile passes the drift gate.
 
-   - **Temporal correlation.** Pulp ρ ≈ 0.04 — effectively independent, as scanned film grain
-     should be. Sony ρ ≈ 0.37–0.44, consistent across tiles and with the wide pass's trusted
-     median. That is temporal processing in the camera, not grain.
-   - **Zero inflation.** Pulp ~3% of pixels unchanged between frames; Sony **28–34%**. A third of
-     the Sony frame does not move at all frame to frame.
+   | | trustworthy long tiles | ρ where trusted | σ |
+   |---|---|---|---|
+   | Pulp Fiction | **0 of 3** (all drifting) | — | — |
+   | Sony C0014 | 1 of 3 | +0.372 | 0.00062 |
 
-   Scale mixing was measured rather than assumed: predicted excess kurtosis from the per-window
-   variance spread alone is +5.5 (Pulp) and +16.3 (Sony), so it explains part of the wide-pass
-   figure and not the rest — the rest was the short sequence.
+   **Zero inflation separates the two sources cleanly.** Pulp 10.9%, Sony 32.6% of frame-to-frame
+   steps exactly zero, and the fingerprints differ:
+
+   | | 16 px blocks all-frozen or all-live | zeros by texture (flat / rough) | step occupancy 0, ±1 |
+   |---|---|---|---|
+   | Pulp Fiction | **20.3%** | 11.1% / 10.4% | 10.9%, 9.5% |
+   | Sony C0014 | **0.0%** | 32.8% / 32.4% | 32.6%, ~22% |
+
+   Pulp's zeros clump into the coder's block grid — codec block freezing. Sony's show no block
+   structure, no texture dependence and no long runs, but **76% of all steps fall within ±1 code**:
+   the per-frame change is at or below the quantisation step. That is a quantisation-limited
+   signal, not noise reduction and not block freezing.
+
+   Also fixed in this round: saturation was counted inside the *trusted* set, where a saturated
+   estimate can never appear, so it always read zero — the same by-construction error as
+   `trusted_fraction`. It is now counted over all points (**3 Pulp, 27 Sony saturated, all
+   rejected**), and `AmplitudePoint` carries `raw_rho` so a rejected point can say how far outside
+   the model it fell. Per-window normalisation now uses `(r − mean)/std` rather than a floored
+   MAD, which does not standardise variance and had been *re-introducing* the mixing it claimed to
+   remove.
 
    Screen anchoring now runs over **15 interval pairs** up to 6,512 s apart: grain envelope median
    −0.003 (−0.085…+0.103), additive pattern median −0.006 (−0.133…+0.219). Stated as the bounded
@@ -382,10 +407,14 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    correlation near zero rejects a strong common pattern but does not rule out a weaker one, and
    no null distribution was computed.
 
-   Still open: the reused Pulp survey is a **coded-frame** survey, so its motion and level
-   statistics include the 24.4% of each frame that is letterbox while extraction uses the active
-   picture. The study labels this in its output; removing it needs the survey regenerated with the
-   crop applied.
+   Still open: the deep probe's alignment gate rejects almost everything at 60 frames — a
+   sub-pixel residual of 0.63–1.10 px over 2.5 s is ordinary gate weave or scan drift, not a
+   defect, but the current gate has no way to accept a tile that drifts slowly and steadily. Until
+   that is resolved there is **no trustworthy long-sequence measurement of Pulp Fiction at all**,
+   which is a sharper statement of why no fit should be attempted yet. The screen-anchoring guard
+   is also still purely temporal; 60 s does not guarantee unrelated pictures, and an image
+   similarity check would close it.
+
 5. **Implement the query interface** over intervals and regions, with provenance on every result.
 6. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.
 7. *Then* the compact fit, holdout reconstruction and engine-profile export — only once a
