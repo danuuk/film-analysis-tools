@@ -177,10 +177,41 @@ reserved for material that is largely graphics.
 Its limit is recorded as a test: detection is block-wise, so a graphic thinner than `block_size`
 is averaged away against the grain around it. That is why the block size is a parameter.
 
+## 7.2 Screening the real catalogue
+
+Run over all 304 scenes, the filter admits **46** for every measurement — the static population,
+which matches §1. What it also established is that the catalogue is **less informative than its
+field names suggest**, and that mattered more than the count.
+
+Three of its metrics are not measurements at all:
+
+| Field | Value across all 304 | What it actually is |
+|---|---|---|
+| `signal_bit_depth_proxy` | 10.0 | the container's bit depth |
+| `luma_peak_code` | 940 | the legal-range ceiling |
+| `luma_floor_code` | 64 | the legal-range floor |
+
+Fed to a threshold, each satisfies it for every scene while measuring nothing. A first run scored
+**1 of 304 admissible** and it took checking the distributions to see that this was an import
+error, not a result — `max_scene_cut_score` is ffmpeg's scdet score on roughly 0–100 (median 11.4),
+not a probability, so a 0.3 threshold rejected everything.
+
+That produced a design change worth keeping. Screening now has three outcomes, not two:
+**rejected**, **admissible**, and **needs a frame-level check**. A criterion the catalogue cannot
+answer is recorded as unassessed rather than passed, so a scene admitted on a constant can never
+look identical to one that was actually checked. A5 and A6 are unassessable from this catalogue and
+now say so; the frame-level implementations from §7.1 are what resolve them.
+
+Coverage potential is reported but is weakly selective here: 46/45/45 scenes could contribute
+shadow/midtone/highlight windows, because nearly every scene spans a wide level range. That is the
+§2 point restated — the potential exists almost everywhere, and whether *static* windows actually
+land in each band is a window-level question that screening cannot answer.
+
 ## 8. Sequencing
 
 1. ~~Add the three missing scene metrics~~ — done; see §7.1.
-2. Encode §3 and §4 as a per-measurement admissibility filter over the catalogue.
+2. ~~Encode §3 and §4 as a per-measurement admissibility filter~~ — done, in
+   `capabilities/measure/screening.py`. See §7.2 for what running it on the real catalogue found.
 3. Encode §5 as a coverage-driven selector: choose the set that maximises band, texture and
    position coverage subject to §6's cap, rather than taking the highest-scoring scenes.
 4. Report accepted, rejected and the reason for every rejection — and the unmeasured range.

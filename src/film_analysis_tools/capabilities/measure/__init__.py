@@ -10,6 +10,7 @@ from film_analysis_tools.capabilities.measure import (
     chroma,
     evidence,
     residual,
+    screening,
     synthetic,
     windows,
 )
@@ -33,6 +34,7 @@ __all__ = [
     "evidence",
     "extract",
     "residual",
+    "screening",
     "select_windows",
     "synthetic",
     "windows",
