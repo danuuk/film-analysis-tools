@@ -30,6 +30,7 @@ from film_analysis_tools.capabilities.catalogue import (
     categories,
     ingest,
     intervals,
+    regions,
     survey,
 )
 from film_analysis_tools.capabilities.catalogue.categories import (
@@ -60,5 +61,6 @@ __all__ = [
     "ingest",
     "intervals",
     "load",
+    "regions",
     "survey",
 ]

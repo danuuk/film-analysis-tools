@@ -150,8 +150,8 @@ much material was needed — it was the shape of the selection tooling.
 ## 6. Gaps
 
 1. **No interval level.** Scenes are the only temporal unit, and they are the wrong one.
-2. **No region catalogue.** Tiles are recomputed inside each analysis run and discarded. They are
-   never indexed, so they cannot be queried, compared across runs, or traced to.
+2. ~~**No region catalogue.**~~ — closed by step 3. Tiles were recomputed inside each analysis run
+   and discarded, so they could not be queried, compared across runs, or traced to.
 3. **Face data is per-scene, not per-region.** One probe frame per scene gives presence and a
    bounding box; FaceMesh gives pixel geometry but is not joined to the catalogue.
 
@@ -163,9 +163,15 @@ much material was needed — it was the shape of the selection tooling.
    Cheap to do: the scout is one detector call per frame and only stable intervals need it.
 4. **Categories are selections, not predicates.** `grain_top_5.json` is a frozen answer. A
    predicate over columns would let the same question be re-asked as criteria improve.
-5. **No traceability from parameter to region.** A knot in the amplitude curve cannot name the
-   regions behind it.
+5. ~~**No traceability from parameter to region.**~~ — closed by step 3. A knot in the amplitude
+   curve could not name the regions behind it; `Region.region_id` is that name.
 6. **No holdout by construction.** The sixth control scene was chosen by hand and remembered.
+7. **Thresholds are scale-bound and nothing declares it.** Found while running step 3. Both
+   `DEFAULT_BAND_EDGES` and `WindowGate.max_motion_energy` are absolute numbers compared against
+   levels whose scale is chosen by the caller, so the same gate is 100× stricter or looser
+   depending on what 1.0 means. Regions now *record* the scale, and a mismatch between edges and
+   data is detected — but the gate itself still cannot check its own units. The fix is to declare
+   thresholds against a named scale with a reference white, not to keep tuning the numbers.
 
 ## 7. What survives from the work already done
 
@@ -228,8 +234,41 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    producer→survey column mapping instead of guessing it, and takes the face probe position as a
    parameter: the scout recorded a verdict per scene but not *when* it looked, so every
    `distance_s` rests on reconstructing that as the scene midpoint. Naming it makes it correctable.
-3. **Define the region record and index it.** Window selection already computes everything a
-   region record needs; it currently throws it away.
+3. ~~**Define the region record and index it.**~~ — done. `capabilities/catalogue/regions`.
+   Validated end to end on the real 4K PQ master: 8 stable intervals spread across the film,
+   decoded at native resolution, tiled and indexed as **629 regions**.
+
+   A `Region` is a `Window` plus provenance — source, interval, frame range, gate, band edges and
+   **level scale** — addressed by a readable `region_id` (`source@frame+n:x,y+size`), which closes
+   gaps 2 and 5. Four things came out of running it that were not visible before:
+
+   **A region count is not a sample size.** Those 629 regions are 8 disjoint spans totalling
+   **14.0 seconds** — 79 tiles per span, all views of the same few frames. `independence()`
+   reports the merged, disjoint time behind any selection, and `per_interval_cap` forces spread
+   over depth. A corpus that reports 629 has said almost nothing about how much film it saw.
+
+   **The level scale is load-bearing, not metadata.** Same footage, same tiles, same default band
+   edges (0.02, 0.25) — normalised so 1.0 is the PQ peak, **737 of 739 regions land in "shadow"**;
+   normalised so 1.0 is 100-nit diffuse white, the split is 467 shadow / 162 midtone. 162 midtone
+   regions appeared from fixing units alone. That reads exactly like "this film has no midtones",
+   and the two diagnoses need opposite fixes, so `RegionIndex.edges_bracket_the_data` now
+   distinguishes them: when no band edge falls inside the measured range, every region is in one
+   band *by construction* and the summary says so.
+
+   **The motion gate is scale-bound too, and nothing declares it.** Motion energy is an RMS of
+   temporal differences in level units, so it scales with the levels: measured medians 0.000011 →
+   0.000110 → 0.001098 for level scales ×1 → ×10 → ×100, and acceptance 48 → 45 → 36 of 120 tiles.
+   `WindowGate.max_motion_energy = 0.005` is documented as though it were absolute; it is not.
+   This is gap 7 below — the record makes it visible but does not yet fix it.
+
+   **A tile mean hides what the tile holds** — the step-1 finding one level down. By mean these
+   629 regions contain **zero** highlight material; by content, **39 regions across 5 spans**. So
+   `Window` now carries its 1st/99th percentile spread (§3's table always said a region carries
+   "mean level *and its spread*"), and regions answer `contains_band` as intervals do.
+   A practical consequence for the fit: `flat + contains highlight` returns **0** regions —
+   a highlight inside a tile is an edge, so every highlight-bearing tile is textured. Highlight
+   amplitude must come from aligned textured tiles or from tiles small enough to sit inside the
+   bright area; it cannot come from flat ones.
 4. **Implement the query interface** over intervals and regions, with provenance on every result.
 5. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.
 6. *Then* return to the statistical methods, inside a system that can say what they were run on.

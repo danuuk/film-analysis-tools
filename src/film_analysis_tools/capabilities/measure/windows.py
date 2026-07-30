@@ -38,7 +38,7 @@ from film_analysis_tools.capabilities.measure.residual import (
     box_blur,
     estimate_shift,
 )
-from film_analysis_tools.core.errors import DataError
+from film_analysis_tools.core.errors import DataError, SelectionError
 
 #: Luma band edges on the working linear scale. Absolute rather than per-scene quantiles: the
 #: point is to cover the *amplitude curve's domain*, and quantile bands would report full coverage
@@ -90,10 +90,29 @@ class Window:
     band: str
     texture: str
     position: str
+    level_low: float = 0.0
+    level_high: float = 0.0
+    """1st and 99th percentile inside the tile, over its frames.
+
+    A tile mean is the same "judge by the average" statistic that made the whole film read as
+    midtone at interval level. Measured on the 4K master: of 120 tiles in one interval, 18 reach
+    the highlight edge by mean and **32** by content — a lamp inside a 128 px tile averages away.
+    """
 
     @property
     def stratum(self) -> tuple[str, str, str]:
         return (self.band, self.texture, self.position)
+
+    def contains_band(self, band: str, edges: tuple[float, float] = DEFAULT_BAND_EDGES) -> bool:
+        """Whether the tile *contains* content in a band, by its spread rather than its mean."""
+        low, high = edges
+        if band == "shadow":
+            return self.level_low < low
+        if band == "midtone":
+            return self.level_low < high and self.level_high >= low
+        if band == "highlight":
+            return self.level_high >= high
+        raise SelectionError(f"unknown band {band!r}; expected one of {BANDS}")
 
     def slice_of(self, frames: np.ndarray) -> np.ndarray:
         return frames[:, self.y : self.y + self.size, self.x : self.x + self.size]
@@ -110,6 +129,8 @@ class Window:
             "band": self.band,
             "texture": self.texture,
             "position": self.position,
+            "level_low": self.level_low,
+            "level_high": self.level_high,
         }
 
 
@@ -275,6 +296,7 @@ def select_windows(
             motion = float(np.sqrt(np.mean(low_pass[:, y : y + size, x : x + size] ** 2)))
             shift = estimate_shift(region[0], region[1], blur_radius=blur_radius)
             level = float(np.mean(region))
+            spread_low, spread_high = (float(v) for v in np.percentile(region, (1.0, 99.0)))
 
             window = Window(
                 x=x,
@@ -287,6 +309,8 @@ def select_windows(
                 band=_band_of(level, band_edges),
                 texture="textured" if shift.structure_snr >= MIN_STRUCTURE_SNR else "flat",
                 position=_position_of(x, y, size, width, height),
+                level_low=spread_low,
+                level_high=spread_high,
             )
 
             # Sub-pixel drift only means something where there is structure to misalign. On a
