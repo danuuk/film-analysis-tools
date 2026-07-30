@@ -96,67 +96,78 @@ def _normalise_profile(centres: np.ndarray, profile: np.ndarray) -> np.ndarray:
     return profile / reference if reference and np.isfinite(reference) else profile
 
 
-def _grain_radius(residual: np.ndarray) -> float:
-    """Half-width of the spatial autocorrelation, in pixels: a characteristic grain size.
-
-    White grain has an autocorrelation that is a spike at zero lag, so the half-width is ~0.5 px;
-    a spatially correlated (larger) grain widens it.
-    """
+def _mean_power(residual: np.ndarray) -> np.ndarray:
+    """Mean 2D power spectrum over a residual stack (DC included)."""
     power: np.ndarray | None = None
     for frame in residual:
         centred = frame - frame.mean()
         spectrum = np.abs(np.fft.fft2(centred)) ** 2
         power = spectrum if power is None else power + spectrum
     assert power is not None
-    autocorr = np.fft.ifft2(power).real
-    autocorr = autocorr / max(autocorr[0, 0], EPS)
-    line = autocorr[0, : autocorr.shape[1] // 2]
-    below = np.where(line < 0.5)[0]
+    return power / residual.shape[0]
+
+
+def _interp_crossing(line: np.ndarray, threshold: float = 0.5) -> float:
+    """The lag at which ``line`` first falls below ``threshold``, linearly interpolated.
+
+    Integer lags gave the coarsely quantised half-widths (an exact 2.0 anisotropy). Interpolating
+    between the two straddling lags recovers a continuous width, which is what the anisotropy and
+    directional comparisons need to mean anything finer than 2:1.
+    """
+    below = np.where(line < threshold)[0]
     if below.size == 0:
         return float(line.size)
     first = int(below[0])
     if first == 0:
         return 0.5
-    # Linear interpolation to the 0.5 crossing between the two straddling lags.
     high, low = line[first - 1], line[first]
-    frac = (high - 0.5) / max(high - low, EPS)
+    frac = (high - threshold) / max(high - low, EPS)
     return float(first - 1 + frac)
 
 
-def _anisotropy(residual: np.ndarray) -> float:
-    """Ratio of horizontal to vertical autocorrelation half-width. 1.0 is isotropic."""
-    power: np.ndarray | None = None
-    for frame in residual:
-        centred = frame - frame.mean()
-        power_frame = np.abs(np.fft.fft2(centred)) ** 2
-        power = power_frame if power is None else power + power_frame
-    assert power is not None
+def _axis_slice(power: np.ndarray, axis: int) -> np.ndarray:
+    """1D power along one frequency axis (the other frequency at 0), positive frequencies only."""
+    line = power[0, :] if axis == 1 else power[:, 0]
+    return np.asarray(line[: line.size // 2])
+
+
+def _resample(profile: np.ndarray, bins: int) -> np.ndarray:
+    """Resample a directional slice onto the same ``bins`` frequency grid as the radial profile."""
+    source = np.linspace(0.0, 0.5, profile.size, endpoint=False)
+    edges = np.linspace(0.0, 0.5, bins + 1)
+    centres = 0.5 * (edges[:-1] + edges[1:])
+    return np.interp(centres, source, profile)
+
+
+def _directional_widths(residual: np.ndarray) -> tuple[float, float]:
+    """Interpolated horizontal and vertical autocorrelation half-widths, in pixels."""
+    power = _mean_power(residual)
     autocorr = np.fft.ifft2(power).real
     autocorr = autocorr / max(autocorr[0, 0], EPS)
-
-    def half_width(line: np.ndarray) -> float:
-        below = np.where(line < 0.5)[0]
-        return float(below[0]) if below.size else float(line.size)
-
-    horizontal = half_width(autocorr[0, : autocorr.shape[1] // 2])
-    vertical = half_width(autocorr[: autocorr.shape[0] // 2, 0])
-    return horizontal / max(vertical, EPS)
+    horizontal = _interp_crossing(autocorr[0, : autocorr.shape[1] // 2])
+    vertical = _interp_crossing(autocorr[: autocorr.shape[0] // 2, 0])
+    return horizontal, vertical
 
 
-def _block_peak(centres: np.ndarray, profile: np.ndarray) -> float:
-    """Largest excess at a codec block fundamental over the local spectral background.
+def _block_axis_peak(profile: np.ndarray) -> float:
+    """Largest excess at a block fundamental or its low harmonics over the local background.
 
-    A value near 1 means no block structure; well above 1 means the encoder's block grid is
-    printing a periodic pattern into the residual.
+    Evaluated on a *directional* slice, where a codec grid concentrates its energy -- radial
+    averaging dilutes exactly these narrow axial peaks. Harmonics are checked because a square
+    grid rings at multiples of its fundamental.
     """
+    freqs = np.linspace(0.0, 0.5, profile.size, endpoint=False)
     peak = 1.0
     for size in BLOCK_SIZES:
-        target = 1.0 / size
-        index = int(np.argmin(np.abs(centres - target)))
-        neighbours = [i for i in (index - 2, index + 2) if 0 <= i < profile.size]
-        local = np.nanmean([profile[i] for i in neighbours]) if neighbours else np.nan
-        if np.isfinite(local) and local > EPS and np.isfinite(profile[index]):
-            peak = max(peak, float(profile[index] / local))
+        for harmonic in (1, 2, 3):
+            target = harmonic / size
+            if target >= 0.5:
+                continue
+            index = int(np.argmin(np.abs(freqs - target)))
+            neighbours = [i for i in (index - 2, index + 2) if 0 <= i < profile.size]
+            local = np.nanmean([profile[i] for i in neighbours]) if neighbours else np.nan
+            if np.isfinite(local) and local > EPS and np.isfinite(profile[index]):
+                peak = max(peak, float(profile[index] / local))
     return peak
 
 
@@ -169,9 +180,25 @@ class WindowSpectrum:
     band: str
     frequencies: tuple[float, ...]
     radial_psd: tuple[float, ...]
+    horizontal_psd: tuple[float, ...]
+    vertical_psd: tuple[float, ...]
     grain_radius: float
+    grain_radius_h: float
+    grain_radius_v: float
     anisotropy: float
-    block_peak: float
+    block_peak_h: float
+    block_peak_v: float
+
+    @property
+    def block_peak(self) -> float:
+        return max(self.block_peak_h, self.block_peak_v)
+
+    def profile(self, direction: str) -> tuple[float, ...]:
+        return {
+            "radial": self.radial_psd,
+            "horizontal": self.horizontal_psd,
+            "vertical": self.vertical_psd,
+        }[direction]
 
     def as_record(self) -> dict[str, Any]:
         return {
@@ -179,9 +206,14 @@ class WindowSpectrum:
             "level": self.level,
             "band": self.band,
             "grain_radius": self.grain_radius,
+            "grain_radius_h": self.grain_radius_h,
+            "grain_radius_v": self.grain_radius_v,
             "anisotropy": self.anisotropy,
-            "block_peak": self.block_peak,
+            "block_peak_h": self.block_peak_h,
+            "block_peak_v": self.block_peak_v,
             "radial_psd": list(self.radial_psd),
+            "horizontal_psd": list(self.horizontal_psd),
+            "vertical_psd": list(self.vertical_psd),
         }
 
 
@@ -199,26 +231,39 @@ def window_spectrum(
     residual = normalise_residual(frames, sigma_hat, rho)
     if residual.ndim != 3 or residual.shape[0] < 1:
         raise DataError(f"window spectrum needs a residual stack (n, h, w); got {residual.shape}")
-    centres, profile = _radial_psd(residual, bins=bins)
-    normalised = _normalise_profile(centres, profile)
+    centres, radial = _radial_psd(residual, bins=bins)
+    power = _mean_power(residual)
+    horizontal = _normalise_profile(centres, _resample(_axis_slice(power, axis=1), bins))
+    vertical = _normalise_profile(centres, _resample(_axis_slice(power, axis=0), bins))
+    width_h, width_v = _directional_widths(residual)
     return WindowSpectrum(
         interval=interval,
         level=level,
         band=band,
         frequencies=tuple(float(x) for x in centres),
-        radial_psd=tuple(float(x) for x in normalised),
-        grain_radius=_grain_radius(residual),
-        anisotropy=_anisotropy(residual),
-        block_peak=_block_peak(centres, normalised),
+        radial_psd=tuple(float(x) for x in _normalise_profile(centres, radial)),
+        horizontal_psd=tuple(float(x) for x in horizontal),
+        vertical_psd=tuple(float(x) for x in vertical),
+        grain_radius=float(np.hypot(width_h, width_v) / np.sqrt(2.0)),
+        grain_radius_h=width_h,
+        grain_radius_v=width_v,
+        anisotropy=width_h / max(width_v, EPS),
+        block_peak_h=_block_axis_peak(np.asarray(horizontal)),
+        block_peak_v=_block_axis_peak(np.asarray(vertical)),
     )
 
 
-def spectral_distance(a: WindowSpectrum, b: WindowSpectrum) -> float:
-    """Log-spectral distance between two normalised radial profiles over the comparison band."""
+def spectral_distance(a: WindowSpectrum, b: WindowSpectrum, *, direction: str = "radial") -> float:
+    """Log-spectral distance between two normalised profiles over the comparison band.
+
+    ``direction`` selects the radial, horizontal or vertical profile. Radial alone discards
+    orientation, so a level-dependent *anisotropy* is invisible to it; the directional profiles
+    are what expose an orientation trend.
+    """
     centres = np.asarray(a.frequencies)
     band = _in_band(centres)
-    first = np.log(np.maximum(np.asarray(a.radial_psd)[band], EPS))
-    second = np.log(np.maximum(np.asarray(b.radial_psd)[band], EPS))
+    first = np.log(np.maximum(np.asarray(a.profile(direction))[band], EPS))
+    second = np.log(np.maximum(np.asarray(b.profile(direction))[band], EPS))
     finite = np.isfinite(first) & np.isfinite(second)
     if not finite.any():
         return float("nan")
@@ -227,18 +272,23 @@ def spectral_distance(a: WindowSpectrum, b: WindowSpectrum) -> float:
 
 def _mean_spectrum(spectra: Sequence[WindowSpectrum]) -> WindowSpectrum:
     """The mean normalised profile over a group, kept as a WindowSpectrum for distance reuse."""
-    stacked = np.array([s.radial_psd for s in spectra])
-    mean_profile = np.nanmean(stacked, axis=0)
     first = spectra[0]
     return WindowSpectrum(
         interval="mean",
         level=float(np.mean([s.level for s in spectra])),
         band=first.band,
         frequencies=first.frequencies,
-        radial_psd=tuple(float(x) for x in mean_profile),
+        radial_psd=tuple(float(x) for x in np.nanmean([s.radial_psd for s in spectra], axis=0)),
+        horizontal_psd=tuple(
+            float(x) for x in np.nanmean([s.horizontal_psd for s in spectra], axis=0)
+        ),
+        vertical_psd=tuple(float(x) for x in np.nanmean([s.vertical_psd for s in spectra], axis=0)),
         grain_radius=float(np.mean([s.grain_radius for s in spectra])),
+        grain_radius_h=float(np.mean([s.grain_radius_h for s in spectra])),
+        grain_radius_v=float(np.mean([s.grain_radius_v for s in spectra])),
         anisotropy=float(np.mean([s.anisotropy for s in spectra])),
-        block_peak=float(np.mean([s.block_peak for s in spectra])),
+        block_peak_h=float(np.mean([s.block_peak_h for s in spectra])),
+        block_peak_v=float(np.mean([s.block_peak_v for s in spectra])),
     )
 
 
@@ -273,9 +323,11 @@ class BandSummary:
     band: str
     windows: int
     intervals: int
-    grain_radius: float
+    grain_radius_h: float
+    grain_radius_v: float
     anisotropy: float
-    block_peak: float
+    block_peak_h: float
+    block_peak_v: float
     level_min: float
     level_max: float
 
@@ -284,9 +336,11 @@ class BandSummary:
             "band": self.band,
             "windows": self.windows,
             "intervals": self.intervals,
-            "grain_radius": self.grain_radius,
+            "grain_radius_h": self.grain_radius_h,
+            "grain_radius_v": self.grain_radius_v,
             "anisotropy": self.anisotropy,
-            "block_peak": self.block_peak,
+            "block_peak_h": self.block_peak_h,
+            "block_peak_v": self.block_peak_v,
             "level_min": self.level_min,
             "level_max": self.level_max,
         }
@@ -294,8 +348,10 @@ class BandSummary:
     def line(self) -> str:
         return (
             f"    {self.band:9s} {self.windows:3d}w/{self.intervals}iv  "
-            f"grain_radius {self.grain_radius:.2f}px  anisotropy {self.anisotropy:.2f}  "
-            f"block_peak {self.block_peak:.2f}  level {self.level_min:.4f}..{self.level_max:.4f}"
+            f"radius h/v {self.grain_radius_h:.2f}/{self.grain_radius_v:.2f}px  "
+            f"anisotropy {self.anisotropy:.2f}  block h/v "
+            f"{self.block_peak_h:.2f}/{self.block_peak_v:.2f}  "
+            f"level {self.level_min:.4f}..{self.level_max:.4f}"
         )
 
 
@@ -304,58 +360,97 @@ def _band_summary(spectra: Sequence[WindowSpectrum]) -> BandSummary:
         band=spectra[0].band,
         windows=len(spectra),
         intervals=len({s.interval for s in spectra}),
-        grain_radius=float(np.median([s.grain_radius for s in spectra])),
+        grain_radius_h=float(np.median([s.grain_radius_h for s in spectra])),
+        grain_radius_v=float(np.median([s.grain_radius_v for s in spectra])),
         anisotropy=float(np.median([s.anisotropy for s in spectra])),
-        block_peak=float(np.median([s.block_peak for s in spectra])),
+        block_peak_h=float(np.median([s.block_peak_h for s in spectra])),
+        block_peak_v=float(np.median([s.block_peak_v for s in spectra])),
         level_min=float(min(s.level for s in spectra)),
         level_max=float(max(s.level for s in spectra)),
     )
 
 
-@dataclass(frozen=True)
-class FootprintStability:
-    """Whether one common footprint suffices, judged against the natural variation."""
+DIRECTIONS: tuple[str, ...] = ("radial", "horizontal", "vertical")
 
+
+@dataclass(frozen=True)
+class DirectionalStability:
+    """Split-half, between-interval and between-level variation for one profile direction."""
+
+    direction: str
     split_half: Variation
     between_interval: Variation
     between_level: Variation
-    bands_present: tuple[str, ...]
-    bands: tuple[BandSummary, ...] = ()
 
     @property
     def one_footprint_suffices(self) -> bool | None:
-        """True when between-level variation is no larger than the ordinary variation.
-
-        The null is what the same footprint looks like split two ways or seen in two intervals.
-        A between-level difference within that band is not evidence of a level trend. ``None`` when
-        there are too few level bands to compare -- unanswerable, not answered no.
-        """
-        if len(self.bands_present) < 2 or not self.between_level.distances:
+        if not self.between_level.distances:
             return None
         baseline = max(self.split_half.p90, self.between_interval.p90)
         return self.between_level.median <= baseline
 
     def as_record(self) -> dict[str, Any]:
         return {
-            "bands_present": list(self.bands_present),
-            "bands": [band.as_record() for band in self.bands],
+            "direction": self.direction,
             "split_half": self.split_half.as_record(),
             "between_interval": self.between_interval.as_record(),
             "between_level": self.between_level.as_record(),
             "one_footprint_suffices": self.one_footprint_suffices,
         }
 
+    def line(self) -> str:
+        answer = self.one_footprint_suffices
+        tag = {True: "stable", False: "LEVEL-DEPENDENT", None: "n/a"}[answer]
+        return (
+            f"  {self.direction:11s} split-half {self.split_half.median:.3f}  "
+            f"between-iv {self.between_interval.median:.3f}  "
+            f"between-level {self.between_level.median:.3f}  -> {tag}"
+        )
+
+
+@dataclass(frozen=True)
+class FootprintStability:
+    """Whether one common footprint suffices, judged radially *and* directionally.
+
+    Radial averaging discards orientation, so it cannot see a footprint whose *anisotropy* changes
+    with level while its radial shape stays constant. The horizontal and vertical profiles are
+    compared against the same nulls, and one common footprint is adopted only when **every**
+    direction is stable.
+    """
+
+    directions: tuple[DirectionalStability, ...]
+    bands_present: tuple[str, ...]
+    bands: tuple[BandSummary, ...] = ()
+
+    def direction(self, name: str) -> DirectionalStability:
+        for one in self.directions:
+            if one.direction == name:
+                return one
+        raise DataError(f"no directional stability for {name!r}")
+
+    @property
+    def one_footprint_suffices(self) -> bool | None:
+        if len(self.bands_present) < 2:
+            return None
+        answers = [one.one_footprint_suffices for one in self.directions]
+        if any(answer is False for answer in answers):
+            return False
+        if all(answer is True for answer in answers):
+            return True
+        return None
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "bands_present": list(self.bands_present),
+            "bands": [band.as_record() for band in self.bands],
+            "directions": [one.as_record() for one in self.directions],
+            "one_footprint_suffices": self.one_footprint_suffices,
+        }
+
     def summary(self) -> str:
         verdict = {True: "ONE footprint suffices", False: "level-dependent footprint indicated"}
-        lines = [
-            "spatial footprint stability (log-spectral distance):",
-            f"  split-half     median {self.split_half.median:.3f}  p90 {self.split_half.p90:.3f}"
-            f"  (n={len(self.split_half.distances)})",
-            f"  between-interval median {self.between_interval.median:.3f}  "
-            f"p90 {self.between_interval.p90:.3f}  (n={len(self.between_interval.distances)})",
-            f"  between-level  median {self.between_level.median:.3f}  "
-            f"p90 {self.between_level.p90:.3f}  (n={len(self.between_level.distances)})",
-        ]
+        lines = ["spatial footprint stability (log-spectral distance, median):"]
+        lines += [one.line() for one in self.directions]
         for band in self.bands:
             lines.append(band.line())
         answer = self.one_footprint_suffices
@@ -366,7 +461,9 @@ class FootprintStability:
         return "\n".join(lines)
 
 
-def _split_half_distances(spectra: Sequence[WindowSpectrum], *, seed: int = 0) -> list[float]:
+def _split_half_distances(
+    spectra: Sequence[WindowSpectrum], *, direction: str, seed: int = 0
+) -> list[float]:
     """Distances between two random halves of the same (interval, band) group."""
     rng = np.random.default_rng(seed)
     groups: dict[tuple[str, str], list[WindowSpectrum]] = {}
@@ -380,51 +477,77 @@ def _split_half_distances(spectra: Sequence[WindowSpectrum], *, seed: int = 0) -
         half = len(members) // 2
         left = [members[i] for i in order[:half]]
         right = [members[i] for i in order[half : 2 * half]]
-        distances.append(spectral_distance(_mean_spectrum(left), _mean_spectrum(right)))
+        distances.append(
+            spectral_distance(_mean_spectrum(left), _mean_spectrum(right), direction=direction)
+        )
     return distances
 
 
-def _between_interval_distances(spectra: Sequence[WindowSpectrum]) -> list[float]:
-    """Distances between the mean spectra of different intervals, within the same band."""
-    by_band: dict[str, dict[str, list[WindowSpectrum]]] = {}
+def _between_group_distances(
+    spectra: Sequence[WindowSpectrum], *, outer: str, inner: str, direction: str
+) -> list[float]:
+    """Distances between mean spectra of different ``inner`` groups, within each ``outer`` group.
+
+    ``outer='band', inner='interval'`` gives between-interval variation; swapping them gives
+    between-level.
+    """
+    nested: dict[str, dict[str, list[WindowSpectrum]]] = {}
     for spectrum in spectra:
-        by_band.setdefault(spectrum.band, {}).setdefault(spectrum.interval, []).append(spectrum)
+        okey = getattr(spectrum, outer)
+        ikey = getattr(spectrum, inner)
+        nested.setdefault(okey, {}).setdefault(ikey, []).append(spectrum)
     distances: list[float] = []
-    for intervals in by_band.values():
-        means = {i: _mean_spectrum(m) for i, m in intervals.items() if len(m) >= 2}
+    for groups in nested.values():
+        means = {
+            key: _mean_spectrum(members) for key, members in groups.items() if len(members) >= 2
+        }
         keys = sorted(means)
         for left in range(len(keys)):
             for right in range(left + 1, len(keys)):
-                distances.append(spectral_distance(means[keys[left]], means[keys[right]]))
+                distances.append(
+                    spectral_distance(means[keys[left]], means[keys[right]], direction=direction)
+                )
     return distances
 
 
-def _between_level_distances(spectra: Sequence[WindowSpectrum]) -> list[float]:
-    """Distances between the mean spectra of different bands, within the same interval."""
-    by_interval: dict[str, dict[str, list[WindowSpectrum]]] = {}
-    for spectrum in spectra:
-        by_interval.setdefault(spectrum.interval, {}).setdefault(spectrum.band, []).append(spectrum)
-    distances: list[float] = []
-    for bands in by_interval.values():
-        means = {b: _mean_spectrum(m) for b, m in bands.items() if len(m) >= 2}
-        keys = sorted(means)
-        for left in range(len(keys)):
-            for right in range(left + 1, len(keys)):
-                distances.append(spectral_distance(means[keys[left]], means[keys[right]]))
-    return distances
+def _directional_stability(
+    spectra: Sequence[WindowSpectrum], *, direction: str, seed: int
+) -> DirectionalStability:
+    return DirectionalStability(
+        direction=direction,
+        split_half=Variation(
+            "split_half", tuple(_split_half_distances(spectra, direction=direction, seed=seed))
+        ),
+        between_interval=Variation(
+            "between_interval",
+            tuple(
+                _between_group_distances(
+                    spectra, outer="band", inner="interval", direction=direction
+                )
+            ),
+        ),
+        between_level=Variation(
+            "between_level",
+            tuple(
+                _between_group_distances(
+                    spectra, outer="interval", inner="band", direction=direction
+                )
+            ),
+        ),
+    )
 
 
 def assess_stability(spectra: Sequence[WindowSpectrum], *, seed: int = 0) -> FootprintStability:
-    """Run the split-half, between-interval and between-level comparisons."""
+    """Run the split-half, between-interval and between-level comparisons in every direction."""
     if len(spectra) < 4:
         raise DataError(f"need at least 4 window spectra to assess stability; got {len(spectra)}")
     by_band: dict[str, list[WindowSpectrum]] = {}
     for spectrum in spectra:
         by_band.setdefault(spectrum.band, []).append(spectrum)
     return FootprintStability(
-        split_half=Variation("split_half", tuple(_split_half_distances(spectra, seed=seed))),
-        between_interval=Variation("between_interval", tuple(_between_interval_distances(spectra))),
-        between_level=Variation("between_level", tuple(_between_level_distances(spectra))),
+        directions=tuple(
+            _directional_stability(spectra, direction=name, seed=seed) for name in DIRECTIONS
+        ),
         bands_present=tuple(sorted(by_band)),
         bands=tuple(_band_summary(members) for _, members in sorted(by_band.items())),
     )
@@ -433,7 +556,9 @@ def assess_stability(spectra: Sequence[WindowSpectrum], *, seed: int = 0) -> Foo
 __all__ = [
     "BLOCK_SIZES",
     "COMPARE_BAND",
+    "DIRECTIONS",
     "BandSummary",
+    "DirectionalStability",
     "FootprintStability",
     "Variation",
     "WindowSpectrum",

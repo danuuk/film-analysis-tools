@@ -98,14 +98,21 @@ def test_different_footprints_are_far_apart() -> None:
 # ------------------------------------------------------------- the stability test
 
 
-def _corpus(footprint_by_band: dict[str, float], *, per: int = 6, intervals: int = 3):
+def _corpus(
+    footprint_by_band: dict[str, float],
+    *,
+    aniso_by_band: dict[str, float] | None = None,
+    per: int = 6,
+    intervals: int = 3,
+):
     spectra = []
     seed = 0
     for interval in range(intervals):
         for band, corr in footprint_by_band.items():
+            aniso = (aniso_by_band or {}).get(band, 1.0)
             for _ in range(per):
                 seed += 1
-                frames = _grain(correlation_px=corr, seed=seed)
+                frames = _grain(correlation_px=corr, aniso=aniso, seed=seed)
                 spectra.append(
                     _spectrum(frames, interval=f"iv{interval}", band=band, level=0.1, sigma=0.01)
                 )
@@ -142,3 +149,63 @@ def test_a_window_spectrum_serialises() -> None:
     record = _spectrum(_grain(), interval="a", band="m", level=0.1, sigma=0.01).as_record()
     assert record["interval"] == "a" and record["band"] == "m"
     assert len(record["radial_psd"]) > 4
+    assert len(record["horizontal_psd"]) > 4 and len(record["vertical_psd"]) > 4
+
+
+# ----------------------------------------------------- directional (orientation)
+
+
+def test_anisotropy_is_no_longer_quantised_to_integers() -> None:
+    """Integer half-widths produced the exact 2.0. Interpolated crossings give a continuous
+    value, so a 1.6:1 grain reads as ~1.6, not snapped to 1 or 2."""
+    spectrum = _spectrum(
+        _grain(correlation_px=2.5, aniso=1.6, seed=7), interval="a", band="m", level=0.1, sigma=0.01
+    )
+    assert spectrum.anisotropy == pytest.approx(1.6, abs=0.5)
+    assert spectrum.anisotropy % 1.0 != 0.0, "a continuous width should not land on an integer"
+
+
+def test_horizontal_and_vertical_profiles_differ_for_anisotropic_grain() -> None:
+    aniso = _spectrum(
+        _grain(correlation_px=2.5, aniso=2.5, seed=8), interval="a", band="m", level=0.1, sigma=0.01
+    )
+    same = _spectrum(
+        _grain(correlation_px=2.5, aniso=2.5, seed=9), interval="a", band="m", level=0.1, sigma=0.01
+    )
+    # A profile is identical to itself in every direction.
+    for d in fp.DIRECTIONS:
+        assert fp.spectral_distance(aniso, aniso, direction=d) == pytest.approx(0.0, abs=1e-9)
+    # The horizontal and vertical shapes genuinely differ for anisotropic grain (that is the
+    # information radial averaging throws away).
+    assert aniso.horizontal_psd != aniso.vertical_psd
+    assert aniso.grain_radius_h > aniso.grain_radius_v
+    # Two draws of the same footprint stay reasonably close radially (single-window spectra are
+    # noisy, especially on the fast-falling vertical axis of a strongly anisotropic grain).
+    assert fp.spectral_distance(aniso, same, direction="radial") < 0.6
+
+
+def test_a_level_dependent_anisotropy_is_flagged_even_when_the_radial_shape_is_stable() -> None:
+    """The defect radial averaging cannot see. Same radial correlation radius in every band, but
+    the *orientation* changes with level: isotropic in shadow, 3:1 horizontal in the highlights.
+    Radial distance may call it stable; the directional profiles must not."""
+    stability = fp.assess_stability(
+        _corpus(
+            {"shadow": 2.0, "mid": 2.0, "high": 2.0},
+            aniso_by_band={"shadow": 1.0, "mid": 1.8, "high": 3.0},
+        )
+    )
+    assert stability.one_footprint_suffices is False
+    assert stability.direction("horizontal").one_footprint_suffices is False
+    assert "LEVEL-DEPENDENT" in stability.summary()
+
+
+def test_isotropic_constant_footprint_is_stable_in_every_direction() -> None:
+    stability = fp.assess_stability(_corpus({"shadow": 1.5, "mid": 1.5, "high": 1.5}))
+    assert all(d.one_footprint_suffices for d in stability.directions)
+
+
+def test_block_peaks_are_measured_on_the_axial_slices() -> None:
+    """A codec grid concentrates on the axes; radial averaging dilutes it. Clean grain shows no
+    axial peak."""
+    spectrum = _spectrum(_grain(correlation_px=1.0), interval="a", band="m", level=0.1, sigma=0.01)
+    assert spectrum.block_peak_h < 2.0 and spectrum.block_peak_v < 2.0

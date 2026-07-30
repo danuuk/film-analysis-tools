@@ -595,32 +595,45 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    | between interval, same band | 0.076 / 0.116 |
    | **between level band, same interval** | **0.097 / 0.135** |
 
-   Between-level variation (median 0.097) is within the between-interval baseline (p90 0.116):
-   the footprint changes no more with level than it changes between scenes. **One common footprint
-   suffices** — no level-dependent kernel is justified on this evidence. The shape itself, on 66
-   clean windows across the two bands present (no highlight data):
+   The comparison is now run in **three directions** — radially and along the horizontal and
+   vertical axes — because radial averaging discards orientation and so cannot see a footprint
+   whose *anisotropy* changes with level. One common footprint is adopted only when every direction
+   is stable, and here every direction is (between-level median within the between-interval p90):
 
-   | band | windows / intervals | grain radius | anisotropy | block peak | level range |
+   | direction | split-half p90 | between-interval p90 | between-level median | verdict |
+   |---|---|---|---|---|
+   | radial | 0.064 | 0.116 | 0.097 | stable |
+   | horizontal | 0.251 | 0.341 | 0.275 | stable |
+   | vertical | 0.226 | 0.422 | 0.251 | stable |
+
+   **One common footprint suffices** — no level-dependent kernel, and no level-dependent
+   *orientation*, is justified on this evidence. The shape itself, on 66 clean windows across the
+   two bands present (no highlight data), with the autocorrelation crossings now **interpolated**
+   rather than snapped to integer pixel lags:
+
+   | band | windows / intervals | radius h/v | anisotropy | block peak h/v | level range |
    |---|---|---|---|---|---|
-   | shadow | 38 / 5 | 1.23 px | ~2.0 | 1.08 | 0.0002–0.020 |
-   | midtone | 28 / 3 | 1.20 px | ~2.0 | 1.07 | 0.021–0.149 |
+   | shadow | 38 / 5 | 1.23 / 0.85 px | 1.44 | 1.58 / 1.52 | 0.0002–0.020 |
+   | midtone | 28 / 3 | 1.20 / 0.83 px | 1.43 | 1.47 / 1.52 | 0.021–0.149 |
 
-   Two features are consistent across both bands. The grain is **~1.2 px** — near the resolution
-   floor, close to spatially white — and it is **anisotropic, roughly 2:1 horizontal** (the
-   autocorrelation is twice as wide across as down; the ratio is coarsely quantised to integer
-   pixel lags, so "about 2:1" is the honest precision). The block peak near 1.07 says the encoder's
-   block grid, which the zero-inflation study found freezing 20% of 16 px blocks, is **not**
-   strongly imprinting a periodic pattern in the grain frequency band — the frozen blocks are a
-   time-domain effect, not a spatial-frequency one. The shadow distribution shape stays out of this
-   fit, as required: shadow windows contributed spectral evidence, but their heavy tails are not
-   read as a particle law.
+   Three features are now consistent across both bands. The grain is **~1.2 px horizontal /
+   ~0.84 px vertical** — near the resolution floor, close to spatially white. It is **anisotropic
+   ~1.44:1 horizontal**: the earlier "2:1" was an artefact of integer-lag half-widths, and the
+   interpolated crossings put the real value near 1.4, agreeing between bands (1.44 shadow, 1.43
+   midtone) and confirmed stable in the directional test. And the **axial block peaks are ~1.5**,
+   markedly higher than the radial 1.07 — which is exactly the effect the review flagged: radial
+   averaging diluted narrow axial peaks. So the corrected pair of statements is that codec freezing
+   is visible in the temporal zero mask *and* a modest (~1.5×) block-axis excess is present in the
+   residual spectrum, consistent across both bands — real but not a strong periodic imprint. The
+   shadow distribution shape stays out of this fit, as required: shadow windows contributed
+   spectral evidence, but their heavy tails are not read as a particle law.
 
    The three components of the statistical grain candidate are now available *separately*, which
    was the point of keeping the questions apart:
 
    ```
    appearance amplitude : sigma(L) = 0.0616 * L^0.732   (appearance envelope, luma)
-   spatial structure    : one common footprint, ~1.2 px, ~2:1 horizontal anisotropy
+   spatial structure    : one common footprint, ~1.2/0.84 px, ~1.44:1 horizontal anisotropy
    temporal baseline    : independent frames (rho ~ 0.005)
    ```
 
@@ -633,13 +646,18 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    the envelope at the measured endpoints); `extrapolate` and `error` are opt-in. Artefacts:
    [`footprint_stability_pulp_2026-07-30.txt`](results/footprint_stability_pulp_2026-07-30.txt)
    and its JSON.
-   Still open: the deep probe's alignment gate rejects almost everything at 60 frames — a
-   sub-pixel residual of 0.63–1.10 px over 2.5 s is ordinary gate weave or scan drift, not a
-   defect, but the current gate has no way to accept a tile that drifts slowly and steadily. Until
-   that is resolved there is **no trustworthy long-sequence measurement of Pulp Fiction at all**,
-   which is a sharper statement of why no fit should be attempted yet. The screen-anchoring guard
-   is also still purely temporal; 60 s does not guarantee unrelated pictures, and an image
-   similarity check would close it.
+
+   Still ahead on this line is the **held-out reconstruction**: materialise the actual 2D kernel
+   per training fold (the three summary values above admit many different filters), drive it with
+   independent Gaussian fields, scale by the held-out amplitude prediction, and compare the
+   generated sequence against only the held interval — amplitude-vs-level error, radial and
+   directional PSD distance, correlation widths, anisotropy, temporal correlation, midtone skew and
+   kurtosis, block-axis peaks — followed by several-second renders on gradients and real scenes with
+   the migrated legacy Pulp grain as an A/B reference. The measured footprint must carry its spatial
+   scale anchor, the 3840×1634 active geometry, so runtime scaling stays explicit.
+
+   The screen-anchoring guard is also still purely temporal; 60 s does not guarantee unrelated
+   pictures, and an image-similarity check would close it.
 
 5. **Implement the query interface** over intervals and regions, with provenance on every result.
 6. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.

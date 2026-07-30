@@ -53,10 +53,12 @@ pulp_fiction_1994_uhd   [UHD HDR10 remux]
     supported level range: 0.00016 .. 0.17695 linear (no highlight data)
     sigma(L) = sqrt(0.00000^2 + (0.0616 L^0.732)^2)
     no amplitude floor resolved: a pure power law describes sigma across the whole measured range (the shadow tails are a shape effect, not a sigma floor)
-  spatial footprint stability (log-spectral distance):
-    split-half     median 0.043  p90 0.064  (n=6)
-    between-interval median 0.076  p90 0.116  (n=13)
-    between-level  median 0.097  p90 0.135  (n=3)
+  spatial footprint stability (log-spectral distance, median):
+    radial      split-half 0.043  between-iv 0.076  between-level 0.097  -> stable
+    horizontal  split-half 0.205  between-iv 0.254  between-level 0.275  -> stable
+    vertical    split-half 0.195  between-iv 0.292  between-level 0.251  -> stable
+      midtone    28w/3iv  radius h/v 1.20/0.83px  anisotropy 1.43  block h/v 1.47/1.52  level 0.0207..0.1488
+      shadow     38w/5iv  radius h/v 1.23/0.85px  anisotropy 1.44  block h/v 1.58/1.52  level 0.0002..0.0198
     verdict: ONE footprint suffices
   duration vs pooling (3 tiles, exact central 128px, excess kurtosis):
     A 10f single   median +42.6529  range +0.9022..+109.0139  n=3
