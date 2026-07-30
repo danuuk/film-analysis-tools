@@ -7,4 +7,19 @@ coupling: decode settings are explicit typed objects, not CLI argument bags.
 
 from __future__ import annotations
 
-__all__: list[str] = []
+from film_analysis_tools.capabilities.source import record, slog3
+from film_analysis_tools.capabilities.source.record import (
+    Cadence,
+    Crop,
+    DecodeContract,
+    SourceRecord,
+)
+
+__all__ = [
+    "Cadence",
+    "Crop",
+    "DecodeContract",
+    "SourceRecord",
+    "record",
+    "slog3",
+]

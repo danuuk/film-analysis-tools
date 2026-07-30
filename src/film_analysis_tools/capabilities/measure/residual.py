@@ -124,7 +124,8 @@ class Shift:
         )
 
 
-def _box_blur(image: np.ndarray, radius: int) -> np.ndarray:
+def box_blur(image: np.ndarray, radius: int) -> np.ndarray:
+    """Separable box blur. Public because window selection needs the same low-pass."""
     size = max(1, int(radius) * 2 + 1)
     if size == 1:
         return image
@@ -166,8 +167,8 @@ def estimate_shift(
     if reference.shape != moving.shape:
         raise DataError(f"shape mismatch: {reference.shape} vs {moving.shape}")
 
-    a = _box_blur(np.asarray(reference, dtype=np.float64), blur_radius)
-    b = _box_blur(np.asarray(moving, dtype=np.float64), blur_radius)
+    a = box_blur(np.asarray(reference, dtype=np.float64), blur_radius)
+    b = box_blur(np.asarray(moving, dtype=np.float64), blur_radius)
     a = a - a.mean()
     b = b - b.mean()
     structure = float(np.std(a))
@@ -201,9 +202,9 @@ def estimate_shift(
     # gain is a noise-driven estimate and must not be applied.
     reference_raw = np.asarray(reference, dtype=np.float64)
     moving_raw = np.asarray(moving, dtype=np.float64)
-    before = _box_blur(moving_raw - reference_raw, motion_blur_radius)
+    before = box_blur(moving_raw - reference_raw, motion_blur_radius)
     shifted = np.roll(moving_raw, (signed_y, signed_x), axis=(0, 1))
-    after = _box_blur(shifted - reference_raw, motion_blur_radius)
+    after = box_blur(shifted - reference_raw, motion_blur_radius)
     margin = abs(signed_y) + abs(signed_x) + motion_blur_radius
     if margin * 2 < min(height, width):
         inner = (slice(margin, -margin), slice(margin, -margin))
@@ -216,7 +217,7 @@ def estimate_shift(
     # high-pass of the *aligned* difference: using the raw difference would fold motion into the
     # grain estimate and depress the ratio on exactly the drifting windows that need aligning.
     aligned_delta = shifted - reference_raw
-    high_pass_delta = aligned_delta - _box_blur(aligned_delta, blur_radius)
+    high_pass_delta = aligned_delta - box_blur(aligned_delta, blur_radius)
     grain_level = float(np.std(high_pass_delta)) / np.sqrt(2.0)
     expected_low_pass_grain = grain_level / float(2 * max(blur_radius, 1) + 1)
     structure_snr = structure / max(expected_low_pass_grain, EPS)
@@ -451,7 +452,7 @@ def extract(
     legacy_sigma = float(np.sqrt(max(var1, 0.0) / 2.0))
     sigma = float(np.sqrt(max(var1, 0.0) / (2.0 * max(1.0 - rho, EPS))))
 
-    low_pass = np.stack([_box_blur(delta, motion_blur_radius) for delta in lag1_deltas])
+    low_pass = np.stack([box_blur(delta, motion_blur_radius) for delta in lag1_deltas])
     high_pass = lag1_deltas - low_pass
 
     return ResidualEstimate(
@@ -475,14 +476,17 @@ def extract(
 
 
 __all__ = [
+    "DEFAULT_BLUR_RADIUS",
     "DEFAULT_LAGS",
     "DEFAULT_MAX_SHIFT",
+    "DEFAULT_MOTION_BLUR_RADIUS",
     "MIN_ALIGNMENT_GAIN",
     "MIN_STRUCTURE_SNR",
     "SUBPIXEL_REJECT",
     "ResidualEstimate",
     "Shift",
     "apply_shift",
+    "box_blur",
     "estimate_shift",
     "extract",
 ]
