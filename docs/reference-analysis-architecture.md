@@ -511,11 +511,65 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    This is the first provisional characterisation of Pulp Fiction grain the chain has produced,
    and it meets the standard set for accepting it: **three independent spans** (t = 2636, 3998,
    6470 s), each with unsaturated ρ, adjusted dual-residual agreement (1.026, 1.041, 1.026), and
-   no coherent motion. Temporal correlation **ρ ≈ 0.005** across all five intervals — near-
-   independent, as scanned film grain should be. Trusted σ runs **0.0004 to 0.0072** with level:
-   the deep tile at level 0.063 gives σ 0.0066 and excess kurtosis **+0.7** (Gaussian), while the
-   deep-shadow tiles at level ~0.001 give σ ~0.0003 and kurtosis +44 to +95 — the heavy tail is a
-   shadow/quantisation effect, not the grain.
+   no coherent motion. Two conclusions, stated at the confidence they have earned:
+
+   - **ρ is near zero** — median 0.005, range 0.003–0.024 across all five intervals. Independent
+     per-frame grain is the correct initial runtime assumption.
+   - The shadow tails are **strongly consistent with a quantisation / floor interaction**, but
+     "confirmed not grain" would be too absolute. Two deep-shadow probes (level ~0.001) are
+     heavy-tailed and quantised — σ ~0.0003, kurtosis +44 to +95 — while the one deep midtone
+     probe (level 0.063) is approximately Gaussian — σ 0.0066, kurtosis +0.7. But that is *one*
+     midtone probe and *no* highlight probe, so the honest statement is a **delivery-dominated
+     shadow effect that should not be copied into the grain generator unless further evidence
+     contradicts it**, not a proven property of the negative.
+
+   Trusted σ runs **0.0004 to 0.0072** and rises with level — the amplitude-versus-level curve
+   beginning to appear.
+
+   **The first compact fit.** `capabilities/fit/amplitude` fits σ(level) on the 111 trustworthy
+   points, deliberately narrow: the interval is the independent unit (not the tile, whose frames
+   are shared), validation is **leave-one-interval-out**, intervals are weighted equally so the
+   33-point interval does not outvote the 2-point one, and everything is in log-amplitude
+   coordinates. Three candidates, chosen on *held-out* error:
+
+   | model | params | in-sample log-RMSE | held-out log-RMSE |
+   |---|---|---|---|
+   | constant null | 1 | 1.476 | 1.648 |
+   | **power/floor** | 3 | 0.197 | **0.206** ← chosen |
+   | piecewise 4-knot | 4 | 0.170 | 0.181 |
+
+   The compact model wins: the piecewise curve is better in-sample and only 0.025 better held out,
+   below the 0.05 that would justify the extra knots. The result is a **pure power law,
+   σ(L) = 0.0616 · L^0.732** — no amplitude floor is resolved within the measured range (σ₀
+   collapsed to zero, so reporting a floor crossover would be false precision). Held-out log-RMSE
+   0.206 means predictions land within about ±23% of measured σ. Predicted σ tracks the deep
+   probes: 0.00039 at L = 0.001 (observed ~0.0003), 0.0082 at L = 0.063 (observed 0.0066).
+
+   Two limits are stated in the output rather than left implicit. The **supported range is
+   0.00016–0.177 linear** — there is *no* highlight evidence, and the curve must not be
+   extrapolated above it. And "no amplitude floor" is a statement about σ only: the deepest-shadow
+   *distribution* is still heavy-tailed, but that is a shape effect, not a floor in amplitude, and
+   the region stays flagged as delivery-dominated.
+
+   **The fitted domain is kept separate from density.** This curve is a final-reference
+   **appearance envelope in decoded linear-light luma** — not a negative-density granularity
+   curve. Injecting it directly into density space would be a category error. The intended path is
+
+   ```
+   Pulp reference → observed output-luma σ(level) → appearance-envelope fit (here)
+       → negative-chain response/Jacobian → required layer-density modulation → runtime grain
+   ```
+
+   so the measured 5219 granularity response supplies the base physical shape while this fit is the
+   aesthetic target or correction envelope on top of it. The first fit deliberately does **not**
+   infer coloured grain or layer covariance, highlight behaviour, a non-Gaussian distribution from
+   the shadow tails, temporal correlation beyond the near-independent baseline, or a spatial
+   footprint — each is a later step on already-measured evidence, starting with normalising the
+   trustworthy residuals by predicted amplitude and testing whether the spatial spectrum is stable
+   across level bands before fitting one common footprint.
+
+   Artefacts: [`amplitude_fit_pulp_2026-07-30.txt`](results/amplitude_fit_pulp_2026-07-30.txt) and
+   its JSON.
 
    Three lesser corrections rode along. Deep probes were being selected from the *tolerated* tiles,
    not the clean ones, so a tile excluded from ordinary measurement could be chosen for the most
@@ -537,8 +591,13 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
 
 5. **Implement the query interface** over intervals and regions, with provenance on every result.
 6. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.
-7. *Then* the compact fit, holdout reconstruction and engine-profile export — only once a
-   corpus exists whose measurements are trustworthy enough to fit.
+7. **The compact fit** — begun. `capabilities/fit/amplitude` fits σ(level) on the 111 trustworthy
+   Pulp points with leave-one-interval-out validation and a compact model chosen on held-out
+   error: a pure power law σ(L) = 0.0616·L^0.732 over the supported range 0.00016–0.177 linear.
+   Still to come on this line: holdout residual reconstruction, the spatial footprint (only after
+   normalising residuals by predicted amplitude and checking spectral stability across levels),
+   and the map into the negative-density stage — which is kept explicitly separate from this
+   appearance-envelope fit.
 
 Steps 1-3 and 5-6 are architecture; step 4 is the slice that proves the architecture runs.
 Only after them does refining an estimator have a defined meaning, because only then is there an

@@ -1,0 +1,8 @@
+amplitude vs level — 111 points, 5 intervals (leave-one-interval-out)
+  model              params   in-sample   held-out
+  constant                1      1.4758     1.6484
+  power_floor             3      0.1969     0.2062  <- chosen
+  piecewise_4knot         4      0.1701     0.1810
+  supported level range: 0.00016 .. 0.17695 linear (no highlight data)
+  sigma(L) = sqrt(0.00000^2 + (0.0616 L^0.732)^2)
+  no amplitude floor resolved: a pure power law describes sigma across the whole measured range (the shadow tails are a shape effect, not a sigma floor)

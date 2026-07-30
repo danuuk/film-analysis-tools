@@ -44,6 +44,7 @@ from film_analysis_tools.capabilities.catalogue import ingest
 from film_analysis_tools.capabilities.catalogue import intervals as iv
 from film_analysis_tools.capabilities.catalogue import regions as rg
 from film_analysis_tools.capabilities.catalogue.survey import FrameSurvey
+from film_analysis_tools.capabilities.fit import amplitude
 from film_analysis_tools.capabilities.measure import admissibility, evidence, residual, windows
 from film_analysis_tools.capabilities.source.record import (
     Cadence,
@@ -725,6 +726,29 @@ class SourceOutcome:
         """
         return sum(len(one.amplitude.saturated) for one in self.per_interval if one.amplitude)
 
+    def amplitude_points(self) -> list[amplitude.AmplitudePoint]:
+        """The trustworthy amplitude points, tagged with their interval — the fit's raw material.
+
+        The interval is the tag, not the tile, because tiles inside one interval share nearly
+        identical frames. Everything the fit does about independence rests on this.
+        """
+        return [
+            amplitude.AmplitudePoint(
+                level=point.level, sigma=point.sigma, interval=f"{one.interval_start_s:.0f}"
+            )
+            for one in self.per_interval
+            if one.amplitude
+            for point in one.amplitude.trusted
+        ]
+
+    def amplitude_fit(self) -> amplitude.ModelComparison | None:
+        """The compact sigma(level) fit, or ``None`` when there is too little to fit honestly."""
+        points = self.amplitude_points()
+        intervals = len({point.interval for point in points})
+        if len(points) < 4 or intervals < 2:
+            return None
+        return amplitude.compare_models(points)
+
     def as_record(self) -> dict[str, Any]:
         identified, trusted, total = self.trusted_points()
         return {
@@ -761,6 +785,7 @@ class SourceOutcome:
                 "exact_zero_fraction": self.exact_zero().as_record(),
             },
             "per_interval": [one.as_record() for one in self.per_interval],
+            "amplitude_fit": _fit.as_record() if (_fit := self.amplitude_fit()) else None,
             "deep_probes": [one.as_record() for one in self.deep],
             "duration_vs_pooling": (
                 self.duration_vs_pooling.as_record() if self.duration_vs_pooling else None
@@ -2080,7 +2105,8 @@ def report(result: StudyResult) -> str:
                 f"  measurements ({len(outcome.per_interval)} intervals, each measured "
                 "independently):",
                 f"    raw sigma    {outcome.raw_sigma().line()}   (all points — descriptive only)",
-                f"    trusted sig  {outcome.trusted_sigma().line()}   (identified rho only)",
+                f"    trusted sig  {outcome.trusted_sigma().line()}   "
+                "(identified rho, lag-consistent, no coherent drift)",
                 f"    whiteness    {outcome.whiteness().line()}",
                 f"    kurtosis     {outcome.kurtosis().line()}   (pooled, all unclipped)",
                 f"      normalised {outcome.kurtosis_normalised().line()}   "
@@ -2092,8 +2118,8 @@ def report(result: StudyResult) -> str:
                 f"    exact zeros  {outcome.exact_zero().line()}",
                 f"    rho          {outcome.rho().line()}",
                 f"    envelope     {outcome.envelope().line()}",
-                f"    amplitude    {identified} identified / {trusted} trustworthy / {total} "
-                f"points   ({outcome.saturated_points()} saturated, all rejected)",
+                f"    amplitude    {trusted} trustworthy / {total} points; "
+                f"{identified} identified, {outcome.saturated_points()} saturated estimates",
             ]
             routed = [
                 f"{one.flat_windows}f/{one.unclipped_windows}u/{one.trustworthy_windows}t "
@@ -2113,6 +2139,10 @@ def report(result: StudyResult) -> str:
             worst = max(outcome.deep, key=lambda one: one.zeros.zero_fraction if one.zeros else 0.0)
             if worst.zeros and worst.zeros.zero_fraction > 0.10:
                 lines += worst.zeros.lines()
+
+        fit = outcome.amplitude_fit()
+        if fit is not None:
+            lines.append("  " + fit.summary().replace("\n", "\n  "))
 
         if outcome.duration_vs_pooling:
             lines += outcome.duration_vs_pooling.lines()

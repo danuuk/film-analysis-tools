@@ -1,0 +1,48 @@
+{
+  "intervals": 5,
+  "points": 111,
+  "validation": "leave-one-interval-out",
+  "chosen": "power_floor",
+  "models": [
+    {
+      "model": "constant",
+      "params": {
+        "sigma0": 0.0017363349480137764
+      },
+      "parameter_count": 1,
+      "in_sample_log_rmse": 1.4757776370764115,
+      "held_out_log_rmse": 1.648351283965729,
+      "supported_level_min": 0.0001578533157280404,
+      "supported_level_max": 0.17695102624156783
+    },
+    {
+      "model": "power_floor",
+      "params": {
+        "sigma0": 2.348137552677998e-07,
+        "a": 0.06158482110660261,
+        "b": 0.7315789473684209
+      },
+      "parameter_count": 3,
+      "in_sample_log_rmse": 0.19694200827560512,
+      "held_out_log_rmse": 0.2062463369108412,
+      "supported_level_min": 0.0001578533157280404,
+      "supported_level_max": 0.17695102624156783,
+      "floor_resolved": false,
+      "floor_crossover": 0.0
+    },
+    {
+      "model": "piecewise_4knot",
+      "params": {
+        "knot0": -9.407756895347289,
+        "knot1": -6.200379488417761,
+        "knot2": -5.142406749005058,
+        "knot3": -4.234691572717698
+      },
+      "parameter_count": 4,
+      "in_sample_log_rmse": 0.17006721591418641,
+      "held_out_log_rmse": 0.1810133635055033,
+      "supported_level_min": 0.0001578533157280404,
+      "supported_level_max": 0.17695102624156783
+    }
+  ]
+}
