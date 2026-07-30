@@ -1,0 +1,3759 @@
+{
+  "study": "grain_slice",
+  "question": "Does the whole chain \u2014 source record, catalogue query, extraction, admissibility, window selection, residual measurement \u2014 run on real material, and what fraction of it survives?",
+  "level_scale": "linear, 1.0 = diffuse white, for every source",
+  "sources": [
+    {
+      "source": {
+        "schema_version": 1,
+        "source_id": "pulp_fiction_1994_uhd",
+        "edition": "UHD HDR10 remux",
+        "sha256": "88219ee6394eaf7af0f48ffa77b74d256a35832d4031fd2611a5725f537836e9",
+        "byte_size": 89659862970,
+        "coded_width": 3840,
+        "coded_height": 2160,
+        "cadence": "24000/1001",
+        "crop": {
+          "x": 0,
+          "y": 263,
+          "width": 3840,
+          "height": 1634
+        },
+        "active_picture": [
+          0,
+          263,
+          3840,
+          1634
+        ],
+        "decode": {
+          "input_range": "tv",
+          "matrix": "bt709",
+          "transfer": "pq",
+          "primaries": "bt2020",
+          "output_pixel_format": "gray16le",
+          "scale": "linear_diffuse_white"
+        },
+        "timestamp": "",
+        "path_hint": "/Users/dpakhomov/Movies/Pulp.Fiction.1994.mkv",
+        "notes": "grain_slice vertical study",
+        "identity": "4f0d131beb8b60f3186427abc4d5d0636ad77a16b17bb414188131533b512ff1"
+      },
+      "plan": {
+        "transfer": "pq",
+        "level_scale": "linear, 1.0 = diffuse white",
+        "window_s": 2.0,
+        "frames_per_interval": 10,
+        "tile_size": 128,
+        "intervals_requested": 8
+      },
+      "coverage": [
+        {
+          "stage": "intervals",
+          "considered": 9270,
+          "accepted": 2671,
+          "survival": 0.28813376483279396,
+          "rejected": {
+            "contains a cut": 610,
+            "motion above gate": 5989
+          }
+        },
+        {
+          "stage": "admissibility",
+          "considered": 8,
+          "accepted": 6,
+          "survival": 0.75,
+          "rejected": {
+            "samples clipped": 2
+          }
+        },
+        {
+          "stage": "windows",
+          "considered": 540,
+          "accepted": 245,
+          "survival": 0.4537037037037037,
+          "rejected": {
+            "motion above gate": 202,
+            "overlaps a composited region": 17,
+            "sub-pixel drift": 76
+          }
+        }
+      ],
+      "seconds": {
+        "candidate_s": 12.0,
+        "decoded_s": 2.5025,
+        "evidence_s": 2.5025
+      },
+      "regions": {
+        "regions": 245,
+        "coverage": {
+          "shadow": 95,
+          "midtone": 150,
+          "highlight": 0
+        },
+        "contains_band_coverage": {
+          "shadow": 208,
+          "midtone": 193,
+          "highlight": 36
+        },
+        "texture_coverage": {
+          "flat": 0,
+          "textured": 245
+        },
+        "level_min": 7.640889883095417e-05,
+        "level_max": 0.2466883313209483,
+        "level_scales": [
+          "linear"
+        ],
+        "band_edges": [
+          [
+            0.02,
+            0.25
+          ]
+        ],
+        "edges_bracket_the_data": true,
+        "widened_gate": 0,
+        "independence": {
+          "regions": 245,
+          "intervals": 6,
+          "sources": 1,
+          "spans": 6,
+          "span_seconds": 12.0,
+          "max_regions_per_interval": 63,
+          "regions_per_span": 40.833333333333336,
+          "concentrated": true
+        }
+      },
+      "intervals_measured": 6,
+      "amplitude_points": {
+        "trusted": 3,
+        "total": 245
+      },
+      "aggregate": {
+        "sigma": {
+          "median": 0.005602783313898151,
+          "min": 0.002499872096720185,
+          "max": 0.009150497513380287,
+          "n": 6,
+          "values": [
+            0.002499872096720185,
+            0.007017874069616048,
+            0.009150497513380287,
+            0.007545679230009464,
+            0.0029130572651699304,
+            0.004187692558180254
+          ]
+        },
+        "whiteness": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 0,
+          "values": []
+        },
+        "excess_kurtosis": {
+          "median": 23.21844119816886,
+          "min": 6.958364271730934,
+          "max": 89.8227001104875,
+          "n": 6,
+          "values": [
+            89.8227001104875,
+            26.86250629904996,
+            8.449738628132259,
+            6.958364271730934,
+            29.76236557632089,
+            19.574376097287765
+          ]
+        },
+        "rho": {
+          "median": 0.3779938865560563,
+          "min": 0.14481963260370612,
+          "max": 0.6111681405084065,
+          "n": 2,
+          "values": [
+            0.14481963260370612,
+            0.6111681405084065
+          ]
+        },
+        "envelope_ratio": {
+          "median": 0.6959581341079506,
+          "min": 0.47054032972208587,
+          "max": 0.9451503713568707,
+          "n": 6,
+          "values": [
+            0.9242682139577416,
+            0.7918204563391985,
+            0.47054032972208587,
+            0.5002619381890518,
+            0.9451503713568707,
+            0.6000958118767027
+          ]
+        }
+      },
+      "per_interval": [
+        {
+          "interval_start_s": 1119.0,
+          "windows": 60,
+          "routed": {
+            "amplitude": 60,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 60,
+            "temporal_trustworthy": 1
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 60,
+            "trusted_count": 1,
+            "level_min": 0.0018379298506034938,
+            "level_max": 0.18839155700758342,
+            "points": [
+              {
+                "level": 0.002510851974523296,
+                "sigma": 0.0006162141360379575,
+                "rho": 0.2724724339210203,
+                "trustworthy": false,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0031954676567764163,
+                "sigma": 0.0006596894409560841,
+                "rho": 0.1926778016137487,
+                "trustworthy": false,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0033744582428014507,
+                "sigma": 0.0006327304845067072,
+                "rho": 0.14360899581443287,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.004438427835901185,
+                "sigma": 0.0007728875046013601,
+                "rho": 0.15071589808789132,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.010794110726115995,
+                "sigma": 0.0015528753127844134,
+                "rho": 0.19673213309366244,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "shadow"
+              },
+              {
+                "level": 0.019421050605545144,
+                "sigma": 0.043237588691997786,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.010975671016273275,
+                "sigma": 0.0014495911751420234,
+                "rho": 0.14921039935560265,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.011540894183430513,
+                "sigma": 0.0014544957707784537,
+                "rho": 0.13769686089465982,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.014464777178889717,
+                "sigma": 0.001758859022699222,
+                "rho": 0.13276482963137726,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.013151244856635264,
+                "sigma": 0.0016561282308495697,
+                "rho": 0.15435256737387215,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0270018639909431,
+                "sigma": 0.003217279303007785,
+                "rho": 0.15282930550529406,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.025765069533919206,
+                "sigma": 0.003061410554848793,
+                "rho": 0.13962645146996722,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.014143713986930742,
+                "sigma": 0.002036846665544212,
+                "rho": 0.14481963260370612,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.006262514476080556,
+                "sigma": 0.0011643366378501466,
+                "rho": 0.031100348556235335,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.006505030577382708,
+                "sigma": 0.001082890791950546,
+                "rho": 0.1884020287735746,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.006860655290293167,
+                "sigma": 0.0010686932160172127,
+                "rho": 0.16955382050652368,
+                "trustworthy": false,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.007300727138726905,
+                "sigma": 0.001050061089279232,
+                "rho": 0.15756440021683282,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00456542006952967,
+                "sigma": 0.0007771973207046953,
+                "rho": 0.1350967097712399,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0059918956555923275,
+                "sigma": 0.0009729911829889744,
+                "rho": -0.07071716757510138,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.01366511361458179,
+                "sigma": 0.001697654728125538,
+                "rho": 0.15236741650178498,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.02346842113766168,
+                "sigma": 0.002520080587381702,
+                "rho": 0.12698313548157159,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.021926168810218524,
+                "sigma": 0.002374117723571069,
+                "rho": 0.13813521832305908,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.013405137184297719,
+                "sigma": 0.0017091772381396184,
+                "rho": 0.11994983595128739,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.08492285548054988,
+                "sigma": 0.007461591723607448,
+                "rho": 0.06597738650723661,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.11882536835845932,
+                "sigma": 0.009257763170686275,
+                "rho": 0.15967588180535008,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09558814337241792,
+                "sigma": 0.008774588917478262,
+                "rho": 0.03421857494155889,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.036643226500426965,
+                "sigma": 0.006334373765420524,
+                "rho": 0.026151717028353616,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.010037553607690616,
+                "sigma": 0.0013608984658093647,
+                "rho": 0.12739600697547981,
+                "trustworthy": false,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.010865518734624668,
+                "sigma": 0.001394911873639046,
+                "rho": 0.12370426307892735,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.005360431291783112,
+                "sigma": 0.000870909272785594,
+                "rho": 0.15008492939056217,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.16178428690970603,
+                "sigma": 0.015389720212097646,
+                "rho": 0.15332682755035032,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.004982456954821938,
+                "sigma": 0.0010695211892257817,
+                "rho": 0.1664984484166081,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "shadow"
+              },
+              {
+                "level": 0.18839155700758342,
+                "sigma": 0.014393410335366742,
+                "rho": 0.10582181205214991,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10539060100114424,
+                "sigma": 0.008629490267971754,
+                "rho": 0.1269314118299536,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07913970931509126,
+                "sigma": 0.006908073499077411,
+                "rho": 0.14993443204759327,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02707706947187751,
+                "sigma": 0.002837325215361711,
+                "rho": 0.14938476428005876,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08251879857700435,
+                "sigma": 0.007348162220940883,
+                "rho": 0.06988552379179547,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1600638635651624,
+                "sigma": 0.011424459416418554,
+                "rho": 0.15926423511004795,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03451369508028369,
+                "sigma": 0.0073505734654324105,
+                "rho": 0.3281622946418843,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.01338170146911826,
+                "sigma": 0.0017138095602975305,
+                "rho": 0.20085373654066863,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.011521231535332929,
+                "sigma": 0.0014534552928737665,
+                "rho": 0.13691820775967845,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.01703439344396412,
+                "sigma": 0.008755614021231095,
+                "rho": -0.3788597086351996,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0050032910681690876,
+                "sigma": 0.0008196795689557461,
+                "rho": 0.08417189183050855,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0018379298506034938,
+                "sigma": 0.0004762505146370547,
+                "rho": 0.3057618368391306,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.14376623639911917,
+                "sigma": 0.010824612721643366,
+                "rho": 0.129253768157082,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.11056115754708702,
+                "sigma": 0.008685797765170079,
+                "rho": 0.15818916864820776,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05739041764114995,
+                "sigma": 0.008517358850447333,
+                "rho": 0.3011139447807123,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.01521760516900576,
+                "sigma": 0.002755803816031367,
+                "rho": 0.5603629800957561,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.023737480981334807,
+                "sigma": 0.0030115298661957226,
+                "rho": 0.09316159442343475,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.017212994696289667,
+                "sigma": 0.0028494947539517736,
+                "rho": 0.04678306975947133,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.08302132834091364,
+                "sigma": 0.01084927716113859,
+                "rho": -0.039774908651892704,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.01288693976810589,
+                "sigma": 0.0024796636060586677,
+                "rho": 0.2897959726189945,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.05509830850764604,
+                "sigma": 0.005474821583926915,
+                "rho": 0.1121778265634763,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.025933284652988654,
+                "sigma": 0.0030119011004257953,
+                "rho": 0.11683201079549477,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05509676519501192,
+                "sigma": 0.005909935056610516,
+                "rho": 0.18194498469724252,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.010972981957171422,
+                "sigma": 0.0017168592949951319,
+                "rho": 0.10303805155369283,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.005230448527168179,
+                "sigma": 0.0012981831280838066,
+                "rho": 0.10903551792043586,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.027501216536702112,
+                "sigma": 0.00361478015840289,
+                "rho": 0.138817613925174,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05289535053193214,
+                "sigma": 0.005799639349899332,
+                "rho": 0.1258502662536678,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05026166185473359,
+                "sigma": 0.005167781456982583,
+                "rho": 0.1385541679885387,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.005215559765499974,
+            "skew": 0.24842418258090296,
+            "excess_kurtosis": 89.8227001104875,
+            "quantiles": {
+              "0.1": -0.036686085042460355,
+              "1": -0.016611514058545118,
+              "5": -0.006244254168653083,
+              "25": -0.0008139512118508431,
+              "50": 0.0,
+              "75": 0.0008160755695078639,
+              "95": 0.006233544583914367,
+              "99": 0.016509913411447287,
+              "99.9": 0.037171235710585566
+            },
+            "tail_ratio": 55.840748041658905,
+            "is_gaussian": false,
+            "sample_count": 8740224
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.9242682139577416,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 8740224
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.14481963260370612,
+            "rho_from_lag4": 0.1532261306532663,
+            "lag_variances": {
+              "1": 7.095849416013569e-06,
+              "2": 8.123467721451877e-06,
+              "4": 8.372899150625375e-06
+            },
+            "per_window_rho": [
+              0.14481963260370612
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 147456
+          },
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)"
+          ]
+        },
+        {
+          "interval_start_s": 2363.0,
+          "windows": 48,
+          "routed": {
+            "amplitude": 48,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 48,
+            "temporal_trustworthy": 2
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 48,
+            "trusted_count": 2,
+            "level_min": 7.640889883095417e-05,
+            "level_max": 0.2108940321882581,
+            "points": [
+              {
+                "level": 0.0928586275900896,
+                "sigma": 0.009782955770501858,
+                "rho": 0.14585224281837172,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.055012433143535246,
+                "sigma": 0.006636094394248087,
+                "rho": 0.11963523301329682,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06680196859848342,
+                "sigma": 0.008002933870970943,
+                "rho": 0.16176237010745598,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.17250699997364705,
+                "sigma": 0.015448102769816913,
+                "rho": 0.1617891547106094,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02026751345014524,
+                "sigma": 0.006139564851348837,
+                "rho": 0.4016027343040227,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 9.640856450623265e-05,
+                "sigma": 3.3602158205676994e-05,
+                "rho": 0.13949268008803162,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.03239450469008949,
+                "sigma": 0.004753316006710598,
+                "rho": 0.16219043335514804,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07797300349150195,
+                "sigma": 0.008167834109138048,
+                "rho": 0.15749453297905336,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.002975823776678315,
+                "sigma": 0.0015427886046060916,
+                "rho": 0.22331277503575597,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "shadow"
+              },
+              {
+                "level": 0.03375002212986125,
+                "sigma": 0.004791815511567848,
+                "rho": 0.15171277482802692,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09836646859950406,
+                "sigma": 0.00978481608401309,
+                "rho": 0.1633077486198098,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06935212371916495,
+                "sigma": 0.008009314114303064,
+                "rho": 0.2657422659166129,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05469549776849825,
+                "sigma": 0.006313170706223102,
+                "rho": 0.15589999254911358,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06220348845332543,
+                "sigma": 0.007399653744984009,
+                "rho": 0.17569770494556414,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10668227027197885,
+                "sigma": 0.011162967939328042,
+                "rho": 0.18277548763398377,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08291149960202111,
+                "sigma": 0.010024238174385827,
+                "rho": 0.18578788026999105,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.042320904751604035,
+                "sigma": 0.00859112322628911,
+                "rho": 0.3645108820193992,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07773795992378688,
+                "sigma": 0.011012243224120399,
+                "rho": 0.2035279162093162,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.006225764014008472,
+                "sigma": 0.02206373762786788,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0082110313841744,
+                "sigma": 0.003301689300567691,
+                "rho": 0.4762770092440758,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0012756368565326592,
+                "sigma": 0.0005687505362474442,
+                "rho": 0.2832496880822679,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.006400642374380183,
+                "sigma": 0.0666024810280129,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0003624701252312828,
+                "sigma": 0.00015443926348237183,
+                "rho": 0.15522396296829077,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0008078416798858476,
+                "sigma": 0.0007422726989321545,
+                "rho": 0.2848251006519882,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.1090080832880004,
+                "sigma": 0.012478394485022788,
+                "rho": 0.28126852148271153,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08602861927996082,
+                "sigma": 0.009750336666818047,
+                "rho": 0.21277086925471567,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2108940321882581,
+                "sigma": 0.016529937539232525,
+                "rho": 0.14600796998086185,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.17882780075201893,
+                "sigma": 0.014780652897173483,
+                "rho": 0.17489539733247228,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07161023414466551,
+                "sigma": 0.007775021067568132,
+                "rho": 0.1588427184856822,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.049212270995239595,
+                "sigma": 0.00611700614368784,
+                "rho": 0.15991526183408733,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0008685747594692035,
+                "sigma": 0.0005245594528167355,
+                "rho": 0.3287214979321218,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005983275434686398,
+                "sigma": 0.0002539855197820417,
+                "rho": 0.17764686247192119,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0006070150917852851,
+                "sigma": 0.00029656385248547513,
+                "rho": 0.19026666277168736,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0006066217882918872,
+                "sigma": 0.000442852066423901,
+                "rho": 0.1728354784423769,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0020640962665923516,
+                "sigma": 0.0009684877697844179,
+                "rho": 0.15473964642877092,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.05322143264808871,
+                "sigma": 0.009005509702054824,
+                "rho": 0.23233628101681303,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.12383883905551099,
+                "sigma": 0.012658834745614573,
+                "rho": 0.2324405027990588,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09169811794497548,
+                "sigma": 0.009155115094708477,
+                "rho": 0.1724758631853851,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.11373732341875227,
+                "sigma": 0.010630467951309968,
+                "rho": 0.15782110787635073,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14646443221402303,
+                "sigma": 0.012885964040881104,
+                "rho": 0.16550534497368852,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06020640119787803,
+                "sigma": 0.007748911158922552,
+                "rho": 0.23171785775434128,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.025176288755306354,
+                "sigma": 0.0054679484498043225,
+                "rho": 0.3878276013271855,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0004228168007462372,
+                "sigma": 0.00018848074842447236,
+                "rho": 0.26836496547722866,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00037584756159492514,
+                "sigma": 0.00022768315395492857,
+                "rho": 0.2606705260511739,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0008680783022677193,
+                "sigma": 0.00041607677174365014,
+                "rho": 0.12009879875585705,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.003908823861111376,
+                "sigma": 0.0014990754434889965,
+                "rho": 0.24921884666534933,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 7.640889883095417e-05,
+                "sigma": 2.4878038889086715e-05,
+                "rho": 0.14013874152978567,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.003480701062624517,
+                "sigma": 0.001329699826014111,
+                "rho": 0.1253094610251757,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.006970958805866151,
+            "skew": -0.12731281018695217,
+            "excess_kurtosis": 26.86250629904996,
+            "quantiles": {
+              "0.1": -0.04342536253701588,
+              "1": -0.022212353443143082,
+              "5": -0.01026516902601614,
+              "25": -0.0005031099831164762,
+              "50": 0.0,
+              "75": 0.0004909549374673421,
+              "95": 0.010291694521524307,
+              "99": 0.022278795467182554,
+              "99.9": 0.043376319645013615
+            },
+            "tail_ratio": 102.41867379263016,
+            "is_gaussian": false,
+            "sample_count": 7024320
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.7918204563391985,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 7024320
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.6111681405084065,
+            "rho_from_lag4": 0.6522060301507537,
+            "lag_variances": {
+              "1": 0.00010661582210299132,
+              "2": 0.00018052004224017174,
+              "4": 0.0003517680998158279
+            },
+            "per_window_rho": [
+              0.99,
+              0.23233628101681303
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 294912
+          },
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)"
+          ]
+        },
+        {
+          "interval_start_s": 4061.0,
+          "windows": 17,
+          "routed": {
+            "amplitude": 17,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 17,
+            "temporal_trustworthy": 0
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 17,
+            "trusted_count": 0,
+            "level_min": 0.0001480368437786583,
+            "level_max": 0.16249259837559143,
+            "points": [
+              {
+                "level": 0.04920038731096946,
+                "sigma": 0.006068251398875601,
+                "rho": 0.0031833380037793457,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13941191096714828,
+                "sigma": 0.01210522635845717,
+                "rho": 0.04595694029832731,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.029690480891731465,
+                "sigma": 0.008705492048863159,
+                "rho": 0.4068508767868668,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10573972685851891,
+                "sigma": 0.009974874756014348,
+                "rho": 0.01347763242685085,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.059618131268477446,
+                "sigma": 0.006728062197625512,
+                "rho": 0.029577282577498254,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14386502395457476,
+                "sigma": 0.012014794580749779,
+                "rho": 0.01118943165684616,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09184937989056433,
+                "sigma": 0.009150497513380287,
+                "rho": -0.013979532828186203,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.028994522035433005,
+                "sigma": 0.004811304519526004,
+                "rho": 0.008673194196829881,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04443310831503274,
+                "sigma": 0.005710372467635787,
+                "rho": -0.0005546658554989037,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0993403699973743,
+                "sigma": 0.0098596357910467,
+                "rho": 0.013630584464823015,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.16249259837559143,
+                "sigma": 0.01324714280919983,
+                "rho": 0.01123385090785356,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09535201855720918,
+                "sigma": 0.009534965531024439,
+                "rho": 0.01631591575206537,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08872349894693579,
+                "sigma": 0.008978250638748542,
+                "rho": 0.01717751101914944,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0001480368437786583,
+                "sigma": 5.216951525851859e-05,
+                "rho": -0.0003395967130593869,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.11942322359927848,
+                "sigma": 0.0126918641602951,
+                "rho": -0.04409655120857603,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.145428958453458,
+                "sigma": 0.012597999455896396,
+                "rho": 0.01949346900973259,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0018018078669786244,
+                "sigma": 0.00042804181635105803,
+                "rho": 0.01447366782654358,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.009103578999064995,
+            "skew": -0.06110058330194942,
+            "excess_kurtosis": 8.449738628132259,
+            "quantiles": {
+              "0.1": -0.04314663206288517,
+              "1": -0.0258810313928279,
+              "5": -0.014914190006057414,
+              "25": -0.003378615888566884,
+              "50": 0.0,
+              "75": 0.003421819798209061,
+              "95": 0.014945982789974629,
+              "99": 0.0259450584627921,
+              "99.9": 0.042831200748911766
+            },
+            "tail_ratio": 14.625629968792389,
+            "is_gaussian": false,
+            "sample_count": 2506752
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.47054032972208587,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 2506752
+          },
+          "temporal": null,
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)",
+            "temporal: no window could vouch for its own correlation estimate"
+          ]
+        },
+        {
+          "interval_start_s": 5087.0,
+          "windows": 27,
+          "routed": {
+            "amplitude": 27,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 27,
+            "temporal_trustworthy": 0
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 27,
+            "trusted_count": 0,
+            "level_min": 0.0005664145272895134,
+            "level_max": 0.2466883313209483,
+            "points": [
+              {
+                "level": 0.08460836077465099,
+                "sigma": 0.011489893995612451,
+                "rho": 0.1695951089555161,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08350396666899282,
+                "sigma": 0.01036914234768386,
+                "rho": 0.1571897771469497,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03503740763084986,
+                "sigma": 0.00616574546917961,
+                "rho": 0.11641354138882498,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03181821126470679,
+                "sigma": 0.00586282402199156,
+                "rho": 0.12359398704887825,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03784724206361698,
+                "sigma": 0.006464156446724882,
+                "rho": 0.1339198422165282,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05430405637389557,
+                "sigma": 0.00811683000304742,
+                "rho": 0.12037052779107271,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2466883313209483,
+                "sigma": 0.018929284728982365,
+                "rho": 0.1647657530947746,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13824518092441107,
+                "sigma": 0.013318371996954131,
+                "rho": 0.143565703421894,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0781949138840594,
+                "sigma": 0.009871865766023526,
+                "rho": 0.13932435917329133,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09300978149916173,
+                "sigma": 0.010845910184398604,
+                "rho": 0.15196562814861525,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.012932734706069978,
+                "sigma": 0.011577190755935746,
+                "rho": 0.7536478036864849,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.01329865128186317,
+                "sigma": 0.007545679230009464,
+                "rho": 0.6368942273484397,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.09011937959582735,
+                "sigma": 0.010775902816925288,
+                "rho": 0.16136143738479358,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.007334355885715722,
+                "sigma": 0.005077933615115985,
+                "rho": 0.4561944786960752,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.008636461012390809,
+                "sigma": 0.0030240024598077553,
+                "rho": 0.2621069313673099,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "shadow"
+              },
+              {
+                "level": 0.032031129781430585,
+                "sigma": 0.006278855004270755,
+                "rho": -0.020329842792503938,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06537470577746825,
+                "sigma": 0.009335761164351229,
+                "rho": 0.2011778389520371,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08946343799514246,
+                "sigma": 0.010765239120496442,
+                "rho": 0.09901398694755903,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10718264643771178,
+                "sigma": 0.011683658165176542,
+                "rho": 0.08535824516032897,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.009218139253580454,
+                "sigma": 0.003184792925912739,
+                "rho": 0.17525227068719862,
+                "trustworthy": false,
+                "sample_count": 142884,
+                "band": "shadow"
+              },
+              {
+                "level": 0.01871894792676141,
+                "sigma": 0.005818462720450239,
+                "rho": 0.2997584605918209,
+                "trustworthy": false,
+                "sample_count": 142884,
+                "band": "shadow"
+              },
+              {
+                "level": 0.007050504753863716,
+                "sigma": 0.0027623314852782037,
+                "rho": 0.1719581205509142,
+                "trustworthy": false,
+                "sample_count": 142884,
+                "band": "shadow"
+              },
+              {
+                "level": 0.026527698974344517,
+                "sigma": 0.006030852712920265,
+                "rho": 0.2493493983585393,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "midtone"
+              },
+              {
+                "level": 0.024406232111761957,
+                "sigma": 0.008363333144394556,
+                "rho": 0.33944328974579774,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0005664145272895134,
+                "sigma": 0.0004538478615320938,
+                "rho": 0.015906090215601187,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0277241106009245,
+                "sigma": 0.005822897082326493,
+                "rho": 0.004398784878933526,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.038656600059793184,
+                "sigma": 0.0064246754402716285,
+                "rho": 0.07533417939662468,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.007977556919989214,
+            "skew": -0.10731325683326545,
+            "excess_kurtosis": 6.958364271730934,
+            "quantiles": {
+              "0.1": -0.042142996930841954,
+              "1": -0.024603967135630147,
+              "5": -0.013128757267825105,
+              "25": -0.0020066689867546416,
+              "50": 0.0,
+              "75": 0.0019299025087354132,
+              "95": 0.01281687266765405,
+              "99": 0.023880057929160613,
+              "99.9": 0.040204455777701806
+            },
+            "tail_ratio": 23.73597558088335,
+            "is_gaussian": false,
+            "sample_count": 3892032
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.5002619381890518,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 3892032
+          },
+          "temporal": null,
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)",
+            "temporal: no window could vouch for its own correlation estimate"
+          ]
+        },
+        {
+          "interval_start_s": 6484.0,
+          "windows": 30,
+          "routed": {
+            "amplitude": 30,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 30,
+            "temporal_trustworthy": 0
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 30,
+            "trusted_count": 0,
+            "level_min": 8.155608507967665e-05,
+            "level_max": 0.2144974445955456,
+            "points": [
+              {
+                "level": 0.024273065785750787,
+                "sigma": 0.003930476772589723,
+                "rho": 0.040854801834460774,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0026636522100196526,
+                "sigma": 0.0011903327868618679,
+                "rho": 0.08381695427909786,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0022782542205549,
+                "sigma": 0.000652290150762787,
+                "rho": 0.017911596439808664,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.000992907739653147,
+                "sigma": 0.00042491330845151375,
+                "rho": 0.03624721711256651,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0001712580039798791,
+                "sigma": 7.867540392411571e-05,
+                "rho": 0.06481181916837375,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.003262976266747846,
+                "sigma": 0.0010660372626615274,
+                "rho": 0.005076471106929548,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.023511690665854894,
+                "sigma": 0.03747939224008088,
+                "rho": 0.9594000753689556,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14898107089511128,
+                "sigma": 0.011161910913991773,
+                "rho": 0.08556537513303009,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 8.155608507967665e-05,
+                "sigma": 3.291152037432909e-05,
+                "rho": 0.02124858350024561,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005122459446904899,
+                "sigma": 0.0002415565687506738,
+                "rho": 0.012725153824281854,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001582883376076477,
+                "sigma": 0.030506034017440706,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0007762354788056253,
+                "sigma": 0.00033936072200251043,
+                "rho": 0.01634282707647783,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.06404350409634699,
+                "sigma": 0.006918535859492257,
+                "rho": 0.07059082542693673,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.011850304969688,
+                "sigma": 0.002531472104330791,
+                "rho": 0.032294678850916636,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.01372748875152717,
+                "sigma": 0.0031308788572422214,
+                "rho": 0.13470689714339423,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.007776480077553112,
+                "sigma": 0.0019505004261572768,
+                "rho": 0.2980462669343038,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.05537005081949313,
+                "sigma": 0.006113919364169096,
+                "rho": 0.051710853879649354,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.00027547944945605866,
+                "sigma": 0.00011592843371878038,
+                "rho": 0.043826070988332244,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.055325807292812244,
+                "sigma": 0.007262493071855977,
+                "rho": 0.20800997217003103,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0017601490711539485,
+                "sigma": 0.0006637351534404488,
+                "rho": 0.3880913044229459,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0700119797815929,
+                "sigma": 0.008076625996981257,
+                "rho": 0.23457354736710534,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2144974445955456,
+                "sigma": 0.01387640241331949,
+                "rho": 0.05249761784119067,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1339229865346766,
+                "sigma": 0.010410399684757982,
+                "rho": 0.0526495069448627,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.009198535178721271,
+                "sigma": 0.003239150707935706,
+                "rho": 0.3961338375764287,
+                "trustworthy": false,
+                "sample_count": 138384,
+                "band": "shadow"
+              },
+              {
+                "level": 0.004658288094273597,
+                "sigma": 0.0011206418018614853,
+                "rho": 0.025137254298882805,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.012607557642924391,
+                "sigma": 0.002603316704363581,
+                "rho": 0.07326818794667767,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.09869352333713058,
+                "sigma": 0.009586241305841662,
+                "rho": 0.11991311257380288,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.15226347934092432,
+                "sigma": 0.010996760325318223,
+                "rho": 0.028718453532607047,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06661843406287841,
+                "sigma": 0.006761218546466565,
+                "rho": 0.03448691210756483,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.01267703663928181,
+                "sigma": 0.002695235673097639,
+                "rho": 0.01525220698761709,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.005594956579444977,
+            "skew": -0.12153537280570913,
+            "excess_kurtosis": 29.76236557632089,
+            "quantiles": {
+              "0.1": -0.03533098406839755,
+              "1": -0.018766579449907624,
+              "5": -0.007964781365896513,
+              "25": -0.0005350970791993071,
+              "50": 0.0,
+              "75": 0.0005182943541230949,
+              "95": 0.007930662389787927,
+              "99": 0.018658978651126715,
+              "99.9": 0.03430917130157642
+            },
+            "tail_ratio": 76.43270693733935,
+            "is_gaussian": false,
+            "sample_count": 4405824
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.9451503713568707,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 4405824
+          },
+          "temporal": null,
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)",
+            "temporal: no window could vouch for its own correlation estimate"
+          ]
+        },
+        {
+          "interval_start_s": 7617.0,
+          "windows": 63,
+          "routed": {
+            "amplitude": 63,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 63,
+            "temporal_trustworthy": 0
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 63,
+            "trusted_count": 0,
+            "level_min": 0.0006651729055864679,
+            "level_max": 0.15603385730923397,
+            "points": [
+              {
+                "level": 0.007727972498136547,
+                "sigma": 0.0016190619743840264,
+                "rho": 0.09006073263714431,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.013765843708789976,
+                "sigma": 0.0020378346808758666,
+                "rho": 0.1286204054786988,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.054339979161494155,
+                "sigma": 0.007184171382158975,
+                "rho": 0.05460024252746609,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0819270306731385,
+                "sigma": 0.009540282446662855,
+                "rho": 0.07877037869927217,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.022515002766934952,
+                "sigma": 0.003486849515002693,
+                "rho": 0.1283610823020065,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03289797887403505,
+                "sigma": 0.004187692558180254,
+                "rho": 0.16666657086779524,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.006022894029950451,
+                "sigma": 0.0010215688015606321,
+                "rho": 0.1346567771596705,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.03453073966296654,
+                "sigma": 0.00398856949325502,
+                "rho": 0.1451059997332249,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02019113656889242,
+                "sigma": 0.003466107267160375,
+                "rho": 0.06637243115556712,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.026937614886909118,
+                "sigma": 0.0033678856352537105,
+                "rho": 0.14635325458324888,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05658838597918279,
+                "sigma": 0.006481164546484672,
+                "rho": 0.08659664439799175,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.021679523980253478,
+                "sigma": 0.0036553556417538886,
+                "rho": 0.0671874262876655,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.010237412596484514,
+                "sigma": 0.0014894212922073838,
+                "rho": 0.12475320845290194,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0540306298940906,
+                "sigma": 0.005501112115748751,
+                "rho": 0.141214282613483,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.01163586883751719,
+                "sigma": 0.002211322075881692,
+                "rho": 0.1290340968069028,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.03441724457010972,
+                "sigma": 0.0039269151665760746,
+                "rho": 0.13283668123880754,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07345228695429602,
+                "sigma": 0.008632256274561535,
+                "rho": 0.10237395896698631,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07117123560142334,
+                "sigma": 0.008422237064481284,
+                "rho": 0.14428895127436658,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08944171707939225,
+                "sigma": 0.008752510507159784,
+                "rho": 0.12153805553266395,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.012293938480830862,
+                "sigma": 0.0036183713952133724,
+                "rho": 0.013454799091027647,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.007188949988725211,
+                "sigma": 0.0011444704600357153,
+                "rho": 0.14982216306445384,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.05718355116293562,
+                "sigma": 0.005738401795189471,
+                "rho": 0.15638984320179428,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.15603385730923397,
+                "sigma": 0.013039778282917233,
+                "rho": 0.13949687925910537,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.00414947867190962,
+                "sigma": 0.0009542814989353973,
+                "rho": 0.11229319832605,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.038543909381257825,
+                "sigma": 0.004142546529451617,
+                "rho": 0.1290205322059137,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04544864972559766,
+                "sigma": 0.005257467677910297,
+                "rho": 0.12122726939355055,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0398738076725622,
+                "sigma": 0.004885655865396218,
+                "rho": 0.13452823534882352,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08817582530813688,
+                "sigma": 0.008727787188859311,
+                "rho": 0.04516877690897969,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0529820969501016,
+                "sigma": 0.007101293187703738,
+                "rho": 0.2744968585912486,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.008739027728807464,
+                "sigma": 0.00225105563210244,
+                "rho": -0.005073292348607983,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.06482927947679339,
+                "sigma": 0.008723324861920251,
+                "rho": 0.22224431808075384,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05731708233735331,
+                "sigma": 0.036183123299175245,
+                "rho": 0.9481996359882707,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.004673407326725578,
+                "sigma": 0.0008238329524040734,
+                "rho": 0.15350085696948357,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.054526967152350815,
+                "sigma": 0.005472817426466431,
+                "rho": 0.14276398947985336,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05587545146560387,
+                "sigma": 0.005632071053509658,
+                "rho": 0.1392818750745506,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0015240326624678968,
+                "sigma": 0.0003981296014243525,
+                "rho": 0.08850889010161378,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.03899135649047658,
+                "sigma": 0.004110342544939649,
+                "rho": 0.15277227304960306,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03243639338916544,
+                "sigma": 0.003973184554167938,
+                "rho": 0.10106768625729767,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0370466390354679,
+                "sigma": 0.00480152974612947,
+                "rho": 0.11526763543475349,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04341289127492786,
+                "sigma": 0.005547811531753511,
+                "rho": 0.035097012327036436,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14766032071722276,
+                "sigma": 0.014119737546226646,
+                "rho": 0.10994236505233057,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08007664799763935,
+                "sigma": 0.008671521344106843,
+                "rho": 0.12068756699181526,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03468383116086129,
+                "sigma": 0.004560146780174382,
+                "rho": 0.14730659110819389,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02343981141735107,
+                "sigma": 0.008095734199367814,
+                "rho": 0.7424929654855359,
+                "trustworthy": false,
+                "sample_count": 133956,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03531649595682437,
+                "sigma": 0.009720683817904743,
+                "rho": 0.43081709912394905,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04979407996457282,
+                "sigma": 0.007959871901711843,
+                "rho": 0.3445865958056338,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0037836857431860224,
+                "sigma": 0.000705068394410871,
+                "rho": 0.15294380121944173,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.049443015095070146,
+                "sigma": 0.005005124794979204,
+                "rho": 0.14174648567480497,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.030647010870649583,
+                "sigma": 0.003458914752684272,
+                "rho": 0.13413987167836705,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0006651729055864679,
+                "sigma": 0.00019473521965374723,
+                "rho": 0.14488318785257492,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.03278503056242326,
+                "sigma": 0.0035014174051329647,
+                "rho": 0.12790017416757005,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.01986396044527424,
+                "sigma": 0.0027793886810331095,
+                "rho": 0.053013517514569175,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.021221467034922906,
+                "sigma": 0.003239873674807126,
+                "rho": 0.08716991456788636,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.052637897767400244,
+                "sigma": 0.005665013968704413,
+                "rho": 0.1338662921345659,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.052959233151819086,
+                "sigma": 0.0060340344981798626,
+                "rho": 0.13633351520878167,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.027569830398995514,
+                "sigma": 0.0032196864934284416,
+                "rho": 0.14301464945489584,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03149048191918642,
+                "sigma": 0.003642176324277634,
+                "rho": 0.18025730895247105,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05132960954837177,
+                "sigma": 0.006009501107482908,
+                "rho": 0.24071096002421855,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.054753021839261465,
+                "sigma": 0.0059247608816754,
+                "rho": 0.11321389061450948,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06394068097931346,
+                "sigma": 0.00644745422732714,
+                "rho": 0.1378974499486325,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.003248492768319356,
+                "sigma": 0.0006459056255976531,
+                "rho": 0.16578908632723932,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.036926744146634174,
+                "sigma": 0.003980901947700258,
+                "rho": 0.14157036245808352,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.023221266177787962,
+                "sigma": 0.0027251411509762844,
+                "rho": 0.14230237350991515,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.005258981695724041,
+            "skew": -0.05550710971975145,
+            "excess_kurtosis": 19.574376097287765,
+            "quantiles": {
+              "0.1": -0.03346408449875832,
+              "1": -0.016698871342455755,
+              "5": -0.007486094929405589,
+              "25": -0.0010684572903640285,
+              "50": 0.0,
+              "75": 0.0010894948093239309,
+              "95": 0.00748650680718304,
+              "99": 0.016613624567547974,
+              "99.9": 0.033553395953537006
+            },
+            "tail_ratio": 36.392617866718936,
+            "is_gaussian": false,
+            "sample_count": 9271872
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.6000958118767027,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 9271872
+          },
+          "temporal": null,
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)",
+            "temporal: no window could vouch for its own correlation estimate"
+          ]
+        }
+      ],
+      "screen_anchoring": {
+        "available": true,
+        "interval_a_s": 1119.0,
+        "interval_b_s": 7617.0,
+        "separation_s": 6498.0,
+        "grain_envelope": {
+          "evidence": "slow_heterogeneity",
+          "envelope_ratio": 0.9242682139577416,
+          "screen_anchored_correlation": -0.023390852486209285,
+          "is_screen_anchored": false,
+          "belongs_in_a_negative_model": true,
+          "sample_count": 8740224
+        },
+        "additive_pattern": {
+          "evidence": "additive_fixed_pattern",
+          "cross_source_correlation": -0.10796912725280924,
+          "is_screen_anchored": false,
+          "sample_count": 62745600
+        }
+      },
+      "notes": [
+        "the reused survey is a CODED-FRAME survey: its motion and level statistics include the 24.4% of each frame that is letterbox, while extraction uses the active picture. Regenerating the survey with the crop applied would remove the discrepancy.",
+        "3 of 8 intervals carry frozen, noise-free blocks (encoder skip blocks); those blocks were masked out of window selection rather than used to reject the interval"
+      ]
+    },
+    {
+      "source": {
+        "schema_version": 1,
+        "source_id": "sony_zve10ii_C0014",
+        "edition": "ZV-E10 II XAVC S-I, S-Log3",
+        "sha256": "5299e5f231531007bce42fa3850ddb792ab3f53559f3738a1f17f162f3183138",
+        "byte_size": 67384731,
+        "coded_width": 1920,
+        "coded_height": 1080,
+        "cadence": "24000/1001",
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "active_picture": [
+          0,
+          0,
+          1920,
+          1080
+        ],
+        "decode": {
+          "input_range": "pc",
+          "matrix": "bt709",
+          "transfer": "slog3",
+          "primaries": "unknown",
+          "output_pixel_format": "gray16le",
+          "scale": "linear_diffuse_white"
+        },
+        "timestamp": "",
+        "path_hint": "/Users/dpakhomov/Movies/samples/C0014.MP4",
+        "notes": "grain_slice vertical study",
+        "identity": "c3842eb4f90067683fcb8de70bf3824e5952d23bd126f63a30278d6cf05102da"
+      },
+      "plan": {
+        "transfer": "slog3",
+        "level_scale": "linear, 1.0 = diffuse white",
+        "window_s": 2.0,
+        "frames_per_interval": 10,
+        "tile_size": 128,
+        "intervals_requested": 8
+      },
+      "coverage": [
+        {
+          "stage": "intervals",
+          "considered": 4,
+          "accepted": 4,
+          "survival": 1.0,
+          "rejected": {
+            "contains a cut": 0,
+            "motion above gate": 0
+          }
+        },
+        {
+          "stage": "admissibility",
+          "considered": 4,
+          "accepted": 4,
+          "survival": 1.0,
+          "rejected": {}
+        },
+        {
+          "stage": "windows",
+          "considered": 128,
+          "accepted": 94,
+          "survival": 0.734375,
+          "rejected": {
+            "sub-pixel drift": 25,
+            "motion above gate": 9
+          }
+        }
+      ],
+      "seconds": {
+        "candidate_s": 5.0,
+        "decoded_s": 1.6683333333333332,
+        "evidence_s": 1.6683333333333332
+      },
+      "regions": {
+        "regions": 94,
+        "coverage": {
+          "shadow": 0,
+          "midtone": 76,
+          "highlight": 18
+        },
+        "contains_band_coverage": {
+          "shadow": 38,
+          "midtone": 86,
+          "highlight": 62
+        },
+        "texture_coverage": {
+          "flat": 0,
+          "textured": 94
+        },
+        "level_min": 0.02627836188013415,
+        "level_max": 0.5488530602474715,
+        "level_scales": [
+          "linear"
+        ],
+        "band_edges": [
+          [
+            0.02,
+            0.25
+          ]
+        ],
+        "edges_bracket_the_data": true,
+        "widened_gate": 0,
+        "independence": {
+          "regions": 94,
+          "intervals": 4,
+          "sources": 1,
+          "spans": 1,
+          "span_seconds": 5.0,
+          "max_regions_per_interval": 27,
+          "regions_per_span": 94.0,
+          "concentrated": true
+        }
+      },
+      "intervals_measured": 4,
+      "amplitude_points": {
+        "trusted": 28,
+        "total": 94
+      },
+      "aggregate": {
+        "sigma": {
+          "median": 0.0015073783163650665,
+          "min": 0.0013118126034054986,
+          "max": 0.002581259747207369,
+          "n": 4,
+          "values": [
+            0.0014088909941038592,
+            0.0013118126034054986,
+            0.002581259747207369,
+            0.0016058656386262738
+          ]
+        },
+        "whiteness": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n": 0,
+          "values": []
+        },
+        "excess_kurtosis": {
+          "median": 640.6622288700412,
+          "min": 82.5016974163592,
+          "max": 2989.1588474392365,
+          "n": 4,
+          "values": [
+            2989.1588474392365,
+            401.9221699250096,
+            82.5016974163592,
+            879.4022878150727
+          ]
+        },
+        "rho": {
+          "median": 0.41862417203146296,
+          "min": 0.36059399842510886,
+          "max": 0.99,
+          "n": 4,
+          "values": [
+            0.4293105984813306,
+            0.40793774558159535,
+            0.99,
+            0.36059399842510886
+          ]
+        },
+        "envelope_ratio": {
+          "median": 0.9638201293434416,
+          "min": 0.7242566413473449,
+          "max": 1.1642878348777237,
+          "n": 4,
+          "values": [
+            1.1383300326756887,
+            0.7242566413473449,
+            0.7893102260111947,
+            1.1642878348777237
+          ]
+        }
+      },
+      "per_interval": [
+        {
+          "interval_start_s": 0.0,
+          "windows": 23,
+          "routed": {
+            "amplitude": 23,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 23,
+            "temporal_trustworthy": 11
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 23,
+            "trusted_count": 11,
+            "level_min": 0.030356014876634703,
+            "level_max": 0.5488530602474715,
+            "points": [
+              {
+                "level": 0.27944796380316517,
+                "sigma": 0.001227398009726078,
+                "rho": 0.2555125514675445,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.3105365321577662,
+                "sigma": 0.001283989033077924,
+                "rho": 0.27446228588112165,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.030356014876634703,
+                "sigma": 0.0008933577110375096,
+                "rho": 0.4847724838673124,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1958367546105735,
+                "sigma": 0.0023476659564165636,
+                "rho": 0.5643779705148573,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2005744719785551,
+                "sigma": 0.0011405764043344597,
+                "rho": 0.2934601341013572,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.28832724341229354,
+                "sigma": 0.0014088909941038592,
+                "rho": 0.3796281013385865,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.23089968634967134,
+                "sigma": 0.001648902964660149,
+                "rho": 0.4750901417491993,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.5488530602474715,
+                "sigma": 0.007036984836350973,
+                "rho": 0.7236853499242484,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.3225121690356877,
+                "sigma": 0.0016253486433754866,
+                "rho": 0.3873282041469932,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.24147273838630565,
+                "sigma": 0.05240093433800615,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.22470358102297508,
+                "sigma": 0.08310200616904234,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2301807928136729,
+                "sigma": 0.001447387678115608,
+                "rho": 0.5080570842975627,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14121638323716998,
+                "sigma": 0.011669972498809128,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13018062606550768,
+                "sigma": 0.011715749882749054,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10701596877854942,
+                "sigma": 0.0008264625620803091,
+                "rho": 0.38823212795788575,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14167571869044288,
+                "sigma": 0.014181732896550867,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.15971215688508017,
+                "sigma": 0.005527903492322406,
+                "rho": 0.9572499895208191,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.15267091434346264,
+                "sigma": 0.001207500525773914,
+                "rho": 0.4399599943557335,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04603227076611617,
+                "sigma": 0.0005624181550747633,
+                "rho": 0.34835650577298605,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09034672807791141,
+                "sigma": 0.0007466742767376738,
+                "rho": 0.3500898740069114,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08111186081390417,
+                "sigma": 0.0007156865211893963,
+                "rho": 0.33940290444312304,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03353619983010254,
+                "sigma": 0.0005365772282345321,
+                "rho": 0.4293105984813306,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04305980336735287,
+                "sigma": 0.0005723531857755705,
+                "rho": 0.3788505795297483,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.0023790937561325126,
+            "skew": -3.030580992864495,
+            "excess_kurtosis": 2989.1588474392365,
+            "quantiles": {
+              "0.1": -0.016449849032549365,
+              "1": -0.004658359030175923,
+              "5": -0.0018723129187108135,
+              "25": -0.00011597953794102549,
+              "50": 0.0,
+              "75": 0.0,
+              "95": 0.0018683840776556905,
+              "99": 0.0048404565901130625,
+              "99.9": 0.017040805751298575
+            },
+            "tail_ratio": 212.75683983682782,
+            "is_gaussian": false,
+            "sample_count": 3391488
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 1.1383300326756887,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 3391488
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.4293105984813306,
+            "rho_from_lag4": 0.49151758793969846,
+            "lag_variances": {
+              "1": 4.2799069618244685e-06,
+              "2": 7.310035609761283e-06,
+              "4": 1.2552974426403954e-05
+            },
+            "per_window_rho": [
+              0.5643779705148573,
+              0.7236853499242484,
+              0.3873282041469932,
+              0.5080570842975627,
+              0.38823212795788575,
+              0.99,
+              0.9572499895208191,
+              0.34835650577298605,
+              0.3500898740069114,
+              0.33940290444312304,
+              0.4293105984813306
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 1622016
+          },
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)"
+          ]
+        },
+        {
+          "interval_start_s": 1.0,
+          "windows": 27,
+          "routed": {
+            "amplitude": 27,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 27,
+            "temporal_trustworthy": 10
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 27,
+            "trusted_count": 10,
+            "level_min": 0.029863811662117445,
+            "level_max": 0.54776997780758,
+            "points": [
+              {
+                "level": 0.2802356611039837,
+                "sigma": 0.0015158154362713023,
+                "rho": 0.3255453592534494,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.31126550823156174,
+                "sigma": 0.0015975894573159732,
+                "rho": 0.3740510122437892,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.029863811662117445,
+                "sigma": 0.0005579025087061416,
+                "rho": 0.3837616673950659,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.19577414254548037,
+                "sigma": 0.002106586616995918,
+                "rho": 0.6836815958742486,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.20082446363140574,
+                "sigma": 0.0012672184218961247,
+                "rho": 0.3915100490257635,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.20372686120012914,
+                "sigma": 0.01829528115356221,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.062495362134172526,
+                "sigma": 0.011921339541605309,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.23057669713874093,
+                "sigma": 0.0015106654111929796,
+                "rho": 0.4477760585938535,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.54776997780758,
+                "sigma": 0.004018684003063916,
+                "rho": 0.49536944139094996,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.2971178158861492,
+                "sigma": 0.0043818758722503435,
+                "rho": 0.5765086157986659,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.32274459842885184,
+                "sigma": 0.0016704454958718924,
+                "rho": 0.3680994325693372,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.24301595868948916,
+                "sigma": 0.012388173051701467,
+                "rho": 0.9496667010389828,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.22275389972157117,
+                "sigma": 0.04008923168361604,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2291084268348456,
+                "sigma": 0.0013216977281398778,
+                "rho": 0.43449402777585755,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14081591831613163,
+                "sigma": 0.0013118126034054986,
+                "rho": 0.5373305605024308,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13049055830792772,
+                "sigma": 0.001144094338991799,
+                "rho": 0.48319964726247266,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10685255596664316,
+                "sigma": 0.000816330418682007,
+                "rho": 0.37076786511445703,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14112278231507622,
+                "sigma": 0.0010808456702037766,
+                "rho": 0.40632425032208186,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0850548939369665,
+                "sigma": 0.0012984311182139732,
+                "rho": 0.6827192589450184,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0325927564560861,
+                "sigma": 0.005764151578686057,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1620260223025858,
+                "sigma": 0.0011428510720222667,
+                "rho": 0.4263691961162206,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.15308387968824846,
+                "sigma": 0.0010443359814175709,
+                "rho": 0.3165674510026737,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04581651288070408,
+                "sigma": 0.0005683042116728487,
+                "rho": 0.34596363584100476,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09021436531385307,
+                "sigma": 0.0007587172167418838,
+                "rho": 0.36429250353356113,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08084831152172664,
+                "sigma": 0.0007305941971129695,
+                "rho": 0.3481525683398352,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.033132185943934,
+                "sigma": 0.0004936981567891023,
+                "rho": 0.33947839544328184,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04286269929832899,
+                "sigma": 0.0005552222351322129,
+                "rho": 0.3571212916122686,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.0015011442405155097,
+            "skew": -2.2038638779583026,
+            "excess_kurtosis": 401.9221699250096,
+            "quantiles": {
+              "0.1": -0.01118236225460766,
+              "1": -0.0039184876259517045,
+              "5": -0.0017722362147948288,
+              "25": -0.0001889062262616161,
+              "50": 0.0,
+              "75": 0.0002319590758820485,
+              "95": 0.0017722362147948288,
+              "99": 0.003919075753949466,
+              "99.9": 0.011522380508290535
+            },
+            "tail_ratio": 67.62129279729706,
+            "is_gaussian": false,
+            "sample_count": 3981312
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.7242566413473449,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 3981312
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.40793774558159535,
+            "rho_from_lag4": 0.49698994974874366,
+            "lag_variances": {
+              "1": 6.007794975583744e-06,
+              "2": 1.1891877782205356e-05,
+              "4": 2.5027446167573474e-05
+            },
+            "per_window_rho": [
+              0.6836815958742486,
+              0.4477760585938535,
+              0.3680994325693372,
+              0.9496667010389828,
+              0.99,
+              0.99,
+              0.3165674510026737,
+              0.34596363584100476,
+              0.36429250353356113,
+              0.33947839544328184
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 1474560
+          },
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)"
+          ]
+        },
+        {
+          "interval_start_s": 2.0,
+          "windows": 25,
+          "routed": {
+            "amplitude": 25,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 25,
+            "temporal_trustworthy": 3
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 25,
+            "trusted_count": 3,
+            "level_min": 0.02627836188013415,
+            "level_max": 0.5433793666010072,
+            "points": [
+              {
+                "level": 0.2794985354341012,
+                "sigma": 0.0015179542581057882,
+                "rho": 0.41453531198656135,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.31063318080877317,
+                "sigma": 0.001696072942635941,
+                "rho": 0.48877662860586946,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.028794476399675438,
+                "sigma": 0.007360619584659169,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.19539880092462036,
+                "sigma": 0.014231654031173189,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.20135407802372782,
+                "sigma": 0.0014608553965005631,
+                "rho": 0.5160598074133265,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.22982671294021162,
+                "sigma": 0.006357040562592329,
+                "rho": 0.9601076172512761,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.5433793666010072,
+                "sigma": 0.04722199238591899,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.2962858747451887,
+                "sigma": 0.04917305387262395,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.32298728279280864,
+                "sigma": 0.0016542594688978992,
+                "rho": 0.4022186371269554,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.22592063576505783,
+                "sigma": 0.002581259747207369,
+                "rho": 0.7940608184773208,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.14056047742370814,
+                "sigma": 0.01847135619831148,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13172283678153182,
+                "sigma": 0.021711160742897473,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10658108029301447,
+                "sigma": 0.0009900850426796356,
+                "rho": 0.5317001338974541,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13983955891362926,
+                "sigma": 0.025845290142187546,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08362157636644314,
+                "sigma": 0.01440112310528871,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03820071743697329,
+                "sigma": 0.013037588298175518,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0320960012848804,
+                "sigma": 0.008769712811487994,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.16977645594928317,
+                "sigma": 0.0194086783702909,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1547354734385352,
+                "sigma": 0.0012416298658898903,
+                "rho": 0.16116367252511865,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.045511185983706445,
+                "sigma": 0.0006087632337954822,
+                "rho": 0.38956769796392976,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.090241441759323,
+                "sigma": 0.0007771602861663115,
+                "rho": 0.35220485834435467,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08051390497456463,
+                "sigma": 0.0007540466365356988,
+                "rho": 0.4099775585674439,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.032255125191720316,
+                "sigma": 0.0008910620607346938,
+                "rho": 0.7386693428886375,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04255706758251064,
+                "sigma": 0.0006955620154940164,
+                "rho": 0.5203736987877838,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02627836188013415,
+                "sigma": 0.0004902583526510054,
+                "rho": 0.34830386236676625,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.0018437929909325744,
+            "skew": -0.2759074837095855,
+            "excess_kurtosis": 82.5016974163592,
+            "quantiles": {
+              "0.1": -0.016003053229890412,
+              "1": -0.005240381527873205,
+              "5": -0.0019183967628417459,
+              "25": -0.00032057583691044397,
+              "50": 0.0,
+              "75": 0.0002439295624340813,
+              "95": 0.0019015788620783073,
+              "99": 0.005068964304317162,
+              "99.9": 0.014952406711530355
+            },
+            "tail_ratio": 67.44182626529879,
+            "is_gaussian": false,
+            "sample_count": 3686400
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.7893102260111947,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 3686400
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.99,
+            "rho_from_lag4": 0.99,
+            "lag_variances": {
+              "1": 2.786211023564864e-06,
+              "2": 6.0517181530500555e-06,
+              "4": 1.467118552024729e-05
+            },
+            "per_window_rho": [
+              0.99,
+              0.99,
+              0.9601076172512761
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 442368
+          },
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)"
+          ]
+        },
+        {
+          "interval_start_s": 3.0,
+          "windows": 19,
+          "routed": {
+            "amplitude": 19,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 19,
+            "temporal_trustworthy": 4
+          },
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 19,
+            "trusted_count": 4,
+            "level_min": 0.027044509006295226,
+            "level_max": 0.3227818958040635,
+            "points": [
+              {
+                "level": 0.31041553292777135,
+                "sigma": 0.0016058656386262738,
+                "rho": 0.43717583877452193,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.027044509006295226,
+                "sigma": 0.00641257815617682,
+                "rho": 0.99,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.19603476610599138,
+                "sigma": 0.0025367200605354214,
+                "rho": 0.3696229730426237,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.2018344314336967,
+                "sigma": 0.001284747016983165,
+                "rho": 0.30727498580620427,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.22549298763504955,
+                "sigma": 0.0032490523967229953,
+                "rho": 0.8058650861380052,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.3227818958040635,
+                "sigma": 0.0016495121456973497,
+                "rho": 0.39370898150739975,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.2515138783574534,
+                "sigma": 0.08044133085568225,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "highlight"
+              },
+              {
+                "level": 0.2221646264727067,
+                "sigma": 0.0014649518778005238,
+                "rho": 0.41959807750106437,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13805414134946345,
+                "sigma": 0.0033667865651729393,
+                "rho": 0.7640086062606668,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.13364155528807417,
+                "sigma": 0.018011818172288405,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10606870615488455,
+                "sigma": 0.0010107454580092936,
+                "rho": 0.524006661691057,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03778174155134943,
+                "sigma": 0.0006001195479399221,
+                "rho": 0.4368050635896561,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.18381649686752688,
+                "sigma": 0.016995139200984517,
+                "rho": 0.99,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1565098445823964,
+                "sigma": 0.0016458995782999107,
+                "rho": 0.5885669391798447,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04513587786290545,
+                "sigma": 0.0005759579223446809,
+                "rho": 0.3420839396304829,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.09030441165698619,
+                "sigma": 0.000755579041399581,
+                "rho": 0.37910405721973484,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07997074635261056,
+                "sigma": 0.0007186048394904368,
+                "rho": 0.30499704524150495,
+                "trustworthy": true,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.030974522259640203,
+                "sigma": 0.0006107035348268536,
+                "rho": 0.5182811791707138,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.042067090045964935,
+                "sigma": 0.0005785121247673331,
+                "rho": 0.3587681139417924,
+                "trustworthy": false,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.002163788191405898,
+            "skew": 1.1150803304125572,
+            "excess_kurtosis": 879.4022878150727,
+            "quantiles": {
+              "0.1": -0.015313315741277074,
+              "1": -0.003992462099197917,
+              "5": -0.0018357687557706318,
+              "25": -0.0002594376962164271,
+              "50": 0.0,
+              "75": 0.00026173220922152,
+              "95": 0.0019015788620783073,
+              "99": 0.004363648430667649,
+              "99.9": 0.017171924629278756
+            },
+            "tail_ratio": 93.43340533998514,
+            "is_gaussian": false,
+            "sample_count": 2801664
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 1.1642878348777237,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 2801664
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.36059399842510886,
+            "rho_from_lag4": 0.44873366834170847,
+            "lag_variances": {
+              "1": 6.714121782508167e-07,
+              "2": 1.0443612393258155e-06,
+              "4": 1.6278296109563093e-06
+            },
+            "per_window_rho": [
+              0.99,
+              0.3420839396304829,
+              0.37910405721973484,
+              0.30499704524150495
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 589824
+          },
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)"
+          ]
+        }
+      ],
+      "screen_anchoring": {
+        "available": false,
+        "separation_s": 3.0,
+        "reason": "the two intervals are only 3s apart, below the 60s needed for unrelated pictures; a correlation here would measure the same scene, not screen-anchored structure"
+      },
+      "notes": []
+    }
+  ]
+}

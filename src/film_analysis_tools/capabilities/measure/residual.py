@@ -409,6 +409,36 @@ def _aligned_differences(
     return (np.stack(deltas) if deltas else np.empty((0,))), estimates, align_window
 
 
+def aligned_residuals(
+    frames: np.ndarray,
+    *,
+    lag: int = 1,
+    blur_radius: int = DEFAULT_BLUR_RADIUS,
+    motion_blur_radius: int = DEFAULT_MOTION_BLUR_RADIUS,
+    max_shift: int = DEFAULT_MAX_SHIFT,
+    align: bool = True,
+) -> np.ndarray:
+    """The residual stack :func:`extract` measures, scaled so its variance is the per-frame
+    variance at rho = 0.
+
+    Exposed because the spectrum and distribution producers were computing their own *unaligned*
+    lag-1 differences. On a window that drifts even slightly an unaligned difference folds the
+    picture's own edges into the residual — which is exactly what a noise power spectrum and a
+    tail statistic are most sensitive to.
+    """
+    deltas, _, aligned = _aligned_differences(
+        np.asarray(frames, dtype=np.float64),
+        lag,
+        blur_radius=blur_radius,
+        motion_blur_radius=motion_blur_radius,
+        align=align,
+        max_shift=max_shift,
+    )
+    if deltas.size == 0:
+        raise DataError("cannot form residuals: too few frames for the requested lag")
+    return np.asarray(_trim(deltas, max_shift if aligned else 0) / np.sqrt(2.0))
+
+
 def _trim(deltas: np.ndarray, margin: int) -> np.ndarray:
     """Drop the border, where whole-pixel rolling wrapped content around."""
     if margin <= 0 or deltas.ndim != 3:
@@ -520,6 +550,7 @@ __all__ = [
     "SUBPIXEL_REJECT",
     "ResidualEstimate",
     "Shift",
+    "aligned_residuals",
     "apply_shift",
     "box_blur",
     "estimate_shift",

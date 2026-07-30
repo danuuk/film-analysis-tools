@@ -66,6 +66,18 @@ DIFFUSE_WHITE_REFLECTANCE = 0.90
 #: is what converts "fraction of 10,000 nits" into "fraction of white".
 DIFFUSE_WHITE_NITS = 100.0
 
+#: Fraction of a window's samples that may sit at the container limits before it is unfit for a
+#: distribution measurement. Tails are the first thing clipping distorts.
+MAX_WINDOW_CLIPPED = 0.01
+
+#: Minimum separation between the two intervals compared for screen anchoring.
+#:
+#: The test asks whether a pattern sits in screen coordinates rather than in the picture, so the
+#: two intervals must hold *unrelated pictures*. Two intervals three seconds apart in a tripod
+#: shot hold the same picture: comparing them returned 0.93 for the grain envelope and 0.99 for
+#: the additive pattern, which is a measurement of "same scene", not of scan-fixed structure.
+MIN_ANCHOR_SEPARATION_S = 60.0
+
 
 @dataclass(frozen=True)
 class SourcePlan:
@@ -170,6 +182,14 @@ _METADATA = re.compile(r"lavfi\.(?:signalstats\.(\w+)|scd\.(score))=([-\d.eE+]+)
 CROP_FLOOR = 0.004
 
 
+def _crop_filter(crop: Crop | None, stream: dict[str, Any]) -> str:
+    """``crop=...,`` prefix for a filter chain, or empty when the whole frame is active."""
+    if crop is None or (crop.is_full_frame and not crop.width):
+        return ""
+    x, y, width, height = crop.applied_to(int(stream["width"]), int(stream["height"]))
+    return f"crop={width}:{height}:{x}:{y},"
+
+
 def detect_crop(plan: SourcePlan, stream: dict[str, Any], *, probes: int = 5) -> Crop:
     """The active picture, found by sampling several points in the source.
 
@@ -214,7 +234,7 @@ def detect_crop(plan: SourcePlan, stream: dict[str, Any], *, probes: int = 5) ->
     return Crop(x=left, y=top, width=keep_width, height=keep_height)
 
 
-def survey(plan: SourcePlan, stream: dict[str, Any]) -> FrameSurvey:
+def survey(plan: SourcePlan, stream: dict[str, Any], crop: Crop | None = None) -> FrameSurvey:
     """A reduced-resolution per-frame pass — the same cheap survey the catalogue is built on.
 
     ``metadata=print`` is written to a file rather than parsed from the log: it emits at INFO
@@ -228,7 +248,8 @@ def survey(plan: SourcePlan, stream: dict[str, Any]) -> FrameSurvey:
                 FFMPEG, "-hide_banner", "-loglevel", "error", "-nostdin", "-i", str(plan.path),
                 "-map", "0:v:0", "-an", "-sn", "-dn",
                 "-vf",
-                f"scale={plan.survey_width}:-2:flags=bicubic,fps={plan.survey_fps},"
+                _crop_filter(crop, stream)
+                + f"scale={plan.survey_width}:-2:flags=bicubic,fps={plan.survey_fps},"
                 "gblur=sigma=1,scdet=threshold=10,signalstats,"
                 f"metadata=mode=print:file={dump}",
                 "-f", "null", "-",
@@ -286,7 +307,7 @@ def survey(plan: SourcePlan, stream: dict[str, Any]) -> FrameSurvey:
     )
 
 
-def load_survey(plan: SourcePlan, stream: dict[str, Any]) -> FrameSurvey:
+def load_survey(plan: SourcePlan, stream: dict[str, Any], crop: Crop | None = None) -> FrameSurvey:
     """The kept survey when the plan names one, otherwise a fresh pass.
 
     Both paths use ``ydif`` for motion, normalised to a fraction of full scale. The kept survey
@@ -294,7 +315,7 @@ def load_survey(plan: SourcePlan, stream: dict[str, Any]) -> FrameSurvey:
     silently change what the motion gate means between sources.
     """
     if plan.survey_csv is None:
-        return survey(plan, stream)
+        return survey(plan, stream, crop)
 
     loaded = ingest.read_survey(
         plan.survey_csv,
@@ -328,12 +349,8 @@ def decode_signal(
     underflow to zero. Nothing was wrong with the footage.
     """
     active = crop or Crop()
-    x, y, width, height = active.applied_to(int(stream["width"]), int(stream["height"]))
-    filters = (
-        "format=gray16le"
-        if active.is_full_frame and not active.width
-        else (f"crop={width}:{height}:{x}:{y},format=gray16le")
-    )
+    _, _, width, height = active.applied_to(int(stream["width"]), int(stream["height"]))
+    filters = _crop_filter(crop, stream) + "format=gray16le"
     result = subprocess.run(
         [
             FFMPEG, "-hide_banner", "-loglevel", "error", "-nostdin",
@@ -354,22 +371,27 @@ def decode_signal(
     return code / 1023.0
 
 
-def to_linear(plan: SourcePlan, container: np.ndarray, stream: dict[str, Any]) -> np.ndarray:
+def to_linear(plan: SourcePlan, container: np.ndarray) -> np.ndarray:
     """The container signal as linear light, with 1.0 at diffuse white on every source.
 
-    The legal-range offset is applied here, not in :func:`decode_signal`, so the container domain
-    stays the one place where 0 and 1 are the format's real limits. Measuring clipping against the
-    *legal* range instead counted ordinary footroom as clipped black — 42.8% of one Pulp Fiction
-    interval, which is simply how much of that frame sits below code 64.
+    **No range mapping happens here, because ffmpeg has already done it.** Converting a
+    limited-range YUV stream to ``gray16le`` range-expands: measured against a synthetic clip with
+    known codes, 64 arrives as 0 and 940 as 1023. Applying the 64..940 mapping again on top of
+    that crushed every low PQ value toward zero and distorted the linear levels, the
+    amplitude-versus-level placement, the residual distributions and the shadow tails.
+
+    The same measurement shows the conversion also **clamps**: codes 0 and 64 both arrive as 0,
+    940 and 1023 both as 1023. Sub-legal footroom and super-white headroom do not survive this
+    decode, so "clipped at the floor" here means "at or below legal black" rather than "at code
+    zero". That is a defensible definition of crushed black but it is not the same statement, and
+    recovering the difference would need a decode that does not normalise.
 
     Measurement happens here rather than in the code domain: amplitude against *level* only means
     something on a scale where equal steps are equal light.
     """
-    full_range = str(stream.get("color_range", "tv")) == "pc"
-    signal = container if full_range else (container * 1023.0 - 64.0) / (940.0 - 64.0)
     if plan.transfer == "pq":
-        return _pq_to_linear(signal) * (10000.0 / DIFFUSE_WHITE_NITS)
-    return np.asarray(slog3_to_linear(signal)) / DIFFUSE_WHITE_REFLECTANCE
+        return _pq_to_linear(container) * (10000.0 / DIFFUSE_WHITE_NITS)
+    return np.asarray(slog3_to_linear(container)) / DIFFUSE_WHITE_REFLECTANCE
 
 
 def _pq_to_linear(signal: np.ndarray) -> np.ndarray:
@@ -406,6 +428,119 @@ def source_record(plan: SourcePlan, stream: dict[str, Any], crop: Crop) -> Sourc
 
 
 @dataclass(frozen=True)
+class Spread:
+    """A scalar measured independently on several intervals — never reported as one number."""
+
+    values: tuple[float, ...]
+
+    @property
+    def count(self) -> int:
+        return len(self.values)
+
+    @property
+    def median(self) -> float:
+        return float(np.median(self.values)) if self.values else 0.0
+
+    @property
+    def low(self) -> float:
+        return float(np.min(self.values)) if self.values else 0.0
+
+    @property
+    def high(self) -> float:
+        return float(np.max(self.values)) if self.values else 0.0
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "median": self.median,
+            "min": self.low,
+            "max": self.high,
+            "n": self.count,
+            "values": list(self.values),
+        }
+
+    def line(self) -> str:
+        if not self.values:
+            return "none"
+        return f"median {self.median:+.4f}  range {self.low:+.4f}..{self.high:+.4f}  n={self.count}"
+
+
+@dataclass(frozen=True)
+class IntervalEvidence:
+    """Evidence from one interval, with the window set each estimator was actually given.
+
+    The estimators need different material and the project's own selection criteria say so, so
+    they do not all get the same windows:
+
+    * **spectrum** — flat windows only. A textured window's residual carries the picture's edges,
+      and a noise power spectrum reads those as grain structure.
+    * **distribution** — unclipped windows. A clipped sample is not a residual, and tails are what
+      clipping distorts first.
+    * **temporal** — windows whose own correlation estimate is trustworthy. A drifting window
+      reports near-zero correlation whatever the truth.
+    * **amplitude** — every accepted window; ``extract`` aligns internally and each point carries
+      its own trust.
+    """
+
+    interval_start_s: float
+    windows: int
+    flat_windows: int
+    unclipped_windows: int
+    trustworthy_windows: int
+    amplitude: evidence.AmplitudeEvidence | None
+    spectrum: evidence.SpectrumEvidence | None
+    distribution: evidence.DistributionEvidence | None
+    heterogeneity: evidence.HeterogeneityEvidence | None
+    temporal: evidence.TemporalEvidence | None
+    skipped: tuple[str, ...] = ()
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "interval_start_s": self.interval_start_s,
+            "windows": self.windows,
+            "routed": {
+                "amplitude": self.windows,
+                "spectrum_flat": self.flat_windows,
+                "distribution_unclipped": self.unclipped_windows,
+                "temporal_trustworthy": self.trustworthy_windows,
+            },
+            "amplitude": self.amplitude.as_record() if self.amplitude else None,
+            "spectrum": self.spectrum.as_record() if self.spectrum else None,
+            "distribution": self.distribution.as_record() if self.distribution else None,
+            "heterogeneity": self.heterogeneity.as_record() if self.heterogeneity else None,
+            "temporal": self.temporal.as_record() if self.temporal else None,
+            "skipped": list(self.skipped),
+        }
+
+
+@dataclass(frozen=True)
+class Seconds:
+    """Three different amounts of time, none of which may stand in for another.
+
+    ``candidate`` is what the catalogue offered, ``decoded`` is what was actually pulled off disk,
+    and ``evidence`` is what the estimators saw. Reporting the first as though it were the third
+    overstates measurement support by an order of magnitude: ten frames at 23.976 fps is 0.417 s,
+    not the two seconds the interval spans.
+    """
+
+    candidate: float
+    decoded: float
+    evidence: float
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "candidate_s": self.candidate,
+            "decoded_s": self.decoded,
+            "evidence_s": self.evidence,
+        }
+
+    def line(self) -> str:
+        return (
+            f"  seconds                candidate {self.candidate:6.1f}   "
+            f"decoded {self.decoded:5.2f}   evidence {self.evidence:5.2f}"
+        )
+
+
+@dataclass(frozen=True)
 class SourceOutcome:
     """Everything one source contributed, and everything it failed to."""
 
@@ -413,40 +548,136 @@ class SourceOutcome:
     record: SourceRecord
     stages: tuple[StageCount, ...]
     regions: rg.RegionIndex
-    frames_measured: int
-    amplitude: evidence.AmplitudeEvidence | None
-    spectrum: evidence.SpectrumEvidence | None
-    distribution: evidence.DistributionEvidence | None
-    heterogeneity: evidence.HeterogeneityEvidence | None
-    temporal: evidence.TemporalEvidence | None
+    seconds: Seconds
+    per_interval: tuple[IntervalEvidence, ...]
+    screen_anchoring: dict[str, Any] = field(default_factory=dict)
     notes: tuple[str, ...] = ()
 
     @property
     def measured(self) -> bool:
-        return self.amplitude is not None
+        return any(one.amplitude is not None for one in self.per_interval)
+
+    def _spread(self, pick: Any) -> Spread:
+        values = [pick(one) for one in self.per_interval]
+        return Spread(values=tuple(v for v in values if v is not None))
+
+    def sigma(self) -> Spread:
+        return self._spread(
+            lambda one: (
+                float(np.median([p.sigma for p in one.amplitude.points]))
+                if one.amplitude and one.amplitude.points
+                else None
+            )
+        )
+
+    def whiteness(self) -> Spread:
+        return self._spread(lambda one: one.spectrum.whiteness if one.spectrum else None)
+
+    def kurtosis(self) -> Spread:
+        return self._spread(
+            lambda one: one.distribution.excess_kurtosis if one.distribution else None
+        )
+
+    def rho(self) -> Spread:
+        return self._spread(lambda one: one.temporal.rho if one.temporal else None)
+
+    def envelope(self) -> Spread:
+        return self._spread(
+            lambda one: one.heterogeneity.envelope_ratio if one.heterogeneity else None
+        )
+
+    def trusted_points(self) -> tuple[int, int]:
+        trusted = total = 0
+        for one in self.per_interval:
+            if one.amplitude:
+                trusted += len(one.amplitude.trusted)
+                total += len(one.amplitude.points)
+        return trusted, total
 
     def as_record(self) -> dict[str, Any]:
+        trusted, total = self.trusted_points()
         return {
             "source": self.record.as_record(),
             "plan": {
                 "transfer": self.plan.transfer,
                 "level_scale": "linear, 1.0 = diffuse white",
                 "window_s": self.plan.window_s,
+                "frames_per_interval": self.plan.frames_per_interval,
                 "tile_size": self.plan.tile_size,
                 "intervals_requested": self.plan.intervals_to_measure,
             },
             "coverage": [stage.as_record() for stage in self.stages],
-            "frames_measured": self.frames_measured,
+            "seconds": self.seconds.as_record(),
             "regions": self.regions.as_record(),
-            "evidence": {
-                "amplitude": self.amplitude.as_record() if self.amplitude else None,
-                "spectrum": self.spectrum.as_record() if self.spectrum else None,
-                "distribution": self.distribution.as_record() if self.distribution else None,
-                "heterogeneity": self.heterogeneity.as_record() if self.heterogeneity else None,
-                "temporal": self.temporal.as_record() if self.temporal else None,
+            "intervals_measured": len(self.per_interval),
+            "amplitude_points": {"trusted": trusted, "total": total},
+            "aggregate": {
+                "sigma": self.sigma().as_record(),
+                "whiteness": self.whiteness().as_record(),
+                "excess_kurtosis": self.kurtosis().as_record(),
+                "rho": self.rho().as_record(),
+                "envelope_ratio": self.envelope().as_record(),
             },
+            "per_interval": [one.as_record() for one in self.per_interval],
+            "screen_anchoring": self.screen_anchoring,
             "notes": list(self.notes),
         }
+
+
+def _clipped_fraction(container: np.ndarray, window: windows.Window) -> float:
+    tile = window.slice_of(container)
+    return float(((tile <= 0.0) | (tile >= 1.0)).mean())
+
+
+def _measure_interval(
+    start_s: float,
+    linear: np.ndarray,
+    container: np.ndarray,
+    accepted: Sequence[windows.Window],
+) -> IntervalEvidence:
+    """Every estimator on one interval, each given the windows it actually needs."""
+    skipped: list[str] = []
+    amplitude = evidence.amplitude_evidence(linear, accepted)
+
+    flat = [window for window in accepted if window.texture == "flat"]
+    unclipped = [w for w in accepted if _clipped_fraction(container, w) <= MAX_WINDOW_CLIPPED]
+    trustworthy = [
+        window
+        for window, point in zip(accepted, amplitude.points, strict=True)
+        if point.trustworthy
+    ]
+
+    spectrum = None
+    if flat:
+        spectrum = evidence.spectrum_evidence(linear, flat)
+    else:
+        skipped.append("spectrum: no flat window (every accepted tile carries picture structure)")
+
+    distribution = None
+    if unclipped:
+        distribution = evidence.distribution_evidence(linear, unclipped)
+    else:
+        skipped.append("distribution: every window clipped")
+
+    temporal = None
+    if trustworthy:
+        temporal = evidence.temporal_evidence(linear, trustworthy)
+    else:
+        skipped.append("temporal: no window could vouch for its own correlation estimate")
+
+    return IntervalEvidence(
+        interval_start_s=start_s,
+        windows=len(accepted),
+        flat_windows=len(flat),
+        unclipped_windows=len(unclipped),
+        trustworthy_windows=len(trustworthy),
+        amplitude=amplitude,
+        spectrum=spectrum,
+        distribution=distribution,
+        heterogeneity=evidence.heterogeneity_evidence(linear, accepted),
+        temporal=temporal,
+        skipped=tuple(skipped),
+    )
 
 
 def run_source(plan: SourcePlan) -> SourceOutcome:
@@ -454,10 +685,18 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
     stream = probe(plan.path)
     active = detect_crop(plan, stream)
     record = source_record(plan, stream, active)
+    fps = record.cadence.fps
     notes: list[str] = []
     stages: list[StageCount] = []
 
-    frame_survey = load_survey(plan, stream)
+    frame_survey = load_survey(plan, stream, active)
+    if plan.survey_csv is not None and not active.is_full_frame:
+        notes.append(
+            "the reused survey is a CODED-FRAME survey: its motion and level statistics include "
+            f"the {active.y * 2 / int(stream['height']):.1%} of each frame that is letterbox, "
+            "while extraction uses the active picture. Regenerating the survey with the crop "
+            "applied would remove the discrepancy."
+        )
     built = iv.build_intervals(
         frame_survey, window_s=plan.window_s, stride_s=plan.stride_s, drop_cuts=False
     )
@@ -474,16 +713,15 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             },
         )
     )
+    empty_seconds = Seconds(candidate=0.0, decoded=0.0, evidence=0.0)
     if not stable:
         notes.append("no cut-free, low-motion interval exists in this source")
-        return _empty(plan, record, stages, notes)
+        return _empty(plan, record, stages, notes, empty_seconds)
 
-    chosen = [
-        stable[i] for i in np.linspace(0, len(stable) - 1, plan.intervals_to_measure).astype(int)
-    ]
-    chosen = list({interval.start_s: interval for interval in chosen}.values())
+    picks = np.linspace(0, len(stable) - 1, plan.intervals_to_measure).astype(int)
+    chosen = list({stable[i].start_s: stable[i] for i in picks}.values())
 
-    admissible: list[tuple[iv.Interval, np.ndarray, admissibility.OverlayEvidence]] = []
+    admissible: list[tuple[iv.Interval, np.ndarray, np.ndarray, admissibility.OverlayEvidence]] = []
     admissibility_rejects: dict[str, int] = {}
     decode_failures = 0
     noise_free_masked = 0
@@ -499,7 +737,7 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
         verdict = admissibility.scene_admissibility(signal, ceiling=1.0, floor=0.0)
 
         # Overlay is a *mask*, not a veto. A compressed delivery master carries large blocks the
-        # encoder froze — 20-22% of 32px blocks in this one have exactly zero temporal variation,
+        # encoder froze -- 20-22% of 32px blocks in this one have exactly zero temporal variation,
         # which is real grain loss, not a title card. Rejecting the interval throws away the 78%
         # that is still measurable; excluding those blocks from window selection does not.
         blocking = [
@@ -516,7 +754,7 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
                 admissibility_rejects.get("frame is entirely static", 0) + 1
             )
         else:
-            admissible.append((interval, to_linear(plan, signal, stream), verdict.overlay))
+            admissible.append((interval, to_linear(plan, signal), signal, verdict.overlay))
     if decode_failures:
         admissibility_rejects["decode failed"] = decode_failures
     if noise_free_masked:
@@ -533,25 +771,26 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             rejected=admissibility_rejects,
         )
     )
+    decoded_s = len(admissible) * plan.frames_per_interval / fps
     if not admissible:
         notes.append("every decoded interval was ruled inadmissible")
-        return _empty(plan, record, stages, notes)
+        return _empty(plan, record, stages, notes, Seconds(0.0, 0.0, 0.0))
 
     collected: list[rg.Region] = []
-    considered = accepted = 0
+    considered = accepted_count = 0
     window_rejects: dict[str, int] = {}
-    measurable: list[tuple[windows.SelectionReport, np.ndarray]] = []
-    for interval, frames, overlay in admissible:
-        report = windows.select_windows(
-            frames, size=plan.tile_size, stride=plan.tile_stride, overlay=overlay
+    measurable: list[tuple[iv.Interval, np.ndarray, np.ndarray, list[windows.Window]]] = []
+    for interval, linear, container, overlay in admissible:
+        report_ = windows.select_windows(
+            linear, size=plan.tile_size, stride=plan.tile_stride, overlay=overlay
         )
-        considered += len(report.accepted) + len(report.rejected)
-        accepted += len(report.accepted)
-        for reason, count in report.rejection_reasons().items():
+        considered += len(report_.accepted) + len(report_.rejected)
+        accepted_count += len(report_.accepted)
+        for reason, count in report_.rejection_reasons().items():
             window_rejects[reason] = window_rejects.get(reason, 0) + count
         collected.extend(
             rg.regions_from_report(
-                report,
+                report_,
                 source_id=plan.source_id,
                 interval_start_s=interval.start_s,
                 interval_end_s=interval.end_s,
@@ -560,38 +799,81 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
                 source_identity=record.identity,
             )
         )
-        if report.accepted:
-            measurable.append((report, frames))
+        if report_.accepted:
+            measurable.append((interval, linear, container, list(report_.accepted)))
     stages.append(
         StageCount(
             stage="windows",
             considered=considered,
-            accepted=accepted,
+            accepted=accepted_count,
             rejected=window_rejects,
         )
     )
     index = rg.index(collected)
+    candidate_s = index.independence().span_seconds
     if not measurable:
         notes.append("no tile passed the window gate in any admissible interval")
-        return _empty(plan, record, stages, notes, regions=index)
+        return _empty(
+            plan, record, stages, notes, Seconds(candidate_s, decoded_s, 0.0), regions=index
+        )
 
-    # Measure on the interval that yielded the most windows: the evidence producers take one
-    # frame stack, and pooling stacks from different intervals would mix unrelated pictures.
-    best_report, best_frames = max(measurable, key=lambda pair: len(pair[0].accepted))
-    selected = list(best_report.accepted)
+    # Every admissible interval is measured, independently. Measuring only the interval that
+    # yielded the most windows -- as the first run did -- reports one picture's statistics as the
+    # source's, and selects for whichever picture happens to pass most easily.
+    per_interval = [
+        _measure_interval(interval.start_s, linear, container, accepted)
+        for interval, linear, container, accepted in measurable
+    ]
+    evidence_s = len(per_interval) * plan.frames_per_interval / fps
+
     return SourceOutcome(
         plan=plan,
         record=record,
         stages=tuple(stages),
         regions=index,
-        frames_measured=int(best_frames.shape[0]),
-        amplitude=evidence.amplitude_evidence(best_frames, selected),
-        spectrum=evidence.spectrum_evidence(best_frames, selected),
-        distribution=evidence.distribution_evidence(best_frames, selected),
-        heterogeneity=evidence.heterogeneity_evidence(best_frames, selected),
-        temporal=evidence.temporal_evidence(best_frames, selected),
+        seconds=Seconds(candidate=candidate_s, decoded=decoded_s, evidence=evidence_s),
+        per_interval=tuple(per_interval),
+        screen_anchoring=_screen_anchoring(measurable),
         notes=tuple(notes),
     )
+
+
+def _screen_anchoring(
+    measurable: Sequence[tuple[iv.Interval, np.ndarray, np.ndarray, list[windows.Window]]],
+) -> dict[str, Any]:
+    """Compare the two most widely separated intervals *of the same source*.
+
+    Screen anchoring asks whether a pattern sits in screen coordinates rather than in the picture.
+    That needs unrelated picture content through the **same acquisition or scan geometry** — which
+    two distant intervals of one film satisfy exactly, and two different cameras do not satisfy at
+    all. Comparing Pulp Fiction against a Sony clip could never have answered it, geometry aside.
+
+    "Unrelated" is the load-bearing word, and it is enforced: see :data:`MIN_ANCHOR_SEPARATION_S`.
+    """
+    if len(measurable) < 2:
+        return {"available": False, "reason": "needs two admissible intervals from one source"}
+    first, last = measurable[0], measurable[-1]
+    separation = abs(last[0].start_s - first[0].start_s)
+    if separation < MIN_ANCHOR_SEPARATION_S:
+        return {
+            "available": False,
+            "separation_s": separation,
+            "reason": (
+                f"the two intervals are only {separation:.0f}s apart, below the "
+                f"{MIN_ANCHOR_SEPARATION_S:.0f}s needed for unrelated pictures; a correlation "
+                "here would measure the same scene, not screen-anchored structure"
+            ),
+        }
+    envelope = evidence.heterogeneity_evidence(first[1], first[3], other_source=last[1])
+    additive = evidence.additive_pattern_evidence(first[1], other_source=last[1])
+    return {
+        "available": True,
+        "interval_a_s": first[0].start_s,
+        "interval_b_s": last[0].start_s,
+        "separation_s": separation,
+        "grain_envelope": envelope.as_record(),
+        "additive_pattern": additive.as_record(),
+    }
 
 
 def _empty(
@@ -599,6 +881,7 @@ def _empty(
     record: SourceRecord,
     stages: Sequence[StageCount],
     notes: Sequence[str],
+    seconds: Seconds,
     *,
     regions: rg.RegionIndex | None = None,
 ) -> SourceOutcome:
@@ -607,22 +890,17 @@ def _empty(
         record=record,
         stages=tuple(stages),
         regions=regions or rg.index([]),
-        frames_measured=0,
-        amplitude=None,
-        spectrum=None,
-        distribution=None,
-        heterogeneity=None,
-        temporal=None,
+        seconds=seconds,
+        per_interval=(),
         notes=tuple(notes),
     )
 
 
 @dataclass(frozen=True)
 class StudyResult:
-    """Both sources, and the questions only two unrelated sources can answer."""
+    """Every source, measured interval by interval."""
 
     outcomes: tuple[SourceOutcome, ...]
-    cross_source: dict[str, Any] = field(default_factory=dict)
 
     def as_record(self) -> dict[str, Any]:
         return {
@@ -634,50 +912,22 @@ class StudyResult:
             ),
             "level_scale": "linear, 1.0 = diffuse white, for every source",
             "sources": [outcome.as_record() for outcome in self.outcomes],
-            "cross_source": self.cross_source,
         }
 
 
 def run(plans: Sequence[SourcePlan]) -> StudyResult:
-    """Run the slice over every plan, then the cross-source checks.
+    """Run the slice over every plan.
 
-    Screen anchoring is the one question a single source cannot answer at all: a pattern fixed in
-    screen coordinates is indistinguishable from scene content until unrelated material is
-    compared against it.
+    Screen anchoring is answered *within* each source, between its own distant intervals, so this
+    no longer needs two sources to be meaningful — but two unrelated sources remain the point of
+    the slice, because a chain that works on one kind of material has not been shown to work.
     """
     if len(plans) < 2:
         raise DataError(
             f"the slice needs at least two unrelated sources; got {len(plans)}. "
-            "Screen anchoring cannot be assessed from one source."
+            "A chain shown to work on one kind of material has not been shown to work."
         )
-    outcomes = [run_source(plan) for plan in plans]
-    return StudyResult(outcomes=tuple(outcomes), cross_source=_cross_source(plans, outcomes))
-
-
-def _cross_source(plans: Sequence[SourcePlan], outcomes: Sequence[SourceOutcome]) -> dict[str, Any]:
-    measured = [
-        (plan, outcome) for plan, outcome in zip(plans, outcomes, strict=True) if outcome.measured
-    ]
-    if len(measured) < 2:
-        return {
-            "screen_anchoring": None,
-            "note": "needs two sources that both produced measurements",
-        }
-    sigmas = {
-        outcome.plan.source_id: float(
-            np.median([point.sigma for point in outcome.amplitude.points])
-        )
-        for _, outcome in measured
-        if outcome.amplitude
-    }
-    return {
-        "screen_anchoring": None,
-        "note": (
-            "geometry differs between these sources, so the screen-anchored test cannot run; "
-            "it needs two sources of identical frame geometry"
-        ),
-        "median_sigma_by_source": sigmas,
-    }
+    return StudyResult(outcomes=tuple(run_source(plan) for plan in plans))
 
 
 # ------------------------------------------------------------------ human report
@@ -686,7 +936,7 @@ def _cross_source(plans: Sequence[SourcePlan], outcomes: Sequence[SourceOutcome]
 def report(result: StudyResult) -> str:
     lines = [
         "grain slice — source record to evidence, end to end",
-        "=" * 72,
+        "=" * 78,
         "level scale: linear, 1.0 = diffuse white (every source)",
         "",
     ]
@@ -701,52 +951,50 @@ def report(result: StudyResult) -> str:
             "  coverage:",
         ]
         lines += [stage.line() for stage in outcome.stages]
+        lines.append(outcome.seconds.line())
         if len(outcome.regions):
             lines.append("  " + outcome.regions.summary().replace("\n", "\n  "))
-        if outcome.measured and outcome.amplitude:
-            low, high = outcome.amplitude.level_range()
-            sigmas = [point.sigma for point in outcome.amplitude.points]
-            trusted = len(outcome.amplitude.trusted)
+
+        if outcome.measured:
+            trusted, total = outcome.trusted_points()
             lines += [
-                "  measurements:",
-                f"    sigma        median {np.median(sigmas):.5f}  "
-                f"range {min(sigmas):.5f}..{max(sigmas):.5f}",
-                f"    levels       {low:.4f}..{high:.4f}   "
-                f"({trusted}/{len(sigmas)} points trustworthy)",
+                f"  measurements ({len(outcome.per_interval)} intervals, each measured "
+                "independently):",
+                f"    sigma        {outcome.sigma().line()}",
+                f"    whiteness    {outcome.whiteness().line()}",
+                f"    kurtosis     {outcome.kurtosis().line()}",
+                f"    rho          {outcome.rho().line()}",
+                f"    envelope     {outcome.envelope().line()}",
+                f"    amplitude    {trusted}/{total} points trustworthy",
             ]
-            if outcome.spectrum:
-                lines.append(
-                    f"    spectrum     whiteness {outcome.spectrum.whiteness:.3f} "
-                    f"({'white' if outcome.spectrum.is_white else 'structured'})"
-                )
-            if outcome.distribution:
-                lines.append(
-                    f"    distribution kurtosis {outcome.distribution.excess_kurtosis:+.3f} "
-                    f"({'gaussian' if outcome.distribution.is_gaussian else 'heavy-tailed'})"
-                )
-            if outcome.temporal:
-                established = (
-                    "established"
-                    if outcome.temporal.independence_established
-                    else "NOT established"
-                )
-                lines.append(
-                    f"    temporal     rho {outcome.temporal.rho:+.4f}  independence {established}"
-                )
-            if outcome.heterogeneity:
-                lines.append(
-                    f"    envelope     ratio {outcome.heterogeneity.envelope_ratio:.4f}  "
-                    "screen-anchoring unknown (needs matching geometry)"
-                )
+            routed = [
+                f"{one.flat_windows}f/{one.unclipped_windows}u/{one.trustworthy_windows}t "
+                f"of {one.windows}"
+                for one in outcome.per_interval
+            ]
+            lines.append(f"    routed       flat/unclipped/trustworthy: {'; '.join(routed)}")
+            for one in outcome.per_interval:
+                for reason in one.skipped:
+                    lines.append(f"      t={one.interval_start_s:.0f}s  {reason}")
         else:
             lines.append("  measurements: NONE — nothing survived the chain")
+
+        anchoring = outcome.screen_anchoring
+        if anchoring.get("available"):
+            envelope = anchoring["grain_envelope"]
+            additive = anchoring["additive_pattern"]
+            lines += [
+                f"  screen anchoring (same source, {anchoring['separation_s']:.0f}s apart):",
+                f"    grain envelope    corr {envelope['screen_anchored_correlation']}  "
+                f"anchored={envelope['is_screen_anchored']}",
+                f"    additive pattern  corr {additive['cross_source_correlation']}  "
+                f"anchored={additive['is_screen_anchored']}",
+            ]
+        elif anchoring:
+            lines.append(f"  screen anchoring: unavailable — {anchoring.get('reason')}")
         for note in outcome.notes:
             lines.append(f"  note: {note}")
         lines.append("")
-
-    lines.append("cross-source:")
-    for key, value in result.cross_source.items():
-        lines.append(f"  {key}: {value}")
     return "\n".join(lines)
 
 
@@ -761,8 +1009,13 @@ def write_outputs(result: StudyResult, directory: Path) -> tuple[Path, Path]:
 
 
 __all__ = [
+    "MAX_WINDOW_CLIPPED",
+    "MIN_ANCHOR_SEPARATION_S",
+    "IntervalEvidence",
+    "Seconds",
     "SourceOutcome",
     "SourcePlan",
+    "Spread",
     "StageCount",
     "StudyResult",
     "decode_signal",

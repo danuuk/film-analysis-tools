@@ -28,6 +28,7 @@ import numpy as np
 
 from film_analysis_tools.capabilities.measure.residual import (
     DEFAULT_LAGS,
+    aligned_residuals,
     box_blur,
     extract,
 )
@@ -37,9 +38,14 @@ from film_analysis_tools.core.errors import DataError
 EPS = 1.0e-12
 
 
-def _residuals(frames: np.ndarray) -> np.ndarray:
-    """Lag-1 differences, scaled so their variance is the per-frame variance at rho = 0."""
-    return (frames[1:] - frames[:-1]) / np.sqrt(2.0)
+def _residuals(frames: np.ndarray, *, align: bool = True) -> np.ndarray:
+    """Lag-1 residuals, scaled so their variance is the per-frame variance at rho = 0.
+
+    Aligned by default. An unaligned difference on a drifting window folds the picture's own
+    edges into the residual, and a spectrum or a tail statistic reads that as structure in the
+    grain.
+    """
+    return aligned_residuals(frames, lag=1, align=align)
 
 
 # ------------------------------------------------------------- 1. amplitude vs level
@@ -150,10 +156,15 @@ class SpectrumEvidence:
 
 
 def spectrum_evidence(
-    frames: np.ndarray, windows: Sequence[Window], *, bins: int = 24, max_lag: int = 8
+    frames: np.ndarray,
+    windows: Sequence[Window],
+    *,
+    bins: int = 24,
+    max_lag: int = 8,
+    align: bool = True,
 ) -> SpectrumEvidence:
     """Noise power spectrum and spatial autocorrelation of the temporal residual."""
-    stacks = [_residuals(window.slice_of(frames)) for window in windows]
+    stacks = [_residuals(window.slice_of(frames), align=align) for window in windows]
     if not stacks:
         raise DataError("spectrum evidence needs at least one window")
 
@@ -234,11 +245,15 @@ class DistributionEvidence:
         }
 
 
-def distribution_evidence(frames: np.ndarray, windows: Sequence[Window]) -> DistributionEvidence:
+def distribution_evidence(
+    frames: np.ndarray, windows: Sequence[Window], *, align: bool = True
+) -> DistributionEvidence:
     """Moments and tails of the pooled residual."""
     if not windows:
         raise DataError("distribution evidence needs at least one window")
-    pooled = np.concatenate([_residuals(window.slice_of(frames)).ravel() for window in windows])
+    pooled = np.concatenate(
+        [_residuals(window.slice_of(frames), align=align).ravel() for window in windows]
+    )
     pooled = pooled[np.isfinite(pooled)]
     if pooled.size == 0:
         raise DataError("distribution evidence needs finite residual samples")

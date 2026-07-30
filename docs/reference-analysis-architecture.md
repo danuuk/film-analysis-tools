@@ -290,43 +290,82 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    `SourceRecord → catalogue query → extraction → admissibility → window selection → residual
    measurement → evidence JSON + report` over two unrelated sources.
 
-   **Actual coverage**, which is the deliverable rather than the parameters:
+   **Actual coverage** after the corrections below, which is the deliverable rather than the
+   parameters. Three different amounts of time are now reported separately, because catalogue
+   support is not measurement support:
 
-   | | intervals | admissible | windows | regions | independent |
+   | | intervals | admissible | windows | candidate s | decoded s | evidence s |
+   |---|---|---|---|---|---|---|
+   | Pulp Fiction UHD (PQ, 3840×1634 active) | 2,671 / 9,270 (28.8%) | 6 / 8 | 245 / 540 (45.4%) | 12.0 | 2.50 | **2.50** |
+   | Sony ZV-E10 II C0014 (S-Log3, 1920×1080) | 4 / 4 (100%) | 4 / 4 | 94 / 128 (73.4%) | 5.0 | 1.67 | **1.67** |
+
+   **Defects that existed only at the seams.** None was visible from inside any layer, and the
+   last four were found by review after the first run:
+
+   - `metadata=print` emits at INFO level, so `-loglevel error` discarded the entire survey.
+   - **Admissibility was asked after the transfer.** Clipping is defined by the container's limits
+     and overlay detection asks whether the *encoded* signal carries noise; both are
+     container-domain questions, and asking them in linear light reported 87.6% clipped and 100%
+     noise-free on good film.
+   - **Letterbox bars were never cropped.** `SourceRecord.Crop` existed from the start with
+     exactly this rationale and nothing filled it in; 23.9% of every frame sits at code 0 and read
+     as hard-clipped black. Measured from row and column means — ffmpeg's `cropdetect` reported
+     full frame on this 10-bit PQ master at every limit tried.
+   - **Overlay was a veto rather than the mask `select_windows` already accepts.** 20–22% of 32 px
+     blocks in the HEVC master have exactly zero temporal variation (encoder skip blocks).
+   - **Limited-range PQ was normalised twice.** ffmpeg range-expands when converting limited-range
+     YUV to `gray16le` — verified against a synthetic clip: code 64 arrives as 0, code 940 as
+     1023 — and the study applied the 64..940 mapping again on top. This crushed low PQ values
+     toward zero and distorted the linear levels, the amplitude-versus-level placement and the
+     shadow tails. Now covered by an ffmpeg integration test with known codes; the previous unit
+     test bypassed ffmpeg and so codified the wrong assumption.
+   - **Evidence described one interval, not the corpus.** The run measured only the interval that
+     yielded the most windows — 63 of 245 regions — which is also a selection bias toward whichever
+     picture passes most easily. Every admissible interval is now measured independently and
+     reported as a median with its full range and *n*.
+   - **No per-evidence routing.** Every estimator got the same windows although they need
+     different material. Spectrum now takes flat windows, distribution unclipped windows, temporal
+     windows that can vouch for their own correlation; amplitude takes all, since `extract` aligns
+     internally and each point carries its own trust. Spectrum and distribution also used *raw*
+     lag-1 differences rather than the aligned residual, so `residual.aligned_residuals` is now
+     public and both use it.
+   - **Screen anchoring was framed as a cross-source test.** It needs unrelated picture content
+     through the *same* acquisition geometry, so two distant intervals of one film answer it and
+     two different cameras cannot. Comparing intervals 3 s apart in a tripod shot returned 0.93
+     and 0.99 — a measurement of "same scene" — so a 60 s minimum separation is now enforced.
+
+   **What the corrected run says.** Reported as medians with ranges over independently measured
+   intervals:
+
+   | | σ | excess kurtosis | ρ | trustworthy points | whiteness |
    |---|---|---|---|---|---|
-   | Pulp Fiction UHD (PQ, 3840×1634 after crop) | 2,671 / 9,270 (28.8%) | 6 / 8 | 245 / 540 (45.4%) | 245 | **6 spans, 12.0 s** |
-   | Sony ZV-E10 II C0014 (S-Log3, 1920×1080) | 4 / 4 (100%) | 4 / 4 | 94 / 128 (73.4%) | 94 | **1 span, 5.0 s** |
+   | Pulp Fiction | 0.0056 (0.0025–0.0092, n=6) | +23.2 (+7.0…+89.8, n=6) | +0.38 (n=**2**) | **3 / 245** | **unavailable** |
+   | Sony C0014 | 0.0015 (0.0013–0.0026, n=4) | +640.7 (+82.5…+2989, n=4) | +0.42 (n=4) | 28 / 94 | **unavailable** |
 
-   **Five defects existed only at the seams, and none was visible from inside any layer:**
+   Two results matter more than the numbers. **Whiteness is unavailable for both sources**: every
+   accepted tile in both is textured, so there was never a flat window to measure a noise power
+   spectrum on. The earlier "structured spectrum, whiteness 0.21 / 0.12" was computed on textured
+   windows and was not evidence of anything about grain — that claim is withdrawn. And Pulp
+   Fiction produced **3 trustworthy amplitude points out of 245**, with only 2 of 6 intervals able
+   to support a temporal estimate at all.
 
-   - `metadata=print` emits at INFO level, so `-loglevel error` discarded the entire survey and
-     returned zero frames — quietly, as an empty result rather than an error.
-   - **Admissibility was being asked after the transfer.** Shadow codes survive as ordinary small
-     numbers in the container, but a PQ EOTF compresses them until they underflow; the checks
-     reported **87.6% clipped at the floor** and **100% of the frame noise-free** on perfectly
-     good film. Clipping is defined by the container's limits and overlay detection asks whether
-     the *encoded* signal carries noise — both are container-domain questions.
-   - **Letterbox bars were never cropped.** `SourceRecord.Crop` has existed from the start with
-     exactly this rationale — "letterbox bars are not scene content and measuring them silently
-     corrupts every statistic" — and nothing ever filled it in. 23.9% of every Pulp Fiction frame
-     sits at code 0, which read as hard-clipped black and disqualified the whole source. Measured
-     directly from row and column means, because ffmpeg's `cropdetect` reported full frame on this
-     10-bit PQ master at every limit tried.
-   - **Overlay was used as a veto instead of the mask `select_windows` already accepts.** 20–22%
-     of 32 px blocks in the HEVC master have *exactly* zero temporal variation — encoder skip
-     blocks, real grain loss — and rejecting the interval threw away the 78% still measurable.
-   - The motion metric differed between the kept survey (`mafd`) and a fresh one (`ydif`), which
-     are a factor of 10.2 apart on the same footage. Gap 8 on a third axis; the slice normalises
-     motion to a fraction of full scale so the gate is dimensionless.
+   Screen anchoring within Pulp Fiction, between intervals 6,498 s apart: grain envelope −0.023,
+   additive pattern −0.108. **No scan-fixed structure detected** — the first substantive negative
+   result the chain has produced. The Sony clip is too short to ask.
 
-   **The measurements are not yet trustworthy, and the slice says so rather than reporting a
-   number.** Pulp Fiction: **0 of 63** amplitude points trustworthy, ρ +0.13, independence not
-   established, whiteness 0.21, excess kurtosis +32.8. Sony: 10 of 27 trustworthy, ρ +0.41,
-   independence not established, whiteness 0.12, excess kurtosis +402. A structured spectrum and
-   very heavy tails on a compressed delivery master are what codec artefacts look like, not grain.
+   The heavy tails survive alignment and unclipped-window routing and remain unexplained; they are
+   still consistent with codec damage but are not yet evidence of it. This is the concrete reason
+   the compact fit, holdout reconstruction and profile export are **not** built yet: with 3
+   trustworthy points and no spectrum, there is nothing a fit would be honest to run on.
 
-   This is the concrete reason the compact fit, holdout reconstruction and profile export are
-   **not** built yet: there is nothing here that a fit would be honest to run on.
+   Both artefacts are kept: [`docs/results/grain_slice_2026-07-30.json`](results/grain_slice_2026-07-30.json)
+   carries interval identities, point-level trust and full distributions;
+   [`docs/results/grain_slice_2026-07-30.txt`](results/grain_slice_2026-07-30.txt) is the report.
+
+   Still open: the reused Pulp survey is a **coded-frame** survey, so its motion and level
+   statistics include the 24.4% of each frame that is letterbox while extraction uses the active
+   picture. The study labels this in its output; removing it needs the survey regenerated with the
+   crop applied.
 5. **Implement the query interface** over intervals and regions, with provenance on every result.
 6. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.
 7. *Then* the compact fit, holdout reconstruction and engine-profile export — only once a
