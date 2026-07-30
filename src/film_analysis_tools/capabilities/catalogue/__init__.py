@@ -25,7 +25,13 @@ Typical use::
 
 from __future__ import annotations
 
-from film_analysis_tools.capabilities.catalogue import categories, intervals, survey
+from film_analysis_tools.capabilities.catalogue import (
+    annotate,
+    categories,
+    ingest,
+    intervals,
+    survey,
+)
 from film_analysis_tools.capabilities.catalogue.categories import (
     CATEGORIES,
     Category,
@@ -46,10 +52,12 @@ __all__ = [
     "Catalogue",
     "CatalogueClip",
     "Category",
+    "annotate",
     "bundled",
     "categories",
     "classify",
     "file_sha256",
+    "ingest",
     "intervals",
     "load",
     "survey",

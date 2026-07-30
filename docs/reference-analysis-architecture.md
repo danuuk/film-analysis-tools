@@ -154,6 +154,13 @@ much material was needed — it was the shape of the selection tooling.
    never indexed, so they cannot be queried, compared across runs, or traced to.
 3. **Face data is per-scene, not per-region.** One probe frame per scene gives presence and a
    bounding box; FaceMesh gives pixel geometry but is not joined to the catalogue.
+
+   Step 2 joined what exists to intervals and, more usefully, *measured how thin it is*: of 8,660
+   intervals only **311 contain the probe frame** and 494 sit within 2 s of one. The other 4,406
+   "face" intervals inherit a verdict from up to 439 s away. So this is not merely a resolution
+   gap to be refined later — **the face evidence for most of the film does not exist yet**, and
+   the honest fix is to re-probe at interval cadence rather than to interpolate what is there.
+   Cheap to do: the scout is one detector call per frame and only stable intervals need it.
 4. **Categories are selections, not predicates.** `grain_top_5.json` is a frozen answer. A
    predicate over columns would let the same question be re-asked as criteria improve.
 5. **No traceability from parameter to region.** A knot in the amplitude curve cannot name the
@@ -186,8 +193,41 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    highlight intervals; by what intervals *contain*, **6,265** do — and 1,846 of those are also
    stable. Highlight material exists after all; it was invisible to any statistic that judged an
    interval by its average.
-2. **Join face and colour metadata to intervals**, so face-bearing and colour-conditioned
-   intervals become queryable rather than inferred.
+2. ~~**Join face and colour metadata to intervals**~~ — done. `capabilities/catalogue/annotate`.
+
+   The join exposed that **the two annotations are not equally trustworthy**, and the types now
+   say so. Colour is *measured*: the survey sampled every frame, so an interval's saturation comes
+   from its own frames. Face presence is *inherited*: the scout probed **one frame per scene, at
+   the midpoint**. Median scene 6.6 s — but p90 is 49 s and the longest is 878 s, so an interval
+   can sit **439 seconds** from the only frame ever checked. Only 54 of 216 face-bearing scenes
+   are short enough for the probe to cover them.
+
+   So each face annotation carries its distance to the observation and a confidence tier, and
+   `FaceConfidence.usable_for_skin` excludes `INHERITED`. Over the film:
+
+   | | intervals | of which stable |
+   |---|---|---|
+   | face reported, any confidence | 5,211 | 1,865 |
+   | — observed (probe inside the interval) | 311 | **117** |
+   | — near (≤ 2 s) | 494 | **154** |
+   | — inherited (same range, far away) | 4,406 | 1,594 |
+
+   A query for "stable intervals with a face" returns 1,865, but **1,594 of those rest on a probe
+   frame that may be minutes away**. The honest skin corpus is 271 intervals, and 51 of those also
+   carry a face large enough to sample (area ≥ 5%). Still an order of magnitude above the four
+   scenes in use — and now the difference between 1,865 and 271 is visible instead of assumed.
+
+   Saturation bands were calibrated against the measured distribution over 37,084 frames
+   (p25 13.2, p75 21.4, p95 32.2) rather than guessed: neutral 1,437, low 4,932, moderate 1,712,
+   saturated 579 — of which 416 neutral and 251 saturated are also stable. Hue is recorded but
+   deliberately not offered as a selection predicate: `huemed` is a frame *median*, so it names a
+   dominant cast and cannot say what a frame contains.
+
+   `capabilities/catalogue/ingest` reads the existing survey and scout output into these types, so
+   the numbers above are reproducible rather than the product of a one-off script. It declares the
+   producer→survey column mapping instead of guessing it, and takes the face probe position as a
+   parameter: the scout recorded a verdict per scene but not *when* it looked, so every
+   `distance_s` rests on reconstructing that as the scene midpoint. Naming it makes it correctable.
 3. **Define the region record and index it.** Window selection already computes everything a
    region record needs; it currently throws it away.
 4. **Implement the query interface** over intervals and regions, with provenance on every result.
