@@ -79,6 +79,10 @@ MAX_WINDOW_CLIPPED = 0.01
 #: the additive pattern, which is a measurement of "same scene", not of scan-fixed structure.
 MIN_ANCHOR_SEPARATION_S = 60.0
 
+#: Longest continuous tile disturbance tolerated during scouting, in **seconds**. Timed rather
+#: than counted in transitions, so the rule means the same at any sampling rate.
+MAX_DISTURBANCE_S = 0.45
+
 
 @dataclass(frozen=True)
 class SourcePlan:
@@ -1046,13 +1050,15 @@ def deep_probe(
     estimate = residual.extract(linear)
     reasons: list[str] = []
     if estimate.drifting:
-        reasons.append(f"drifting: sub-pixel residual {estimate.subpixel_residual:.3f}")
+        reasons.append(
+            f"coherent drift: sub-pixel p90 {estimate.subpixel_p90:.3f}, "
+            f"boundary fraction {estimate.boundary_fraction:.0%}, "
+            f"coherence {estimate.shift_coherence:.2f}"
+        )
     if estimate.rho_saturated:
         reasons.append(f"rho saturated at the clamp (raw {estimate.raw_rho:+.3f})")
     elif not estimate.correlation_consistent:
         reasons.append(f"lag-4 disagrees: rho {estimate.rho:+.3f} vs {estimate.rho_from_lag4:+.3f}")
-    if estimate.at_bound:
-        reasons.append("a shift hit the search boundary")
     whole = windows.Window(
         x=0,
         y=0,
@@ -1085,7 +1091,7 @@ def deep_probe(
         dual=dual_residual(
             _centre_128(linear),
             rho=estimate.rho,
-            rho_trusted=estimate.parameter_identified,
+            rho_trusted=estimate.parameter_identified and estimate.correlation_consistent,
         ),
     )
     return probe_record, linear
@@ -1317,6 +1323,7 @@ class TileScout:
     """Longest run of consecutive unstable transitions. One actor crossing, not many."""
 
     transitions: int
+    seconds_per_transition: float = 0.0
     clean_throughout: bool = True
     """No disturbed transition at all. Required for *measurement*, unlike :attr:`stable`.
 
@@ -1327,9 +1334,19 @@ class TileScout:
     """
 
     @property
+    def longest_disturbance_s(self) -> float:
+        """Longest continuous disturbance, in seconds rather than transitions.
+
+        A run *count* is not comparable between sampling rates: two transitions is 0.083 s at
+        native 24 fps and 0.4 s at the 5 fps spread scout, so the same rule was ~4.8x more
+        tolerant by duration at the coarser rate. Timing it makes the gate mean one thing.
+        """
+        return self.longest_unstable_run * self.seconds_per_transition
+
+    @property
     def stable(self) -> bool:
         """Usable when most of the interval is quiet and no disturbance dominates it."""
-        return self.unstable_fraction <= 0.25 and self.longest_unstable_run <= 2
+        return self.unstable_fraction <= 0.25 and self.longest_disturbance_s <= MAX_DISTURBANCE_S
 
     def as_record(self) -> dict[str, Any]:
         return {
@@ -1380,6 +1397,7 @@ def scout_tiles(
     stride: int = 64,
     motion_threshold: float = 0.005,
     blur_radius: int = 8,
+    seconds_per_transition: float = 0.0,
 ) -> list[TileScout]:
     """Every tile position on the legacy grid, with its motion history across the interval.
 
@@ -1435,6 +1453,7 @@ def scout_tiles(
                     unstable_fraction=float(counts[row, column]),
                     longest_unstable_run=int(longest[row, column]),
                     transitions=int(unstable.shape[0]),
+                    seconds_per_transition=seconds_per_transition,
                     clean_throughout=bool(counts[row, column] == 0.0),
                 )
             )
@@ -1756,6 +1775,7 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             size=plan.tile_size,
             stride=plan.tile_stride,
             motion_threshold=plan.tile_motion_threshold,
+            seconds_per_transition=(interval.duration_s / max(plan.frames_per_interval - 1, 1)),
         )
         kept = [
             one for one in scouts if one.stable and not overlay.excludes(one.x, one.y, one.size)
@@ -1804,8 +1824,11 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
                 )
                 measured_total += len(measured)
                 dropped_disturbed += len(kept) - len(clean)
+            # Deep probes come from the *clean* tiles, not merely the tolerated ones. Selecting a
+            # tile that was excluded from ordinary measurement for the single most important
+            # measurement is the two-stage policy inverted.
             shortlisted.extend(
-                (interval, _as_window(one, linear.shape)) for one in shortlist(kept, per_stratum=1)
+                (interval, _as_window(one, linear.shape)) for one in shortlist(clean, per_stratum=1)
             )
             if len(anchor_stacks) < plan.anchor_stacks:
                 anchor_stacks.append((interval, linear, as_windows))
@@ -2139,6 +2162,7 @@ def write_outputs(result: StudyResult, directory: Path) -> tuple[Path, Path]:
 
 
 __all__ = [
+    "MAX_DISTURBANCE_S",
     "MAX_WINDOW_CLIPPED",
     "MIN_ANCHOR_SEPARATION_S",
     "DeepProbe",

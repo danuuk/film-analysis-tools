@@ -490,6 +490,43 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    probes only**. The reported NPS still comes from lag-one difference residuals, which is
    defensible but is not the fuller dual routing the previous wording implied.
 
+   **The drift gate was the thing blocking every long Pulp measurement, and it was too blunt.**
+   It rejected on the *maximum* sub-pixel residual across the sequence and on *any* boundary
+   contact, so one unreliable registration in 47 pairs rejected an otherwise stationary tile — and
+   the reported 0.46–0.62 px was the largest single-pair residual, not drift over the sequence.
+   The gate now asks whether the per-pair shifts describe **one coherent motion**: it uses the
+   90th-percentile residual and the boundary-*fraction*, and requires directional coherence
+   (`|mean shift| / mean|shift|`) before calling anything drift. An isolated or scattered contact
+   is registration failure on a hard tile, not demonstrated image motion. Coherent synthetic drift
+   is still rejected; a stationary tile with one bad pair is not.
+
+   With that fixed, **the three Pulp deep tiles pass** — and with them the amplitude points:
+
+   | | before | after |
+   |---|---|---|
+   | trustworthy amplitude points | 2 / 159 | **111 / 159** |
+   | intervals with a temporal estimate | 1 / 5 | **5 / 5** |
+   | deep tiles trusted | 0 / 3 | **3 / 3** |
+
+   This is the first provisional characterisation of Pulp Fiction grain the chain has produced,
+   and it meets the standard set for accepting it: **three independent spans** (t = 2636, 3998,
+   6470 s), each with unsaturated ρ, adjusted dual-residual agreement (1.026, 1.041, 1.026), and
+   no coherent motion. Temporal correlation **ρ ≈ 0.005** across all five intervals — near-
+   independent, as scanned film grain should be. Trusted σ runs **0.0004 to 0.0072** with level:
+   the deep tile at level 0.063 gives σ 0.0066 and excess kurtosis **+0.7** (Gaussian), while the
+   deep-shadow tiles at level ~0.001 give σ ~0.0003 and kurtosis +44 to +95 — the heavy tail is a
+   shadow/quantisation effect, not the grain.
+
+   Three lesser corrections rode along. Deep probes were being selected from the *tolerated* tiles,
+   not the clean ones, so a tile excluded from ordinary measurement could be chosen for the most
+   important one; they now come from `clean`. The disturbance limit was counted in transitions, so
+   the same rule was ~4.8× more tolerant by duration at the 5 fps spread scout than at native
+   cadence — it is timed now (`MAX_DISTURBANCE_S`), which also removes one of the confounds behind
+   the scene-003 discrepancy. And `rho_trusted` for the dual residual required only that ρ was
+   identified; it now also requires lag-4 consistency, but deliberately **not** `not drifting` —
+   the dual diagnostic exists to test the drift gate, so gating it on the drift verdict would be
+   circular.
+
    Still open: the deep probe's alignment gate rejects almost everything at 60 frames — a
    sub-pixel residual of 0.63–1.10 px over 2.5 s is ordinary gate weave or scan drift, not a
    defect, but the current gate has no way to accept a tile that drifts slowly and steadily. Until

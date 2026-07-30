@@ -363,14 +363,44 @@ def test_a_brief_disturbance_truncates_a_tile_rather_than_invalidating_it() -> N
     scene[4:6, 0:128, 0:128] += 0.4  # a brief crossing in the top-left tile
     scene[:, 0:128, 256:384] += np.linspace(0, 0.4, scene.shape[0])[:, None, None]  # constant
 
-    found = {(one.x, one.y): one for one in gs.scout_tiles(scene, size=128, stride=64)}
+    found = {
+        (one.x, one.y): one
+        for one in gs.scout_tiles(scene, size=128, stride=64, seconds_per_transition=0.222)
+    }
     brief = found[(0, 0)]
     constant = found[(256, 0)]
     assert 0 < brief.unstable_fraction <= 0.35
     assert brief.longest_unstable_run <= 2
+    assert brief.stable
     assert constant.unstable_fraction > brief.unstable_fraction
     assert constant.longest_unstable_run > brief.longest_unstable_run
     assert not constant.stable
+
+
+def test_the_disturbance_limit_is_timed_not_counted() -> None:
+    """Two transitions is 0.083 s at native cadence and 0.4 s at the 5 fps spread scout, so a
+    run-count rule was ~4.8x more tolerant by duration at the coarser rate. Timing it fixes that.
+    """
+    scene = _scene(frames=20)
+    ramp = np.zeros(scene.shape[0])
+    ramp[4:7] = np.linspace(0.2, 0.5, 3)  # four disturbed transitions of nineteen: fraction ~0.21
+    scene[:, 0:128, 0:128] += ramp[:, None, None]
+
+    at_native = {
+        (o.x, o.y): o
+        for o in gs.scout_tiles(scene, size=128, stride=128, seconds_per_transition=1 / 24)
+    }[(0, 0)]
+    at_spread = {
+        (o.x, o.y): o
+        for o in gs.scout_tiles(scene, size=128, stride=128, seconds_per_transition=0.15)
+    }[(0, 0)]
+
+    assert at_native.longest_unstable_run == at_spread.longest_unstable_run >= 3
+    assert at_native.unstable_fraction <= 0.25, (
+        "same disturbance, so the count rule cannot separate"
+    )
+    assert at_native.longest_disturbance_s < gs.MAX_DISTURBANCE_S <= at_spread.longest_disturbance_s
+    assert at_native.stable and not at_spread.stable
 
 
 def test_a_quiet_tile_is_stable() -> None:

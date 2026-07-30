@@ -13,6 +13,9 @@ import numpy as np
 import pytest
 
 from film_analysis_tools.capabilities.measure import residual, synthetic
+from film_analysis_tools.capabilities.measure.residual import (
+    SUBPIXEL_REJECT as SUBPIXEL_REJECT_LOCAL,
+)
 from film_analysis_tools.core.errors import DataError, SelectionError
 
 TOLERANCE = 0.03  # 3% on sigma
@@ -311,3 +314,44 @@ def test_the_unclamped_solution_is_kept() -> None:
     frames = synthetic.sequence(synthetic.SyntheticSpec(frames=8, sigma=0.01, rho=0.0, seed=5))
     estimate = residual.extract(frames)
     assert estimate.raw_rho == pytest.approx(estimate.rho, abs=1e-6)
+
+
+# ------------------------------------------------ coherent motion vs registration noise
+
+
+def test_a_single_unreliable_pair_does_not_reject_a_stationary_tile() -> None:
+    """The defect this replaced: rejecting on the *maximum* sub-pixel residual and *any* boundary
+    contact meant one bad pair in 47 rejected an otherwise stationary tile."""
+    from film_analysis_tools.capabilities.measure.residual import Shift, _shift_statistics
+
+    rng = np.random.default_rng(1)
+    # 46 pairs of scattered registration noise (no common direction) plus one large outlier.
+    noise = [
+        Shift(0, 0, float(dy), float(dx), 0.0, 5.0, 5.0, at_bound=False)
+        for dy, dx in rng.normal(0.0, 0.03, (46, 2))
+    ]
+    outlier = Shift(0, 0, 0.6, 0.5, 0.0, 5.0, 5.0, at_bound=True)
+    p90, boundary, coherence, _ = _shift_statistics([*noise, outlier])
+    assert p90 < SUBPIXEL_REJECT_LOCAL, "the robust residual ignores the single outlier"
+    assert boundary < 0.05, "one boundary hit in 47 is not coherent motion"
+    assert coherence < 0.5, "scattered residuals do not describe a direction"
+
+
+def test_coherent_drift_is_still_rejected() -> None:
+    """Every pair agreeing on a direction is real motion, and must still fail the gate."""
+    frames = synthetic.sequence(
+        _spec(sigma=0.01, rho=0.0, texture_amplitude=0.06, drift_px_per_frame=(0.5, 0.0), frames=48)
+    )
+    estimate = residual.extract(frames)
+    assert estimate.shift_coherence > 0.9
+    assert estimate.subpixel_p90 > 0.25
+    assert estimate.drifting
+
+
+def test_a_stationary_textured_tile_is_not_drifting() -> None:
+    frames = synthetic.sequence(
+        _spec(sigma=0.01, rho=0.0, texture_amplitude=0.06, drift_px_per_frame=(0.0, 0.0), frames=48)
+    )
+    estimate = residual.extract(frames)
+    assert estimate.shift_coherence < 0.5
+    assert not estimate.drifting

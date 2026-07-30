@@ -59,6 +59,17 @@ DEFAULT_MOTION_BLUR_RADIUS = 4
 #: Fractional offset above which a window is considered to be drifting rather than static.
 SUBPIXEL_REJECT = 0.25
 
+#: Directional consistency above which per-pair shifts describe one coherent motion rather than
+#: registration noise. |mean shift| / mean|shift|: a steady pan gives every pair the same vector,
+#: so this approaches 1; scatter about zero approaches 0. Below this, a high subpixel residual or a
+#: boundary hit is a failed registration on a difficult tile, not demonstrated image motion — and
+#: the previous gate, rejecting on the *maximum* residual and *any* boundary contact, could not
+#: tell the two apart. One unreliable pair in 47 rejected an otherwise stationary tile.
+MIN_DRIFT_COHERENCE = 0.5
+
+#: Fraction of pairs that must hit the search bound before coherent boundary motion is inferred.
+MAX_BOUNDARY_FRACTION = 0.25
+
 #: Largest shift considered. This is not a general motion tracker: windows are selected for being
 #: nearly static, so motion beyond a few pixels means the window should be **rejected** rather than
 #: tracked. Bounding the search also removes the failure mode where an unbounded peak search on a
@@ -298,6 +309,21 @@ class ResidualEstimate:
     raw_rho_from_lag4: float = 0.0
     """The unclamped lag-4 solution, for the same reason."""
 
+    subpixel_p90: float = 0.0
+    """90th-percentile per-pair sub-pixel residual — robust where ``subpixel_residual`` (the max)
+    is tripped by a single unreliable pair."""
+
+    boundary_fraction: float = 0.0
+    """Fraction of pairs whose shift hit the search bound, where ``at_bound`` is merely *any*."""
+
+    shift_coherence: float = 0.0
+    """Directional consistency of the per-pair shifts. High means one coherent motion; low means
+    registration scatter. See :data:`MIN_DRIFT_COHERENCE`."""
+
+    alignment_gain: float = 0.0
+    """Median fractional reduction in low-pass residual energy from applying the shifts. Positive
+    means the alignment describes real, removable motion."""
+
     @property
     def rho_saturated(self) -> bool:
         """Whether either correlation estimate sat on the clamp rather than inside it."""
@@ -355,7 +381,13 @@ class ResidualEstimate:
         """
         if not self.has_alignable_structure:
             return False
-        return self.subpixel_residual > SUBPIXEL_REJECT or self.at_bound
+        # Coherent, persistent motion — not one outlier pair, and not scattered registration
+        # failure. A robust (p90) sub-pixel residual or a repeated boundary contact, *and* the
+        # shifts agreeing on a direction. Isolated or incoherent contacts are registration
+        # failure on a hard tile, which must not be read as demonstrated image motion.
+        if self.shift_coherence < MIN_DRIFT_COHERENCE:
+            return False
+        return self.subpixel_p90 > SUBPIXEL_REJECT or self.boundary_fraction > MAX_BOUNDARY_FRACTION
 
     @property
     def correlation_correction(self) -> float:
@@ -379,6 +411,10 @@ class ResidualEstimate:
             "structure_snr": self.structure_snr,
             "alignment_applied": self.alignment_applied,
             "drifting": self.drifting,
+            "subpixel_p90": self.subpixel_p90,
+            "boundary_fraction": self.boundary_fraction,
+            "shift_coherence": self.shift_coherence,
+            "alignment_gain": self.alignment_gain,
             "motion_energy": self.motion_energy,
             "grain_hp_std": self.grain_hp_std,
             "sample_count": self.sample_count,
@@ -490,6 +526,31 @@ def _trim(deltas: np.ndarray, margin: int) -> np.ndarray:
     return deltas[:, margin:-margin, margin:-margin]
 
 
+def _shift_statistics(shifts: list[Shift]) -> tuple[float, float, float, float]:
+    """Robust drift descriptors from the per-pair shift proposals.
+
+    Coherence is ``|mean shift vector| / mean|shift vector|`` over the full (integer + sub-pixel)
+    displacements: a steady drift gives every pair nearly the same vector and approaches 1, while
+    registration noise scatters about zero and approaches 0.
+    """
+    if not shifts:
+        return (0.0, 0.0, 0.0, 0.0)
+    subpixel = np.array([shift.subpixel_magnitude for shift in shifts])
+    vectors = np.array(
+        [(shift.dy + shift.subpixel_dy, shift.dx + shift.subpixel_dx) for shift in shifts]
+    )
+    magnitudes = np.hypot(vectors[:, 0], vectors[:, 1])
+    resultant = float(np.hypot(*vectors.mean(axis=0)))
+    mean_magnitude = float(magnitudes.mean())
+    coherence = resultant / mean_magnitude if mean_magnitude > EPS else 0.0
+    return (
+        float(np.percentile(subpixel, 90)),
+        float(np.mean([shift.at_bound for shift in shifts])),
+        coherence,
+        float(np.median([shift.gain for shift in shifts])),
+    )
+
+
 def extract(
     frames: np.ndarray,
     *,
@@ -564,6 +625,7 @@ def extract(
 
     low_pass = np.stack([box_blur(delta, motion_blur_radius) for delta in lag1_deltas])
     high_pass = lag1_deltas - low_pass
+    subpixel_p90, boundary_fraction, coherence, gain = _shift_statistics(all_shifts)
 
     return ResidualEstimate(
         sigma=sigma,
@@ -575,6 +637,10 @@ def extract(
         raw_rho_from_lag4=raw_rho_from_lag4,
         subpixel_residual=max((shift.subpixel_magnitude for shift in all_shifts), default=0.0),
         at_bound=any(shift.at_bound for shift in all_shifts),
+        subpixel_p90=subpixel_p90,
+        boundary_fraction=boundary_fraction,
+        shift_coherence=coherence,
+        alignment_gain=gain,
         max_integer_shift=max(
             (max(abs(shift.dy), abs(shift.dx)) for shift in all_shifts if lag1_drifting),
             default=0,
@@ -596,6 +662,7 @@ __all__ = [
     "DEFAULT_MAX_SHIFT",
     "DEFAULT_MOTION_BLUR_RADIUS",
     "MIN_ALIGNMENT_GAIN",
+    "MIN_DRIFT_COHERENCE",
     "MIN_STRUCTURE_SNR",
     "RHO_BOUND",
     "SUBPIXEL_REJECT",
