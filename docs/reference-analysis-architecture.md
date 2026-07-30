@@ -283,9 +283,56 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    a highlight inside a tile is an edge, so every highlight-bearing tile is textured. Highlight
    amplitude must come from aligned textured tiles or from tiles small enough to sit inside the
    bright area; it cannot come from flat ones.
-4. **Implement the query interface** over intervals and regions, with provenance on every result.
-5. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.
-6. *Then* return to the statistical methods, inside a system that can say what they were run on.
+4. ~~**Run one thin vertical slice end to end**~~ — done, and taken *ahead* of the remaining
+   architecture steps deliberately. Three layers had been built and validated in isolation and
+   nothing had ever run the whole way through, so nobody could say what fraction of a real film
+   survives the chain. `studies/grain_slice` runs
+   `SourceRecord → catalogue query → extraction → admissibility → window selection → residual
+   measurement → evidence JSON + report` over two unrelated sources.
 
-Steps 1–4 are architecture. Only after them does refining an estimator have a defined meaning,
-because only then is there an answer to "on what material, chosen how".
+   **Actual coverage**, which is the deliverable rather than the parameters:
+
+   | | intervals | admissible | windows | regions | independent |
+   |---|---|---|---|---|---|
+   | Pulp Fiction UHD (PQ, 3840×1634 after crop) | 2,671 / 9,270 (28.8%) | 6 / 8 | 245 / 540 (45.4%) | 245 | **6 spans, 12.0 s** |
+   | Sony ZV-E10 II C0014 (S-Log3, 1920×1080) | 4 / 4 (100%) | 4 / 4 | 94 / 128 (73.4%) | 94 | **1 span, 5.0 s** |
+
+   **Five defects existed only at the seams, and none was visible from inside any layer:**
+
+   - `metadata=print` emits at INFO level, so `-loglevel error` discarded the entire survey and
+     returned zero frames — quietly, as an empty result rather than an error.
+   - **Admissibility was being asked after the transfer.** Shadow codes survive as ordinary small
+     numbers in the container, but a PQ EOTF compresses them until they underflow; the checks
+     reported **87.6% clipped at the floor** and **100% of the frame noise-free** on perfectly
+     good film. Clipping is defined by the container's limits and overlay detection asks whether
+     the *encoded* signal carries noise — both are container-domain questions.
+   - **Letterbox bars were never cropped.** `SourceRecord.Crop` has existed from the start with
+     exactly this rationale — "letterbox bars are not scene content and measuring them silently
+     corrupts every statistic" — and nothing ever filled it in. 23.9% of every Pulp Fiction frame
+     sits at code 0, which read as hard-clipped black and disqualified the whole source. Measured
+     directly from row and column means, because ffmpeg's `cropdetect` reported full frame on this
+     10-bit PQ master at every limit tried.
+   - **Overlay was used as a veto instead of the mask `select_windows` already accepts.** 20–22%
+     of 32 px blocks in the HEVC master have *exactly* zero temporal variation — encoder skip
+     blocks, real grain loss — and rejecting the interval threw away the 78% still measurable.
+   - The motion metric differed between the kept survey (`mafd`) and a fresh one (`ydif`), which
+     are a factor of 10.2 apart on the same footage. Gap 8 on a third axis; the slice normalises
+     motion to a fraction of full scale so the gate is dimensionless.
+
+   **The measurements are not yet trustworthy, and the slice says so rather than reporting a
+   number.** Pulp Fiction: **0 of 63** amplitude points trustworthy, ρ +0.13, independence not
+   established, whiteness 0.21, excess kurtosis +32.8. Sony: 10 of 27 trustworthy, ρ +0.41,
+   independence not established, whiteness 0.12, excess kurtosis +402. A structured spectrum and
+   very heavy tails on a compressed delivery master are what codec artefacts look like, not grain.
+
+   This is the concrete reason the compact fit, holdout reconstruction and profile export are
+   **not** built yet: there is nothing here that a fit would be honest to run on.
+5. **Implement the query interface** over intervals and regions, with provenance on every result.
+6. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.
+7. *Then* the compact fit, holdout reconstruction and engine-profile export — only once a
+   corpus exists whose measurements are trustworthy enough to fit.
+
+Steps 1-3 and 5-6 are architecture; step 4 is the slice that proves the architecture runs.
+Only after them does refining an estimator have a defined meaning, because only then is there an
+answer to "on what material, chosen how" — and, as step 4 showed, whether that material can carry
+a measurement at all.

@@ -1,0 +1,53 @@
+grain slice — source record to evidence, end to end
+========================================================================
+level scale: linear, 1.0 = diffuse white (every source)
+
+pulp_fiction_1994_uhd   [UHD HDR10 remux]
+  3840x2160  24000/1001 fps  pq  sha256 88219ee6394e
+  active picture 3840x1634 (letterbox cropped 263px)
+  coverage:
+  intervals                2,671 /   9,270 ( 28.8%)   contains a cut 610; motion above gate 5989
+  admissibility                6 /       8 ( 75.0%)   samples clipped 2
+  windows                    245 /     540 ( 45.4%)   motion above gate 202; overlaps a composited region 17; sub-pixel drift 76
+  245 regions from 6 intervals (6 disjoint spans, 12.0s) in 1 source(s)
+    treat ~6 as the independent count, not 245: regions tile the same frames (41 per span)
+    CONCENTRATED: one interval supplies 63 of them
+    levels : 0.00000 to 0.18905 on linear scale
+    bands  : shadow 126, midtone 119, highlight 0  (is)
+    bands  : shadow 228, midtone 175, highlight 32  (contains)
+    texture: flat 8, textured 237
+  measurements:
+    sigma        median 0.00350  range 0.00002..0.02069
+    levels       0.0000..0.1283   (0/63 points trustworthy)
+    spectrum     whiteness 0.209 (structured)
+    distribution kurtosis +32.773 (heavy-tailed)
+    temporal     rho +0.1331  independence NOT established
+    envelope     ratio 0.7145  screen-anchoring unknown (needs matching geometry)
+  note: 3 of 8 intervals carry frozen, noise-free blocks (encoder skip blocks); those blocks were masked out of window selection rather than used to reject the interval
+
+sony_zve10ii_C0014   [ZV-E10 II XAVC S-I, S-Log3]
+  1920x1080  24000/1001 fps  slog3  sha256 5299e5f23153
+  active picture 1920x1080
+  coverage:
+  intervals                    4 /       4 (100.0%)   contains a cut 0; motion above gate 0
+  admissibility                4 /       4 (100.0%)
+  windows                     94 /     128 ( 73.4%)   motion above gate 9; sub-pixel drift 25
+  94 regions from 4 intervals (1 disjoint spans, 5.0s) in 1 source(s)
+    treat ~1 as the independent count, not 94: regions tile the same frames (94 per span)
+    CONCENTRATED: one interval supplies 27 of them
+    levels : 0.02628 to 0.54885 on linear scale
+    bands  : shadow 0, midtone 76, highlight 18  (is)
+    bands  : shadow 38, midtone 86, highlight 62  (contains)
+    texture: flat 0, textured 94
+  measurements:
+    sigma        median 0.00131  range 0.00049..0.04009
+    levels       0.0299..0.5478   (10/27 points trustworthy)
+    spectrum     whiteness 0.115 (structured)
+    distribution kurtosis +401.922 (heavy-tailed)
+    temporal     rho +0.4079  independence NOT established
+    envelope     ratio 0.7243  screen-anchoring unknown (needs matching geometry)
+
+cross-source:
+  screen_anchoring: None
+  note: geometry differs between these sources, so the screen-anchored test cannot run; it needs two sources of identical frame geometry
+  median_sigma_by_source: {'pulp_fiction_1994_uhd': 0.003496884382409411, 'sony_zve10ii_C0014': 0.0013118126034054986}
