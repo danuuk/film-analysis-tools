@@ -1,0 +1,3257 @@
+{
+  "study": "grain_slice",
+  "question": "Does the whole chain — source record, catalogue query, extraction, admissibility, window selection, residual measurement — run on real material, and what fraction of it survives?",
+  "level_scale": "linear, 1.0 = diffuse white, for every source",
+  "sources": [
+    {
+      "source": {
+        "schema_version": 1,
+        "source_id": "pulp_fiction_1994_uhd",
+        "edition": "UHD HDR10 remux",
+        "sha256": "88219ee6394eaf7af0f48ffa77b74d256a35832d4031fd2611a5725f537836e9",
+        "byte_size": 89659862970,
+        "coded_width": 3840,
+        "coded_height": 2160,
+        "cadence": "24000/1001",
+        "crop": {
+          "x": 0,
+          "y": 263,
+          "width": 3840,
+          "height": 1634
+        },
+        "active_picture": [
+          0,
+          263,
+          3840,
+          1634
+        ],
+        "decode": {
+          "input_range": "tv",
+          "matrix": "bt709",
+          "transfer": "pq",
+          "primaries": "bt2020",
+          "output_pixel_format": "gray16le",
+          "scale": "linear_diffuse_white"
+        },
+        "timestamp": "",
+        "path_hint": "Pulp.Fiction.1994.mkv",
+        "notes": "grain_slice vertical study",
+        "identity": "4f0d131beb8b60f3186427abc4d5d0636ad77a16b17bb414188131533b512ff1"
+      },
+      "plan": {
+        "transfer": "pq",
+        "level_scale": "linear, 1.0 = diffuse white",
+        "window_s": 2.0,
+        "frames_per_interval": 10,
+        "tile_size": 128,
+        "intervals_requested": 8
+      },
+      "coverage": [
+        {
+          "stage": "intervals",
+          "considered": 9270,
+          "accepted": 5906,
+          "survival": 0.637108953613808,
+          "rejected": {
+            "contains a cut": 1522,
+            "motion above gate": 1842
+          }
+        },
+        {
+          "stage": "admissibility",
+          "considered": 8,
+          "accepted": 5,
+          "survival": 0.625,
+          "rejected": {
+            "level ramp": 1,
+            "samples clipped": 3
+          }
+        },
+        {
+          "stage": "tiles",
+          "considered": 7080,
+          "accepted": 2550,
+          "survival": 0.3601694915254237,
+          "rejected": {
+            "disturbed too often or too long": 4200,
+            "overlaps a composited region": 330
+          }
+        },
+        {
+          "stage": "tiles measured",
+          "considered": 2550,
+          "accepted": 159,
+          "survival": 0.06235294117647059,
+          "rejected": {
+            "disturbed at some transition": 323,
+            "beyond the stratified cap": 2068
+          }
+        }
+      ],
+      "seconds": {
+        "candidate_s": 10.0,
+        "decoded_s": 2.0854166666666667,
+        "evidence_s": 2.0854166666666667
+      },
+      "regions": {
+        "regions": 2550,
+        "coverage": {
+          "shadow": 1465,
+          "midtone": 1085,
+          "highlight": 0
+        },
+        "contains_band_coverage": {
+          "shadow": 1465,
+          "midtone": 1085,
+          "highlight": 0
+        },
+        "texture_coverage": {
+          "flat": 797,
+          "textured": 1753
+        },
+        "level_min": 6.910467123333319e-05,
+        "level_max": 0.22230983931109094,
+        "level_scales": [
+          "linear"
+        ],
+        "band_edges": [
+          [
+            0.02,
+            0.25
+          ]
+        ],
+        "edges_bracket_the_data": true,
+        "widened_gate": 0,
+        "independence": {
+          "regions": 2550,
+          "intervals": 5,
+          "sources": 1,
+          "spans": 5,
+          "span_seconds": 10.0,
+          "max_regions_per_interval": 1135,
+          "regions_per_span": 510.0,
+          "concentrated": true
+        }
+      },
+      "intervals_measured": 5,
+      "amplitude_points": {
+        "identified": 2,
+        "trustworthy": 2,
+        "total": 159,
+        "saturated_rho": 0
+      },
+      "aggregate": {
+        "raw_sigma": {
+          "median": 0.0028109226858382295,
+          "min": 0.0011673251839173493,
+          "max": 0.007230383220473869,
+          "n": 5,
+          "values": [
+            0.0028109226858382295,
+            0.006348542330635396,
+            0.007230383220473869,
+            0.0011673251839173493,
+            0.0014743995431207926
+          ]
+        },
+        "trusted_sigma": {
+          "median": 0.005585504700492513,
+          "min": 0.005585504700492513,
+          "max": 0.005585504700492513,
+          "n": 1,
+          "values": [
+            0.005585504700492513
+          ]
+        },
+        "whiteness": {
+          "median": 0.044906352237895394,
+          "min": 0.024593556766494055,
+          "max": 0.22519189923838742,
+          "n": 4,
+          "values": [
+            0.024593556766494055,
+            0.06259220692988743,
+            0.22519189923838742,
+            0.02722049754590336
+          ]
+        },
+        "excess_kurtosis": {
+          "median": 11.164726617617301,
+          "min": 4.495968286054653,
+          "max": 493.1306579428574,
+          "n": 5,
+          "values": [
+            11.164726617617301,
+            4.495968286054653,
+            4.879089877164222,
+            59.26020099493873,
+            493.1306579428574
+          ]
+        },
+        "rho": {
+          "median": 0.36303271704651474,
+          "min": 0.36303271704651474,
+          "max": 0.36303271704651474,
+          "n": 1,
+          "values": [
+            0.36303271704651474
+          ]
+        },
+        "envelope_ratio": {
+          "median": 0.7586557921673469,
+          "min": 0.28951980845527725,
+          "max": 1.0837263340353636,
+          "n": 5,
+          "values": [
+            1.0131227887014234,
+            0.7586557921673469,
+            0.28951980845527725,
+            1.0837263340353636,
+            0.6424189647039172
+          ]
+        },
+        "kurtosis_normalised": {
+          "median": 21.00400381521999,
+          "min": 3.3519377744642345,
+          "max": 57.00702206167053,
+          "n": 5,
+          "values": [
+            21.00400381521999,
+            3.3519377744642345,
+            3.5450354279660354,
+            33.266252258677305,
+            57.00702206167053
+          ]
+        },
+        "kurtosis_trustworthy": {
+          "median": 402.69125556360893,
+          "min": 402.69125556360893,
+          "max": 402.69125556360893,
+          "n": 1,
+          "values": [
+            402.69125556360893
+          ]
+        },
+        "mixing_prediction": {
+          "median": 3.9280440863813384,
+          "min": 1.0809678973873877,
+          "max": 13.378281134403938,
+          "n": 5,
+          "values": [
+            5.960807536391757,
+            3.9180178476417504,
+            1.0809678973873877,
+            13.378281134403938,
+            3.9280440863813384
+          ]
+        },
+        "skew": {
+          "median": -0.00423324247856566,
+          "min": -0.9290540293743953,
+          "max": 0.27262725155256,
+          "n": 5,
+          "values": [
+            -0.03195781917857469,
+            0.1065909414258222,
+            -0.00423324247856566,
+            0.27262725155256,
+            -0.9290540293743953
+          ]
+        },
+        "exact_zero_fraction": {
+          "median": 0.006502666170634921,
+          "min": 0.0029504200768849208,
+          "max": 0.00902739025297619,
+          "n": 5,
+          "values": [
+            0.007742422598379629,
+            0.00902739025297619,
+            0.0029504200768849208,
+            0.006502666170634921,
+            0.005934167286706349
+          ]
+        }
+      },
+      "per_interval": [
+        {
+          "interval_start_s": 2636.0,
+          "windows": 33,
+          "routed": {
+            "amplitude": 33,
+            "spectrum_flat": 16,
+            "distribution_unclipped": 33,
+            "temporal_trustworthy": 0
+          },
+          "temporal_trusted_share_of_accepted": 0.0,
+          "note": "temporal.trusted_fraction is 1.0 by construction: only trustworthy windows are passed to the estimator. Use temporal_trusted_share_of_accepted instead.",
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 33,
+            "trusted_count": 0,
+            "saturated_count": 0,
+            "level_min": 0.0001578533157280404,
+            "level_max": 0.08573846549254938,
+            "points": [
+              {
+                "level": 0.0001578533157280404,
+                "sigma": 0.0001482824162990619,
+                "rho": 0.03597788176471983,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03597788176471983,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0003413151663842484,
+                "sigma": 0.0005417062316812785,
+                "rho": 0.08471826394008497,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08471826394008497,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00029751723218751636,
+                "sigma": 0.00011967380304866353,
+                "rho": -0.11600621197490713,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.11600621197490713,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00028036844691570195,
+                "sigma": 0.00018985420337743188,
+                "rho": 0.038233203383003955,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.038233203383003955,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0002727432082636483,
+                "sigma": 0.00013109871158905774,
+                "rho": 0.1066362230551634,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1066362230551634,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00041622049395328986,
+                "sigma": 0.00017609498473124057,
+                "rho": 0.007399596848562728,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.007399596848562728,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00042151741963181166,
+                "sigma": 0.00018031641084553056,
+                "rho": 0.008388034836506186,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.008388034836506186,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00042210151957533526,
+                "sigma": 0.00017692682198092017,
+                "rho": 0.017321521204990642,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.017321521204990642,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00042415811513052404,
+                "sigma": 0.0001832632119843775,
+                "rho": 0.014491768868963195,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.014491768868963195,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0004285253515661225,
+                "sigma": 0.00017997848423065592,
+                "rho": 0.00803353035799459,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.00803353035799459,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005550943193668445,
+                "sigma": 0.00028472901771333704,
+                "rho": -0.4090392087045206,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.4090392087045206,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005748074295937045,
+                "sigma": 0.0002612445309928431,
+                "rho": 0.026824881163088232,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.026824881163088232,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.000754163144534914,
+                "sigma": 0.00036214115818640697,
+                "rho": -0.14989004133327333,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.14989004133327333,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005099232344036864,
+                "sigma": 0.0002819866701841798,
+                "rho": -0.009080174432914978,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.009080174432914978,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001111509072522665,
+                "sigma": 0.000979664393611987,
+                "rho": -0.08122278340283906,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.08122278340283906,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.028434862646057102,
+                "sigma": 0.004481285405464566,
+                "rho": -0.008964010029271385,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.008964010029271385,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.024249763634048627,
+                "sigma": 0.00405395100470812,
+                "rho": -0.005382351876093927,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.005382351876093927,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.013932216045829282,
+                "sigma": 0.003004942270956777,
+                "rho": -0.0036942167246457602,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0036942167246457602,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00862464310707356,
+                "sigma": 0.0028109226858382295,
+                "rho": 0.05181911741188627,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05181911741188627,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0007730113796444726,
+                "sigma": 0.00047400059785819673,
+                "rho": 0.02716555654592323,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.02716555654592323,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.030689227038674716,
+                "sigma": 0.004659772486350317,
+                "rho": -0.0008800540662896594,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0008800540662896594,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.030809503694064322,
+                "sigma": 0.004663600075716161,
+                "rho": -0.004744575308804899,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.004744575308804899,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03194997192563864,
+                "sigma": 0.00493645466693756,
+                "rho": 0.003946998923799461,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.003946998923799461,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03213870057388668,
+                "sigma": 0.004941380174251735,
+                "rho": 0.010644886309630008,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.010644886309630008,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03498275902410253,
+                "sigma": 0.005487288001759436,
+                "rho": 0.03804532514573755,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03804532514573755,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.037872088232254075,
+                "sigma": 0.005746167465814184,
+                "rho": 0.0294021542104832,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0294021542104832,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03401777182100929,
+                "sigma": 0.0053932375430957285,
+                "rho": 0.0383031890719685,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0383031890719685,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0325110218600031,
+                "sigma": 0.005142742542028861,
+                "rho": 0.021627843771250044,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.021627843771250044,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08573846549254938,
+                "sigma": 0.010075034567071746,
+                "rho": 0.029811977476571494,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.029811977476571494,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07197421267597626,
+                "sigma": 0.009157099966153584,
+                "rho": 0.03766297481248948,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03766297481248948,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06893342478461534,
+                "sigma": 0.009296565974958213,
+                "rho": 0.060101796898139215,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.060101796898139215,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07366067340797722,
+                "sigma": 0.008460593204109175,
+                "rho": 0.008426252988704475,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.008426252988704475,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.048408810237293654,
+                "sigma": 0.006716680461254792,
+                "rho": 0.029563131717253555,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.029563131717253555,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": {
+            "evidence": "spectrum",
+            "frequencies": [
+              0.010416666666666666,
+              0.03125,
+              0.05208333333333333,
+              0.07291666666666666,
+              0.09375,
+              0.11458333333333333,
+              0.13541666666666666,
+              0.15625,
+              0.17708333333333331,
+              0.19791666666666666,
+              0.21875,
+              0.23958333333333331,
+              0.26041666666666663,
+              0.28125,
+              0.3020833333333333,
+              0.32291666666666663,
+              0.34375,
+              0.3645833333333333,
+              0.38541666666666663,
+              0.40625,
+              0.4270833333333333,
+              0.44791666666666663,
+              0.46875,
+              0.4895833333333333
+            ],
+            "power": [
+              1.867092079590079e-05,
+              3.323287858438028e-06,
+              8.67607569171125e-07,
+              4.3663660194234626e-07,
+              3.399383895780507e-07,
+              2.567376861746892e-07,
+              2.5236845080599173e-07,
+              2.2570888020725458e-07,
+              2.0825955267724284e-07,
+              1.8427929592969213e-07,
+              1.6651241777405286e-07,
+              1.561856683600292e-07,
+              1.3497732021035198e-07,
+              1.102480312988011e-07,
+              9.095181960074035e-08,
+              7.122456957321359e-08,
+              5.725807410364848e-08,
+              4.228470518618988e-08,
+              3.0732070353326436e-08,
+              2.2224214298093933e-08,
+              1.8009232369363067e-08,
+              1.476489437319127e-08,
+              1.302144040034513e-08,
+              1.1317679442308045e-08
+            ],
+            "autocorrelation": [
+              0.750820205075704,
+              0.4553746943640645,
+              0.3288195849185185,
+              0.30366762170412964,
+              0.2877366439398333,
+              0.2643704422638096,
+              0.24329411567444093,
+              0.22301556878851458
+            ],
+            "whiteness": 0.024593556766494055,
+            "is_white": false,
+            "sample_count": 144
+          },
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.004426129023376623,
+            "skew": -0.03195781917857469,
+            "excess_kurtosis": 11.164726617617301,
+            "quantiles": {
+              "0.1": -0.026145972994283735,
+              "1": -0.014369756896761843,
+              "5": -0.006899270513839309,
+              "25": -0.0002555760584147487,
+              "50": 0.0,
+              "75": 0.00026693245008731247,
+              "95": 0.006872441410584093,
+              "99": 0.014244914111914402,
+              "99.9": 0.025981045442904027
+            },
+            "tail_ratio": 113.44220238978255,
+            "is_gaussian": false,
+            "sample_count": 4276800
+          },
+          "distribution_trustworthy": null,
+          "tails": {
+            "kurtosis_pooled": 11.164726617617301,
+            "kurtosis_normalised": 21.00400381521999,
+            "kurtosis_per_window": {
+              "median": 2.6250749301199994,
+              "min": 0.2472122166762376,
+              "max": 142.45461988302176,
+              "n": 33,
+              "values": [
+                96.06930433153768,
+                142.45461988302176,
+                13.45086877932718,
+                117.27030152275474,
+                29.008844758476954,
+                2.237171173661401,
+                2.0249805993463594,
+                1.7234892917473736,
+                2.6250749301199994,
+                1.3105115046754339,
+                95.42459126995594,
+                30.879548004758647,
+                16.790432657090793,
+                49.11426457257956,
+                18.678483789445,
+                0.3823305708572864,
+                0.3049005610126869,
+                2.3152669953959197,
+                29.879000500224784,
+                15.989999955554634,
+                0.2472122166762376,
+                0.3557706220412231,
+                2.095906636654128,
+                1.0943832791582606,
+                3.1705855196220494,
+                2.943658318584178,
+                4.720811683929529,
+                2.084648787786625,
+                1.019250183610927,
+                1.7959397944860118,
+                3.1868191125835663,
+                0.43651157977711774,
+                2.0466425158056385
+              ]
+            },
+            "mixing_prediction": 5.960807536391757,
+            "mixing_explains": 0.5338964168621866,
+            "skew_pooled": -0.03195781917857469,
+            "exact_zero_fraction": 0.007742422598379629,
+            "step_occupancy": {
+              "-2": 0.04042150837805135,
+              "-1": 0.04287401192918771,
+              "0": 0.04799521089804293,
+              "1": 0.04288880833070286,
+              "2": 0.040510286787142254
+            },
+            "outlier_fraction_per_pair": [
+              0.3115930134680135,
+              0.31042087542087543,
+              0.3106712962962963,
+              0.31238846801346803,
+              0.3120391414141414,
+              0.3076662457912458,
+              0.30917718855218856,
+              0.31200547138047136,
+              0.3123000841750842
+            ],
+            "windows_used": 33
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 1.0131227887014234,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 4276800
+          },
+          "temporal": null,
+          "skipped": [
+            "temporal: no window could vouch for its own correlation estimate",
+            "distribution (trustworthy): no window is both unclipped and temporally trustworthy"
+          ]
+        },
+        {
+          "interval_start_s": 3998.0,
+          "windows": 21,
+          "routed": {
+            "amplitude": 21,
+            "spectrum_flat": 3,
+            "distribution_unclipped": 21,
+            "temporal_trustworthy": 0
+          },
+          "temporal_trusted_share_of_accepted": 0.0,
+          "note": "temporal.trusted_fraction is 1.0 by construction: only trustworthy windows are passed to the estimator. Use temporal_trusted_share_of_accepted instead.",
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 21,
+            "trusted_count": 0,
+            "saturated_count": 0,
+            "level_min": 0.0008094189277305652,
+            "level_max": 0.17695102624156783,
+            "points": [
+              {
+                "level": 0.0008094189277305652,
+                "sigma": 0.0007759864478780684,
+                "rho": 0.05828529584527731,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.05828529584527731,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.002570396920781093,
+                "sigma": 0.0008515925017287516,
+                "rho": 0.03738706667407654,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03738706667407654,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.002804115452860856,
+                "sigma": 0.0008252363155362723,
+                "rho": -0.02487889519465003,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.02487889519465003,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0015231713478485176,
+                "sigma": 0.0005788931063242715,
+                "rho": 0.054531254470703505,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.054531254470703505,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0018131385383988174,
+                "sigma": 0.0005936590902670175,
+                "rho": -0.020151565105510527,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.020151565105510527,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.004125843028399245,
+                "sigma": 0.001115168966405479,
+                "rho": -0.01706445581695193,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.01706445581695193,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0045553004166443145,
+                "sigma": 0.0014104751050340145,
+                "rho": -0.16263415670591175,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.16263415670591175,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.05534203090940093,
+                "sigma": 0.006220677250640842,
+                "rho": 0.004244794399079321,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.004244794399079321,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05705577110445581,
+                "sigma": 0.006348542330635396,
+                "rho": 0.008589545471288318,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.008589545471288318,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06725165538831546,
+                "sigma": 0.007127827777740209,
+                "rho": 0.004195326035768332,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.004195326035768332,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0372358841530398,
+                "sigma": 0.004642110810032657,
+                "rho": -0.006195594081940703,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.006195594081940703,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03545035629114751,
+                "sigma": 0.004460255713689788,
+                "rho": -0.005430274933149737,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.005430274933149737,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06773224143902357,
+                "sigma": 0.007043838175695276,
+                "rho": 0.011444097751373894,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.011444097751373894,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06746963928953831,
+                "sigma": 0.006913341569253746,
+                "rho": 0.0038043580360243023,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0038043580360243023,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06916563556226252,
+                "sigma": 0.007070207155128796,
+                "rho": 0.011547150961451758,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.011547150961451758,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07452170831147242,
+                "sigma": 0.007434298806829772,
+                "rho": 0.012137774509845434,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.012137774509845434,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1399934286590906,
+                "sigma": 0.012326774223033795,
+                "rho": 0.005777725330333494,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.005777725330333494,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.1488461277899205,
+                "sigma": 0.012895205960559104,
+                "rho": 0.002217015748943618,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.002217015748943618,
+                "sample_count": 129600,
+                "band": "midtone"
+              },
+              {
+                "level": 0.15549152888688694,
+                "sigma": 0.01316276205009316,
+                "rho": -0.0024558918587482825,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0024558918587482825,
+                "sample_count": 129600,
+                "band": "midtone"
+              },
+              {
+                "level": 0.16461824552866347,
+                "sigma": 0.013713496390492722,
+                "rho": 0.010081712283043442,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.010081712283043442,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.17695102624156783,
+                "sigma": 0.014373352335197171,
+                "rho": 0.010668222417423268,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.010668222417423268,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": {
+            "evidence": "spectrum",
+            "frequencies": [
+              0.010416666666666666,
+              0.03125,
+              0.05208333333333333,
+              0.07291666666666666,
+              0.09375,
+              0.11458333333333333,
+              0.13541666666666666,
+              0.15625,
+              0.17708333333333331,
+              0.19791666666666666,
+              0.21875,
+              0.23958333333333331,
+              0.26041666666666663,
+              0.28125,
+              0.3020833333333333,
+              0.32291666666666663,
+              0.34375,
+              0.3645833333333333,
+              0.38541666666666663,
+              0.40625,
+              0.4270833333333333,
+              0.44791666666666663,
+              0.46875,
+              0.4895833333333333
+            ],
+            "power": [
+              2.6419085426702234e-05,
+              7.92160360805928e-06,
+              3.184748826898251e-06,
+              1.8183090941723824e-06,
+              1.5139428990222968e-06,
+              1.2560367752064042e-06,
+              1.105208378163769e-06,
+              1.0891558717719132e-06,
+              1.0256352642083286e-06,
+              8.675522151121326e-07,
+              8.219916979172935e-07,
+              7.237472110743837e-07,
+              6.315948476786169e-07,
+              5.47909497240918e-07,
+              4.5931031497775e-07,
+              3.505847852597492e-07,
+              2.849588079928528e-07,
+              2.0439651604443455e-07,
+              1.450706268758433e-07,
+              1.0767548809825016e-07,
+              8.229792259879977e-08,
+              6.756379944108847e-08,
+              5.754645088295012e-08,
+              4.968212805163159e-08
+            ],
+            "autocorrelation": [
+              0.7181822520722712,
+              0.37133261206401613,
+              0.2367132525975732,
+              0.22871600236202952,
+              0.21944034475187243,
+              0.19880900967498172,
+              0.18145264010849502,
+              0.16701718460878776
+            ],
+            "whiteness": 0.06259220692988743,
+            "is_white": false,
+            "sample_count": 27
+          },
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.007741351570711696,
+            "skew": 0.1065909414258222,
+            "excess_kurtosis": 4.495968286054653,
+            "quantiles": {
+              "0.1": -0.03569172148666252,
+              "1": -0.0228705597646585,
+              "5": -0.012704994418112304,
+              "25": -0.0025940325001797423,
+              "50": -6.118439270967041e-06,
+              "75": 0.0023362713473560354,
+              "95": 0.012934456876220397,
+              "99": 0.02363769278291723,
+              "99.9": 0.036840788445336926
+            },
+            "tail_ratio": 16.078392125828998,
+            "is_gaussian": false,
+            "sample_count": 2721600
+          },
+          "distribution_trustworthy": null,
+          "tails": {
+            "kurtosis_pooled": 4.495968286054653,
+            "kurtosis_normalised": 3.3519377744642345,
+            "kurtosis_per_window": {
+              "median": 0.8532857741891098,
+              "min": 0.16837098631724334,
+              "max": 45.50140659554711,
+              "n": 21,
+              "values": [
+                45.50140659554711,
+                3.358346604663205,
+                2.018506878772074,
+                3.340195231654045,
+                1.8071447208472406,
+                2.0573669460204798,
+                5.938375396009464,
+                0.8532857741891098,
+                0.965303006183424,
+                1.0585696055703977,
+                0.2411901493737587,
+                0.25987885306133984,
+                0.403450085959578,
+                0.24470723769359104,
+                0.3987802780822758,
+                0.8694081250989267,
+                0.26191975745843354,
+                0.25640886293952336,
+                0.16837098631724334,
+                0.20280217815222823,
+                0.18527599015547125
+              ]
+            },
+            "mixing_prediction": 3.9180178476417504,
+            "mixing_explains": 0.8714513978656038,
+            "skew_pooled": 0.1065909414258222,
+            "exact_zero_fraction": 0.00902739025297619,
+            "step_occupancy": {
+              "-2": 0.03702541129298942,
+              "-1": 0.03965993406911376,
+              "0": 0.040751139322916664,
+              "1": 0.03908542855076058,
+              "2": 0.036726371321097885
+            },
+            "outlier_fraction_per_pair": [
+              0.0416005291005291,
+              0.04138888888888889,
+              0.04220238095238095,
+              0.04352513227513227,
+              0.044847883597883595,
+              0.046021825396825394,
+              0.04453373015873016,
+              0.042916666666666665,
+              0.04318452380952381
+            ],
+            "windows_used": 21
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.7586557921673469,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 2721600
+          },
+          "temporal": null,
+          "skipped": [
+            "temporal: no window could vouch for its own correlation estimate",
+            "distribution (trustworthy): no window is both unclipped and temporally trustworthy"
+          ]
+        },
+        {
+          "interval_start_s": 5051.0,
+          "windows": 35,
+          "routed": {
+            "amplitude": 35,
+            "spectrum_flat": 0,
+            "distribution_unclipped": 35,
+            "temporal_trustworthy": 0
+          },
+          "temporal_trusted_share_of_accepted": 0.0,
+          "note": "temporal.trusted_fraction is 1.0 by construction: only trustworthy windows are passed to the estimator. Use temporal_trusted_share_of_accepted instead.",
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 35,
+            "trusted_count": 0,
+            "saturated_count": 0,
+            "level_min": 0.015015370282090854,
+            "level_max": 0.10856674475993912,
+            "points": [
+              {
+                "level": 0.015015370282090854,
+                "sigma": 0.00342509642265066,
+                "rho": -0.009553954177365154,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.009553954177365154,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.019750358731162265,
+                "sigma": 0.0040903442755851555,
+                "rho": -0.00825768542771621,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.00825768542771621,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.02235062632092255,
+                "sigma": 0.004649770087290928,
+                "rho": 0.01187944680103925,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01187944680103925,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02929628153976971,
+                "sigma": 0.005373147330747276,
+                "rho": 0.008703582058638304,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.008703582058638304,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.020706374260986316,
+                "sigma": 0.004485800519288325,
+                "rho": 0.004717671052588024,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.004717671052588024,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03007481466610029,
+                "sigma": 0.005759830383059531,
+                "rho": 0.00888552400401732,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.00888552400401732,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.029272324208351908,
+                "sigma": 0.005533912859980967,
+                "rho": -0.004814352947241529,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.004814352947241529,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.025750113876195968,
+                "sigma": 0.005691702167234096,
+                "rho": 0.007336749956727617,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.007336749956727617,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.02899529121751243,
+                "sigma": 0.005630924408278488,
+                "rho": 0.08808601298869734,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08808601298869734,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.026901877475637548,
+                "sigma": 0.0066188847124220625,
+                "rho": 0.3411512910697554,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.3411512910697554,
+                "sample_count": 133956,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03447680343803583,
+                "sigma": 0.007056961728385739,
+                "rho": -0.023956421532739136,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.023956421532739136,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.030793213780439643,
+                "sigma": 0.005713253842296316,
+                "rho": 0.007655733087716721,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.007655733087716721,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.031198645029272054,
+                "sigma": 0.005450756266112766,
+                "rho": -0.011466621948114764,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.011466621948114764,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0315950267878069,
+                "sigma": 0.005407893619430102,
+                "rho": -0.0031339664119902633,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0031339664119902633,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.030506333466213675,
+                "sigma": 0.005512278323489769,
+                "rho": -0.0020158047016157754,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0020158047016157754,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04093007874532334,
+                "sigma": 0.007165779570318502,
+                "rho": -0.015367737152964467,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.015367737152964467,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05733653490622148,
+                "sigma": 0.008044097638207685,
+                "rho": -0.00973561026887293,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.00973561026887293,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03896704309682342,
+                "sigma": 0.006366361030519319,
+                "rho": 0.007556632892468551,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.007556632892468551,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0483143535668944,
+                "sigma": 0.007339303861524631,
+                "rho": 0.015285610812380446,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.015285610812380446,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04721611113899993,
+                "sigma": 0.007230383220473869,
+                "rho": 0.015510198259243602,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.015510198259243602,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.054691992062941175,
+                "sigma": 0.00834417600110345,
+                "rho": 0.021144550111842797,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.021144550111842797,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05100212820644323,
+                "sigma": 0.009276558364627178,
+                "rho": 0.026858199889455925,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.026858199889455925,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0472017240418765,
+                "sigma": 0.00817143142716392,
+                "rho": 0.03659950709037951,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03659950709037951,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.049445983487572676,
+                "sigma": 0.007997444064749974,
+                "rho": 0.12111926710149246,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.12111926710149246,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04744710415987896,
+                "sigma": 0.007743385607574675,
+                "rho": 0.08913464968297702,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08913464968297702,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.05840953307251767,
+                "sigma": 0.008282113285853723,
+                "rho": 0.00800214053055237,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.00800214053055237,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.059949476983399586,
+                "sigma": 0.008322157392739274,
+                "rho": 0.004414620755931242,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.004414620755931242,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0612918404201519,
+                "sigma": 0.008539888112585573,
+                "rho": 0.0006002684975205952,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0006002684975205952,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06078268695011957,
+                "sigma": 0.008362246321217653,
+                "rho": 0.0007297797944281204,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0007297797944281204,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06064342731124128,
+                "sigma": 0.008420062913959341,
+                "rho": -0.0015864292351756015,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0015864292351756015,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.10856674475993912,
+                "sigma": 0.013298497694146528,
+                "rho": -0.009183931690602165,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.009183931690602165,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07431521163108518,
+                "sigma": 0.00989546021238728,
+                "rho": 0.011112750885591272,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.011112750885591272,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07086120990947009,
+                "sigma": 0.009523949685798798,
+                "rho": 0.01545548909062866,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01545548909062866,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.07966426296763007,
+                "sigma": 0.010210205243706012,
+                "rho": 0.01840364308707132,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01840364308707132,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.08173292720111558,
+                "sigma": 0.01067927363197809,
+                "rho": 0.018617619624865078,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.018617619624865078,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": null,
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.007338690375309443,
+            "skew": -0.00423324247856566,
+            "excess_kurtosis": 4.879089877164222,
+            "quantiles": {
+              "0.1": -0.035035089391930986,
+              "1": -0.020407445780956823,
+              "5": -0.011748085191385831,
+              "25": -0.003584486732908292,
+              "50": -1.4363843535865081e-05,
+              "75": 0.0034512012757596374,
+              "95": 0.011566722363159638,
+              "99": 0.02024894075601394,
+              "99.9": 0.03507897181078544
+            },
+            "tail_ratio": 11.440862894437796,
+            "is_gaussian": false,
+            "sample_count": 4536000
+          },
+          "distribution_trustworthy": null,
+          "tails": {
+            "kurtosis_pooled": 4.879089877164222,
+            "kurtosis_normalised": 3.5450354279660354,
+            "kurtosis_per_window": {
+              "median": 1.727738052762759,
+              "min": 0.42904874508209856,
+              "max": 22.185494544151474,
+              "n": 35,
+              "values": [
+                1.478934016828095,
+                1.160250545055744,
+                3.7528960749234788,
+                3.342607358716747,
+                4.515977167741214,
+                6.3955469356811445,
+                2.7991731917073723,
+                22.185494544151474,
+                1.727738052762759,
+                1.7902621611281697,
+                9.276253343264681,
+                2.27435513827273,
+                1.631767237326204,
+                0.7289981518736535,
+                2.6742407594482946,
+                5.7166662762304306,
+                0.4897733667761788,
+                1.4887839373353993,
+                1.3120460874419324,
+                1.330834766708045,
+                2.6598653409648696,
+                20.242255102324854,
+                10.787617454097541,
+                1.2635988416443835,
+                1.4969131028600806,
+                0.48540680375857237,
+                0.4944104510752658,
+                1.0219978060378976,
+                0.42904874508209856,
+                0.7448345444626989,
+                1.8998334357691133,
+                1.7569338974931759,
+                1.4470182731965116,
+                1.127256369381981,
+                2.146650697288421
+              ]
+            },
+            "mixing_prediction": 1.0809678973873877,
+            "mixing_explains": 0.22155113445371857,
+            "skew_pooled": -0.00423324247856566,
+            "exact_zero_fraction": 0.0029504200768849208,
+            "step_occupancy": {
+              "-2": 0.026691739521329364,
+              "-1": 0.027908179873511903,
+              "0": 0.028996155753968255,
+              "1": 0.02810601128472222,
+              "2": 0.026681663876488095
+            },
+            "outlier_fraction_per_pair": [
+              0.007246031746031746,
+              0.006833333333333334,
+              0.00825,
+              0.007567460317460317,
+              0.007130952380952381,
+              0.007242063492063492,
+              0.007678571428571429,
+              0.008732142857142857,
+              0.007825396825396826
+            ],
+            "windows_used": 35
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.28951980845527725,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 4536000
+          },
+          "temporal": null,
+          "skipped": [
+            "spectrum: no flat window (every accepted tile carries picture structure)",
+            "temporal: no window could vouch for its own correlation estimate",
+            "distribution (trustworthy): no window is both unclipped and temporally trustworthy"
+          ]
+        },
+        {
+          "interval_start_s": 6470.0,
+          "windows": 35,
+          "routed": {
+            "amplitude": 35,
+            "spectrum_flat": 17,
+            "distribution_unclipped": 35,
+            "temporal_trustworthy": 2
+          },
+          "temporal_trusted_share_of_accepted": 0.05714285714285714,
+          "note": "temporal.trusted_fraction is 1.0 by construction: only trustworthy windows are passed to the estimator. Use temporal_trusted_share_of_accepted instead.",
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 35,
+            "trusted_count": 2,
+            "saturated_count": 0,
+            "level_min": 0.00017976983102457877,
+            "level_max": 0.0830161972810543,
+            "points": [
+              {
+                "level": 0.0013295069215872868,
+                "sigma": 0.0006254632122717238,
+                "rho": 0.019859009528942373,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.019859009528942373,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005605525131867073,
+                "sigma": 0.00025470932423324436,
+                "rho": 0.01409677496094508,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01409677496094508,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00032170000749098815,
+                "sigma": 0.0001536907298703128,
+                "rho": 0.016557806250968587,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.016557806250968587,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00021325277576622614,
+                "sigma": 9.044499208190915e-05,
+                "rho": 0.01664206372111421,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01664206372111421,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00017976983102457877,
+                "sigma": 7.407873173559661e-05,
+                "rho": 0.01745538616989517,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01745538616989517,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00139507194795907,
+                "sigma": 0.0007429456338447365,
+                "rho": -0.0039980392052951785,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0039980392052951785,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001294247796798098,
+                "sigma": 0.0005747260057423229,
+                "rho": 0.04121250302656332,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04121250302656332,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0011591692660157804,
+                "sigma": 0.0010327572108437951,
+                "rho": 0.1410188807731858,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1410188807731858,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0013523202454514827,
+                "sigma": 0.0006000392270425633,
+                "rho": 0.005147765480204347,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.005147765480204347,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001411270259231212,
+                "sigma": 0.0005215611076622337,
+                "rho": 0.012313092525418456,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.012313092525418456,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0014519557523215432,
+                "sigma": 0.00048322729399495894,
+                "rho": 0.0030236094696269866,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0030236094696269866,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0014173713701459423,
+                "sigma": 0.0005147193050815607,
+                "rho": -0.005920314732786536,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.005920314732786536,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.002076924982212347,
+                "sigma": 0.000435369131979916,
+                "rho": 0.02736986381250195,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.02736986381250195,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0014199449399514563,
+                "sigma": 0.0004500863765919693,
+                "rho": 0.04015012237082827,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.04015012237082827,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0016036137240140746,
+                "sigma": 0.00037123017563392007,
+                "rho": 0.0028067532803142115,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0028067532803142115,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.004918851409500075,
+                "sigma": 0.0016420373592924491,
+                "rho": -0.013500175754229016,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.013500175754229016,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0032032438017740306,
+                "sigma": 0.0012955115243899217,
+                "rho": -0.009747251743024044,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.009747251743024044,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.002792463512205967,
+                "sigma": 0.0011673251839173493,
+                "rho": -0.017545437107216122,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.017545437107216122,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.002298316807403694,
+                "sigma": 0.0009439670408770968,
+                "rho": 0.0003864922472043286,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0003864922472043286,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0022194316299900263,
+                "sigma": 0.000914963672962627,
+                "rho": -0.0031743474302534658,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0031743474302534658,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00802405473265394,
+                "sigma": 0.002762198725358832,
+                "rho": 0.1005777674345747,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1005777674345747,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.008028726971010924,
+                "sigma": 0.002208410625844499,
+                "rho": -0.048444904330746885,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.048444904330746885,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00785388577436219,
+                "sigma": 0.0019085427784097584,
+                "rho": -0.011667625213858002,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.011667625213858002,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.008679236047242744,
+                "sigma": 0.0020298014246050494,
+                "rho": -0.01277367116839212,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.01277367116839212,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.008037862551011576,
+                "sigma": 0.0019433489841780205,
+                "rho": 0.0006832185750491604,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0006832185750491604,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.009579696697997485,
+                "sigma": 0.0030222253776453806,
+                "rho": -0.013313069027426128,
+                "trustworthy": true,
+                "identified": true,
+                "raw_rho": -0.013313069027426128,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.009271461166823647,
+                "sigma": 0.008148784023339645,
+                "rho": 0.7393785031204556,
+                "trustworthy": true,
+                "identified": true,
+                "raw_rho": 0.7393785031204556,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.010153003547709982,
+                "sigma": 0.002463176002971576,
+                "rho": 0.0013417659717258612,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0013417659717258612,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.009964457438155216,
+                "sigma": 0.0022250807487359126,
+                "rho": 0.07015470421774728,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.07015470421774728,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.009291060389894579,
+                "sigma": 0.0020173024886556436,
+                "rho": 0.035087618629044304,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.035087618629044304,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.02459865484877152,
+                "sigma": 0.004011218192701571,
+                "rho": -0.0005243888611968783,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0005243888611968783,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.03210076685958084,
+                "sigma": 0.004693239067809992,
+                "rho": 0.00014458440269371486,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.00014458440269371486,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.04511026849929653,
+                "sigma": 0.0057834970544872475,
+                "rho": 0.009221838981845032,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.009221838981845032,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.06903708132470855,
+                "sigma": 0.007664646304946771,
+                "rho": 0.016402729222053214,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.016402729222053214,
+                "sample_count": 147456,
+                "band": "midtone"
+              },
+              {
+                "level": 0.0830161972810543,
+                "sigma": 0.00863758855795872,
+                "rho": 0.007476123658636702,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.007476123658636702,
+                "sample_count": 147456,
+                "band": "midtone"
+              }
+            ]
+          },
+          "spectrum": {
+            "evidence": "spectrum",
+            "frequencies": [
+              0.010416666666666666,
+              0.03125,
+              0.05208333333333333,
+              0.07291666666666666,
+              0.09375,
+              0.11458333333333333,
+              0.13541666666666666,
+              0.15625,
+              0.17708333333333331,
+              0.19791666666666666,
+              0.21875,
+              0.23958333333333331,
+              0.26041666666666663,
+              0.28125,
+              0.3020833333333333,
+              0.32291666666666663,
+              0.34375,
+              0.3645833333333333,
+              0.38541666666666663,
+              0.40625,
+              0.4270833333333333,
+              0.44791666666666663,
+              0.46875,
+              0.4895833333333333
+            ],
+            "power": [
+              1.1488266901727333e-06,
+              1.3777051134984996e-06,
+              1.4449900817358995e-06,
+              1.2831152466350423e-06,
+              1.2159144564054122e-06,
+              1.2394755421601288e-06,
+              1.1998840948254307e-06,
+              1.1355774344657833e-06,
+              1.0246223844383162e-06,
+              9.803754435570012e-07,
+              8.906125896740028e-07,
+              7.755078780683375e-07,
+              6.758783420969609e-07,
+              5.442517150898827e-07,
+              4.403581339259047e-07,
+              3.6084631306320006e-07,
+              2.826743995316646e-07,
+              2.1304236996476065e-07,
+              1.5848614677991502e-07,
+              1.1903170688440295e-07,
+              9.37522211821859e-08,
+              7.680652002479502e-08,
+              6.571498424214128e-08,
+              5.80259186604645e-08
+            ],
+            "autocorrelation": [
+              0.609757711082525,
+              0.14939658855162852,
+              -0.03297092918320703,
+              -0.037958084621266645,
+              -0.015663564669076185,
+              -0.0038264810759503095,
+              0.0033930202566218393,
+              0.007736162456167272
+            ],
+            "whiteness": 0.22519189923838742,
+            "is_white": false,
+            "sample_count": 153
+          },
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.0028249020754508793,
+            "skew": 0.27262725155256,
+            "excess_kurtosis": 59.26020099493873,
+            "quantiles": {
+              "0.1": -0.021697463180700715,
+              "1": -0.009312697340755472,
+              "5": -0.00308786567538397,
+              "25": -0.0002003080732962663,
+              "50": 0.0,
+              "75": 0.00020348154268656638,
+              "95": 0.0030940719305361008,
+              "99": 0.009366061046161786,
+              "99.9": 0.021939723890241982
+            },
+            "tail_ratio": 126.99119054966059,
+            "is_gaussian": false,
+            "sample_count": 4536000
+          },
+          "distribution_trustworthy": {
+            "evidence": "distribution",
+            "std": 0.0030350215367646576,
+            "skew": 2.9489707121158224,
+            "excess_kurtosis": 402.69125556360893,
+            "quantiles": {
+              "0.1": -0.03073544613006686,
+              "1": -0.004814796862929495,
+              "5": -0.00044007001110488446,
+              "25": -5.790968239102593e-05,
+              "50": 0.0,
+              "75": 5.878470282649209e-05,
+              "95": 0.000443033512839596,
+              "99": 0.004295829651691832,
+              "99.9": 0.02918497769121186
+            },
+            "tail_ratio": 688.614255610571,
+            "is_gaussian": false,
+            "sample_count": 259200
+          },
+          "tails": {
+            "kurtosis_pooled": 59.26020099493873,
+            "kurtosis_normalised": 33.266252258677305,
+            "kurtosis_per_window": {
+              "median": 7.6697000121921555,
+              "min": 0.3421552288162766,
+              "max": 418.22691038022623,
+              "n": 35,
+              "values": [
+                26.67245219254036,
+                14.13200859914069,
+                17.59965374496132,
+                7.6697000121921555,
+                2.405011380779727,
+                42.61380482252753,
+                19.701847119751385,
+                311.4065629808756,
+                18.177189267659273,
+                3.4715824045355843,
+                4.036016848396239,
+                4.52061169624276,
+                1.3317966153548886,
+                10.069490698516969,
+                2.750066251552128,
+                15.935370871641883,
+                24.116694080842887,
+                25.786835275726055,
+                15.660697445067214,
+                10.861150152544834,
+                51.978585334067766,
+                7.2557117245090375,
+                0.39418741687823466,
+                0.3421552288162766,
+                0.39784570656985574,
+                81.54616013875122,
+                418.22691038022623,
+                8.895445844103046,
+                5.053078844504093,
+                1.445809521308142,
+                0.7070544523547806,
+                1.0498987025513724,
+                2.7170979826008175,
+                2.882057220329753,
+                2.5082880952854625
+              ]
+            },
+            "mixing_prediction": 13.378281134403938,
+            "mixing_explains": 0.2257549064935933,
+            "skew_pooled": 0.27262725155256,
+            "exact_zero_fraction": 0.006502666170634921,
+            "step_occupancy": {
+              "-2": 0.040459139384920635,
+              "-1": 0.04341537233382937,
+              "0": 0.04552350725446429,
+              "1": 0.04329310825892857,
+              "2": 0.04000631665426587
+            },
+            "outlier_fraction_per_pair": [
+              0.1878392857142857,
+              0.1884861111111111,
+              0.18996825396825398,
+              0.19103373015873015,
+              0.1906031746031746,
+              0.18907738095238094,
+              0.19084126984126984,
+              0.1894722222222222,
+              0.19300793650793652
+            ],
+            "windows_used": 35
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 1.0837263340353636,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 4536000
+          },
+          "temporal": {
+            "evidence": "temporal",
+            "rho": 0.36303271704651474,
+            "rho_from_lag4": 0.3959999999999999,
+            "lag_variances": {
+              "1": 2.6561411893094158e-05,
+              "2": 3.923385284035068e-05,
+              "4": 5.8472418502710465e-05
+            },
+            "per_window_rho": [
+              -0.013313069027426128,
+              0.7393785031204556
+            ],
+            "trusted_fraction": 1.0,
+            "independence_established": false,
+            "sample_count": 294912
+          },
+          "skipped": []
+        },
+        {
+          "interval_start_s": 7683.0,
+          "windows": 35,
+          "routed": {
+            "amplitude": 35,
+            "spectrum_flat": 19,
+            "distribution_unclipped": 35,
+            "temporal_trustworthy": 0
+          },
+          "temporal_trusted_share_of_accepted": 0.0,
+          "note": "temporal.trusted_fraction is 1.0 by construction: only trustworthy windows are passed to the estimator. Use temporal_trusted_share_of_accepted instead.",
+          "amplitude": {
+            "evidence": "amplitude_vs_level",
+            "point_count": 35,
+            "trusted_count": 0,
+            "saturated_count": 0,
+            "level_min": 0.0004774975480063559,
+            "level_max": 0.011737413370535854,
+            "points": [
+              {
+                "level": 0.0006583521709700724,
+                "sigma": 0.0006176416117986153,
+                "rho": 0.4971301729991837,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4971301729991837,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0005485402591831889,
+                "sigma": 0.0003531451084703749,
+                "rho": 0.18266585854354744,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.18266585854354744,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0006490692298212197,
+                "sigma": 0.0007741347905719843,
+                "rho": 0.4614958724223954,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4614958724223954,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0004774975480063559,
+                "sigma": 0.00026524737476287354,
+                "rho": 0.1369927488538938,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.1369927488538938,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.000570089661849349,
+                "sigma": 0.0002705963815592898,
+                "rho": 0.009939773550303954,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.009939773550303954,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0008452686691748923,
+                "sigma": 0.003118147717033523,
+                "rho": -0.11426361481210845,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.11426361481210845,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0007020006974967075,
+                "sigma": 0.0027872754383752845,
+                "rho": -0.21277953594672205,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.21277953594672205,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0009294462021740557,
+                "sigma": 0.00036061089310108807,
+                "rho": 0.010554092533146875,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.010554092533146875,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0009179334921647353,
+                "sigma": 0.00035789542980427957,
+                "rho": 0.013200311139820897,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.013200311139820897,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0009208142880794412,
+                "sigma": 0.0003576857958383512,
+                "rho": -0.0057556457025746965,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0057556457025746965,
+                "sample_count": 147456,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001098202284348454,
+                "sigma": 0.001964712438842356,
+                "rho": 0.73780372085123,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.73780372085123,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0009781250422022936,
+                "sigma": 0.00040083366867615504,
+                "rho": 0.03280643774780967,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.03280643774780967,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0009451835641183237,
+                "sigma": 0.00044385723102650986,
+                "rho": 0.0162148705864964,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.0162148705864964,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0017759584230629955,
+                "sigma": 0.0007888915758032139,
+                "rho": -0.16103218637640693,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.16103218637640693,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001464053146293054,
+                "sigma": 0.000738920836929857,
+                "rho": -0.0609102219457508,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0609102219457508,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0015393644006009288,
+                "sigma": 0.002647038483431804,
+                "rho": 0.8266572244415176,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.8266572244415176,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0009841821127333505,
+                "sigma": 0.0011856008858538126,
+                "rho": 0.5829850765837206,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.5829850765837206,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0015266774834458707,
+                "sigma": 0.0027309111437044224,
+                "rho": 0.7778289866304506,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.7778289866304506,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.001605862666424901,
+                "sigma": 0.0011594107176878677,
+                "rho": 0.42293611419818244,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.42293611419818244,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0017893418133671304,
+                "sigma": 0.0014556919565727401,
+                "rho": 0.59671890087665,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.59671890087665,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0044174117314156325,
+                "sigma": 0.0014743995431207926,
+                "rho": 0.039462131216618346,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.039462131216618346,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0033054785148944887,
+                "sigma": 0.002413889044285017,
+                "rho": 0.13878886489423148,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.13878886489423148,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.003134822862872255,
+                "sigma": 0.002108897455156516,
+                "rho": 0.4613759688418617,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.4613759688418617,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.003437261197218433,
+                "sigma": 0.001232246691146937,
+                "rho": -0.08505553394907261,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.08505553394907261,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.004121270624299456,
+                "sigma": 0.0014596397252117186,
+                "rho": 0.08765381127929017,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.08765381127929017,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.005184894943409429,
+                "sigma": 0.001532167356571311,
+                "rho": 0.011609050183699177,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.011609050183699177,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.005661718159896453,
+                "sigma": 0.0016060314539649507,
+                "rho": -0.012088199465454808,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.012088199465454808,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.005659897701988659,
+                "sigma": 0.0016223363636665622,
+                "rho": 0.014617450234343465,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.014617450234343465,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.004932421482360616,
+                "sigma": 0.0015158763616642751,
+                "rho": 0.06858611049119756,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06858611049119756,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.0053627548930279545,
+                "sigma": 0.0016115353565710044,
+                "rho": 0.06990821007148273,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06990821007148273,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00900214525564716,
+                "sigma": 0.0029901515054983193,
+                "rho": 0.26544716456324435,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.26544716456324435,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.00827252843404891,
+                "sigma": 0.0020744377657027032,
+                "rho": -0.008274425210387015,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.008274425210387015,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.010002606277133758,
+                "sigma": 0.002286240833050483,
+                "rho": -0.0049403156961133066,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": -0.0049403156961133066,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.010955797820539237,
+                "sigma": 0.0024359752023962256,
+                "rho": 0.01182694938826101,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.01182694938826101,
+                "sample_count": 129600,
+                "band": "shadow"
+              },
+              {
+                "level": 0.011737413370535854,
+                "sigma": 0.002616821118540346,
+                "rho": 0.06562931802446181,
+                "trustworthy": false,
+                "identified": true,
+                "raw_rho": 0.06562931802446181,
+                "sample_count": 133956,
+                "band": "shadow"
+              }
+            ]
+          },
+          "spectrum": {
+            "evidence": "spectrum",
+            "frequencies": [
+              0.010416666666666666,
+              0.03125,
+              0.05208333333333333,
+              0.07291666666666666,
+              0.09375,
+              0.11458333333333333,
+              0.13541666666666666,
+              0.15625,
+              0.17708333333333331,
+              0.19791666666666666,
+              0.21875,
+              0.23958333333333331,
+              0.26041666666666663,
+              0.28125,
+              0.3020833333333333,
+              0.32291666666666663,
+              0.34375,
+              0.3645833333333333,
+              0.38541666666666663,
+              0.40625,
+              0.4270833333333333,
+              0.44791666666666663,
+              0.46875,
+              0.4895833333333333
+            ],
+            "power": [
+              4.504970312215795e-05,
+              3.8183396765978474e-05,
+              2.6221891031339022e-05,
+              1.6624467133237605e-05,
+              1.0884136322561236e-05,
+              8.91784907091564e-06,
+              5.889562090954193e-06,
+              4.454126872822899e-06,
+              3.5152589857706723e-06,
+              2.4826331499476478e-06,
+              1.9776352373122864e-06,
+              1.4524318238879018e-06,
+              1.1072498868408455e-06,
+              8.735082801478153e-07,
+              6.62017143049944e-07,
+              4.856087919774895e-07,
+              3.7222814461993837e-07,
+              2.777429130240921e-07,
+              2.0653928092285656e-07,
+              1.5320859789434148e-07,
+              1.2117174720241782e-07,
+              9.755090452606811e-08,
+              8.206976978706324e-08,
+              7.026411356365977e-08
+            ],
+            "autocorrelation": [
+              0.7969257336521851,
+              0.4863622194044555,
+              0.2853506899002971,
+              0.19056675035673631,
+              0.14580024447287615,
+              0.12111864762977145,
+              0.10649578143977736,
+              0.09604966696608871
+            ],
+            "whiteness": 0.02722049754590336,
+            "is_white": false,
+            "sample_count": 171
+          },
+          "distribution": {
+            "evidence": "distribution",
+            "std": 0.0015367140000487997,
+            "skew": -0.9290540293743953,
+            "excess_kurtosis": 493.1306579428574,
+            "quantiles": {
+              "0.1": -0.009692837356211218,
+              "1": -0.004655804040898744,
+              "5": -0.0019254409531859196,
+              "25": -0.00017340544972058882,
+              "50": 5.47245341254671e-07,
+              "75": 0.00019557039091850132,
+              "95": 0.0020174064508874188,
+              "99": 0.00458818139809653,
+              "99.9": 0.009171625020158048
+            },
+            "tail_ratio": 65.32592580609943,
+            "is_gaussian": false,
+            "sample_count": 4536000
+          },
+          "distribution_trustworthy": null,
+          "tails": {
+            "kurtosis_pooled": 493.1306579428574,
+            "kurtosis_normalised": 57.00702206167053,
+            "kurtosis_per_window": {
+              "median": 15.616573786931074,
+              "min": 0.7436150370365517,
+              "max": 632.7515286996969,
+              "n": 35,
+              "values": [
+                32.71429293915444,
+                20.577541651238857,
+                173.41403022675482,
+                21.013276287225324,
+                21.093646565660226,
+                472.07894005099837,
+                208.8967717166766,
+                1.1149304951396939,
+                0.7436150370365517,
+                0.792848153967793,
+                77.45448439602957,
+                1.8636842780877565,
+                7.961910338076601,
+                19.74407106621602,
+                20.779852013982406,
+                51.237610167193836,
+                41.232726876053995,
+                51.58224770867928,
+                20.845417994130084,
+                16.835415483039544,
+                6.358529369175939,
+                632.7515286996969,
+                26.668796180178212,
+                15.616573786931074,
+                8.682412201322336,
+                6.920336992488627,
+                6.0118976526615935,
+                5.524680572634306,
+                3.5937539950743975,
+                2.2120041659032026,
+                11.38097101246618,
+                2.3946214191150768,
+                2.015475673180241,
+                1.614826274195515,
+                1.5220507181029719
+              ]
+            },
+            "mixing_prediction": 3.9280440863813384,
+            "mixing_explains": 0.007965523990675325,
+            "skew_pooled": -0.9290540293743953,
+            "exact_zero_fraction": 0.005934167286706349,
+            "step_occupancy": {
+              "-2": 0.032958984375,
+              "-1": 0.03836611793154762,
+              "0": 0.0428404792906746,
+              "1": 0.039520360553075395,
+              "2": 0.03526727585565476
+            },
+            "outlier_fraction_per_pair": [
+              0.12652777777777777,
+              0.13592460317460317,
+              0.17948611111111112,
+              0.13693253968253968,
+              0.14983134920634922,
+              0.14018452380952381,
+              0.14553968253968255,
+              0.15532539682539684,
+              0.15697420634920634
+            ],
+            "windows_used": 35
+          },
+          "heterogeneity": {
+            "evidence": "slow_heterogeneity",
+            "envelope_ratio": 0.6424189647039172,
+            "screen_anchored_correlation": null,
+            "is_screen_anchored": null,
+            "belongs_in_a_negative_model": null,
+            "sample_count": 4536000
+          },
+          "temporal": null,
+          "skipped": [
+            "temporal: no window could vouch for its own correlation estimate",
+            "distribution (trustworthy): no window is both unclipped and temporally trustworthy"
+          ]
+        }
+      ],
+      "deep_probes": [
+        {
+          "interval_start_s": 2636.0,
+          "tile": {
+            "x": 3520,
+            "y": 0,
+            "size": 128
+          },
+          "frames": 48,
+          "level": 0.00029691386198813045,
+          "sigma": 0.000268808457778552,
+          "legacy_sigma": 0.00026619274760075247,
+          "rho": 0.019366829283011366,
+          "raw_rho": 0.019366829283011366,
+          "rho_from_lag4": 0.04377889447236183,
+          "parameter_identified": true,
+          "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.464"
+          ],
+          "tails": {
+            "kurtosis_pooled": 95.0167942844192,
+            "kurtosis_normalised": 95.0167942844192,
+            "kurtosis_per_window": {
+              "median": 95.0167942844192,
+              "min": 95.0167942844192,
+              "max": 95.0167942844192,
+              "n": 1,
+              "values": [
+                95.0167942844192
+              ]
+            },
+            "mixing_prediction": 0.0,
+            "mixing_explains": 0.0,
+            "skew_pooled": 0.1683385485730112,
+            "exact_zero_fraction": 0.09005984042553192,
+            "step_occupancy": {
+              "-2": 0.0844456449468085,
+              "-1": 0.105859375,
+              "0": 0.13636635638297873,
+              "1": 0.10501579122340425,
+              "2": 0.08402759308510638
+            },
+            "outlier_fraction_per_pair": [
+              0.08738746537396122,
+              0.08682479224376731,
+              0.08513677285318559,
+              0.08085180055401663,
+              0.08392486149584487,
+              0.08401142659279778,
+              0.08271295013850416,
+              0.08202042936288088,
+              0.08245325484764543,
+              0.08288608033240998,
+              0.08556959833795014,
+              0.08427112188365651,
+              0.08505020775623269,
+              0.08202042936288088,
+              0.08678150969529086,
+              0.08366516620498615,
+              0.08448753462603878,
+              0.08487707756232687,
+              0.08340547091412742,
+              0.08284279778393351,
+              0.08284279778393351,
+              0.0837084487534626,
+              0.08539646814404432,
+              0.08262638504155125,
+              0.08682479224376731,
+              0.08565616343490305,
+              0.08292936288088643,
+              0.0805921052631579,
+              0.08279951523545706,
+              0.08660837950138504,
+              0.08288608033240998,
+              0.07994286703601108,
+              0.08340547091412742,
+              0.08145775623268699,
+              0.08271295013850416,
+              0.08080851800554016,
+              0.08807998614958448,
+              0.08881578947368421,
+              0.08799342105263158,
+              0.0866516620498615,
+              0.08392486149584487,
+              0.08561288088642659,
+              0.08604570637119113,
+              0.08894563711911357,
+              0.08561288088642659,
+              0.08124134349030471,
+              0.08262638504155125
+            ],
+            "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.13895367561502658,
+            "by_level": {
+              "q1": 0.11021970494141908,
+              "q2": 0.17882383654796463,
+              "q3": 0.1842169441922853,
+              "q4": 0.1520208588249614,
+              "q5": 0.07141505806821719
+            },
+            "by_texture": {
+              "flattest third": 0.14651770764997896,
+              "roughest third": 0.12313305976580723
+            },
+            "block_bimodality": 0.109375,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.09032423952792554,
+              "-1": 0.11283842046210106,
+              "0": 0.13895367561502658,
+              "1": 0.11202548412566489,
+              "2": 0.09018139128989362
+            }
+          },
+          "dual_residual": {
+            "mean_removed_std": 0.00014140637304957277,
+            "difference_std_over_root2": 0.00013618588522942626,
+            "ratio": 1.0383335454430669,
+            "rho": 0.019366829283011366,
+            "rho_trusted": true,
+            "expected_from_rho": 1.009826376568766,
+            "adjusted": 1.0282297724992724,
+            "agree": true,
+            "verdict": "agree once correlation is accounted for — no persistent structure",
+            "frames": 48
+          }
+        },
+        {
+          "interval_start_s": 3998.0,
+          "tile": {
+            "x": 192,
+            "y": 448,
+            "size": 128
+          },
+          "frames": 48,
+          "level": 0.08790487603534337,
+          "sigma": 0.008517328334777858,
+          "legacy_sigma": 0.00835316535504028,
+          "rho": 0.03817651140709888,
+          "raw_rho": 0.03817651140709888,
+          "rho_from_lag4": 0.05472361809045223,
+          "parameter_identified": true,
+          "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.623"
+          ],
+          "tails": {
+            "kurtosis_pooled": 1.2205356182311933,
+            "kurtosis_normalised": 1.2205356182311933,
+            "kurtosis_per_window": {
+              "median": 1.2205356182311933,
+              "min": 1.2205356182311933,
+              "max": 1.2205356182311933,
+              "n": 1,
+              "values": [
+                1.2205356182311933
+              ]
+            },
+            "mixing_prediction": 0.0,
+            "mixing_explains": 0.0,
+            "skew_pooled": -0.004010114892035187,
+            "exact_zero_fraction": 0.04077127659574468,
+            "step_occupancy": {
+              "-2": 0.04101811835106383,
+              "-1": 0.04378823138297872,
+              "0": 0.07000249335106383,
+              "1": 0.04335189494680851,
+              "2": 0.041006482712765954
+            },
+            "outlier_fraction_per_pair": [
+              0.0,
+              0.0008656509695290858,
+              0.0006925207756232687,
+              0.0007790858725761773,
+              0.0005626731301939059,
+              0.0006492382271468144,
+              0.0004328254847645429,
+              0.0008656509695290858,
+              0.0006925207756232687,
+              0.0005626731301939059,
+              0.000735803324099723,
+              0.0004328254847645429,
+              0.0006925207756232687,
+              0.0007790858725761773,
+              0.0007790858725761773,
+              0.0006492382271468144,
+              0.0009954986149584488,
+              0.0005626731301939059,
+              0.0006492382271468144,
+              0.0009089335180055402,
+              0.0009522160664819945,
+              0.0006925207756232687,
+              0.0005626731301939059,
+              0.0009089335180055402,
+              0.0006925207756232687,
+              0.0008223684210526315,
+              0.0006925207756232687,
+              0.0006059556786703601,
+              0.00034626038781163435,
+              0.00017313019390581717,
+              0.0006059556786703601,
+              0.0008223684210526315,
+              0.00030297783933518004,
+              0.00034626038781163435,
+              0.0008656509695290858,
+              0.0006925207756232687,
+              0.0007790858725761773,
+              0.0006059556786703601,
+              0.0006925207756232687,
+              0.0005626731301939059,
+              0.000735803324099723,
+              0.0008656509695290858,
+              0.00038954293628808866,
+              0.0006925207756232687,
+              0.000735803324099723,
+              0.0005626731301939059,
+              0.00038954293628808866
+            ],
+            "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.07024627036236702,
+            "by_level": {
+              "q1": 0.06313574184496668,
+              "q2": 0.06951826486985224,
+              "q3": 0.07303516869271273,
+              "q4": 0.07220985258128801,
+              "q5": 0.0733259456552028
+            },
+            "by_texture": {
+              "flattest third": 0.07094521204867672,
+              "roughest third": 0.0698300588841572
+            },
+            "block_bimodality": 1.0,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.04089615192819149,
+              "-1": 0.04390635388962766,
+              "0": 0.07024627036236702,
+              "1": 0.04368688705119681,
+              "2": 0.04107146567486702
+            }
+          },
+          "dual_residual": {
+            "mean_removed_std": 0.008565300082936265,
+            "difference_std_over_root2": 0.008186814659990856,
+            "ratio": 1.0462310970339999,
+            "rho": 0.03817651140709888,
+            "rho_trusted": true,
+            "expected_from_rho": 1.0196527870286352,
+            "adjusted": 1.0260660396788759,
+            "agree": true,
+            "verdict": "agree once correlation is accounted for — no persistent structure",
+            "frames": 48
+          }
+        },
+        {
+          "interval_start_s": 6470.0,
+          "tile": {
+            "x": 1216,
+            "y": 128,
+            "size": 128
+          },
+          "frames": 48,
+          "level": 0.001335937486421992,
+          "sigma": 0.0004769643200852558,
+          "legacy_sigma": 0.000474412589621763,
+          "rho": 0.01067125801226898,
+          "raw_rho": 0.01067125801226898,
+          "rho_from_lag4": 0.042783919597989994,
+          "parameter_identified": true,
+          "trustworthy": false,
+          "trust_reasons": [
+            "drifting: sub-pixel residual 0.523"
+          ],
+          "tails": {
+            "kurtosis_pooled": 9.084704062589196,
+            "kurtosis_normalised": 9.084704062589196,
+            "kurtosis_per_window": {
+              "median": 9.084704062589196,
+              "min": 9.084704062589196,
+              "max": 9.084704062589196,
+              "n": 1,
+              "values": [
+                9.084704062589196
+              ]
+            },
+            "mixing_prediction": 0.0,
+            "mixing_explains": 0.0,
+            "skew_pooled": 0.018176537299248032,
+            "exact_zero_fraction": 0.01428939494680851,
+            "step_occupancy": {
+              "-2": 0.0406391289893617,
+              "-1": 0.04359125664893617,
+              "0": 0.05146775265957447,
+              "1": 0.04372589760638298,
+              "2": 0.04053773271276596
+            },
+            "outlier_fraction_per_pair": [
+              0.030341066481994458,
+              0.02791724376731302,
+              0.032072368421052634,
+              0.0322887811634349,
+              0.03133656509695291,
+              0.027787396121883655,
+              0.029215720221606647,
+              0.02761426592797784,
+              0.03202908587257618,
+              0.029821675900277008,
+              0.03112015235457064,
+              0.03202908587257618,
+              0.026705332409972297,
+              0.02843663434903047,
+              0.028999307479224377,
+              0.029778393351800554,
+              0.029302285318559558,
+              0.030297783933518004,
+              0.028479916897506924,
+              0.030514196675900277,
+              0.028869459833795012,
+              0.03315443213296399,
+              0.027960526315789474,
+              0.02882617728531856,
+              0.02904259002770083,
+              0.0277441135734072,
+              0.03189923822714681,
+              0.029085872576177285,
+              0.029388850415512466,
+              0.02995152354570637,
+              0.027700831024930747,
+              0.028393351800554016,
+              0.028653047091412743,
+              0.029605263157894735,
+              0.029821675900277008,
+              0.03155297783933518,
+              0.029691828254847646,
+              0.029821675900277008,
+              0.02830678670360111,
+              0.03159626038781163,
+              0.03189923822714681,
+              0.031726108033240996,
+              0.032115650969529085,
+              0.028090373961218836,
+              0.028782894736842105,
+              0.027830678670360112,
+              0.0262292243767313
+            ],
+            "windows_used": 1
+          },
+          "zeros": {
+            "zero_fraction": 0.04767235289228723,
+            "by_level": {
+              "q1": 0.06227008618112335,
+              "q2": 0.05537744665386013,
+              "q3": 0.043255889520714866,
+              "q4": 0.04353268518578572,
+              "q5": 0.033939236561931964
+            },
+            "by_texture": {
+              "flattest third": 0.05016284103984243,
+              "roughest third": 0.04411822243784871
+            },
+            "block_bimodality": 1.0,
+            "max_run_share": 0.0,
+            "step_occupancy": {
+              "-2": 0.03830280709773936,
+              "-1": 0.04087797124335106,
+              "0": 0.04767235289228723,
+              "1": 0.04113509807180851,
+              "2": 0.03802879820478723
+            }
+          },
+          "dual_residual": {
+            "mean_removed_std": 0.0005298737287551912,
+            "difference_std_over_root2": 0.0005199888561601366,
+            "ratio": 1.0190097777634113,
+            "rho": 0.01067125801226898,
+            "rho_trusted": true,
+            "expected_from_rho": 1.0053787157409277,
+            "adjusted": 1.013558136659416,
+            "agree": true,
+            "verdict": "agree once correlation is accounted for — no persistent structure",
+            "frames": 48
+          }
+        }
+      ],
+      "duration_vs_pooling": {
+        "a_short_single": {
+          "median": 5.672997588596212,
+          "min": 1.2847389320020524,
+          "max": 109.01390884505501,
+          "n": 3,
+          "values": [
+            109.01390884505501,
+            1.2847389320020524,
+            5.672997588596212
+          ]
+        },
+        "b_long_single": {
+          "median": 5.374500056408417,
+          "min": 0.8729684500681691,
+          "max": 120.35922067824742,
+          "n": 3,
+          "values": [
+            120.35922067824742,
+            0.8729684500681691,
+            5.374500056408417
+          ]
+        },
+        "c_short_pooled": 9.734220417266943,
+        "d_long_pooled": 8.517713398393246,
+        "frames_short": 10,
+        "frames_long": 48,
+        "tiles": 3,
+        "duration_effect": -0.2984975321877954,
+        "pooling_effect": 3.143213341984829
+      },
+      "screen_anchoring": {
+        "available": true,
+        "pairs": 1,
+        "widest_separation_s": 1362.0,
+        "grain_envelope": {
+          "median": 0.25798677824863664,
+          "min": 0.25798677824863664,
+          "max": 0.25798677824863664,
+          "n": 1,
+          "values": [
+            0.25798677824863664
+          ]
+        },
+        "additive_pattern": {
+          "median": -0.03971978253470296,
+          "min": -0.03971978253470296,
+          "max": -0.03971978253470296,
+          "n": 1,
+          "values": [
+            -0.03971978253470296
+          ]
+        },
+        "per_pair": [
+          {
+            "interval_a_s": 2636.0,
+            "interval_b_s": 3998.0,
+            "separation_s": 1362.0,
+            "grain_envelope": {
+              "evidence": "slow_heterogeneity",
+              "envelope_ratio": 0.9167684885488265,
+              "screen_anchored_correlation": 0.25798677824863664,
+              "is_screen_anchored": false,
+              "belongs_in_a_negative_model": true,
+              "sample_count": 45100800
+            },
+            "additive_pattern": {
+              "evidence": "additive_fixed_pattern",
+              "cross_source_correlation": -0.03971978253470296,
+              "is_screen_anchored": false,
+              "sample_count": 62745600
+            }
+          }
+        ],
+        "claim": "No strong scan-fixed envelope was detected between these sampled interval pairs. A correlation near zero rejects a strong common pattern; it does not rule out a weaker scan-fixed component, and no null distribution was computed."
+      },
+      "notes": [
+        "3 of 8 intervals carry frozen, noise-free blocks (encoder skip blocks); those blocks were masked out of tile selection rather than used to reject the interval"
+      ]
+    }
+  ]
+}

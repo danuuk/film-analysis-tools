@@ -137,8 +137,13 @@ class SourcePlan:
     """Per-transition motion above which a tile counts as disturbed. The legacy
     ``max_motion_energy``."""
 
-    deep_frames: int = 60
-    """Frames to follow a single tile for, in the deep probe."""
+    deep_frames: int = 48
+    """Frames to follow a single tile for, in the deep probe.
+
+    Matched to the scouted span, not longer than it. Sixty frames is 2.5 s against a two-second
+    interval, so the final half-second was never scouted at all and motion there could invalidate
+    an otherwise correctly selected tile. 48 frames at 23.976 fps is 2.0 s.
+    """
 
     max_tiles_measured: int = 48
     """Cap on tiles fed to the per-interval estimators, stratified across level and texture.
@@ -973,9 +978,9 @@ class DeepProbe:
         )
         if self.dual:
             head += (
-                f"\n        dual residual: mean-removed {self.dual.mean_removed_std:.5f} vs "
-                f"diff/sqrt2 {self.dual.difference_std_over_root2:.5f}  "
-                f"ratio {self.dual.ratio:.2f} — {self.dual.verdict}"
+                f"\n        dual residual: ratio {self.dual.ratio:.3f}  "
+                f"expected from rho {self.dual.expected_from_rho:.3f}  "
+                f"adjusted {self.dual.adjusted:.3f} — {self.dual.verdict}"
             )
         if self.trust_reasons:
             head += "\n        " + "; ".join(self.trust_reasons)
@@ -1077,7 +1082,11 @@ def deep_probe(
         trust_reasons=tuple(reasons),
         tails=tail_diagnostics(linear, container, [whole]),
         zeros=zero_inflation(_centre_128(container)),
-        dual=dual_residual(_centre_128(linear)),
+        dual=dual_residual(
+            _centre_128(linear),
+            rho=estimate.rho,
+            rho_trusted=estimate.parameter_identified,
+        ),
     )
     return probe_record, linear
 
@@ -1308,6 +1317,14 @@ class TileScout:
     """Longest run of consecutive unstable transitions. One actor crossing, not many."""
 
     transitions: int
+    clean_throughout: bool = True
+    """No disturbed transition at all. Required for *measurement*, unlike :attr:`stable`.
+
+    Scouting tolerates a brief crossing so candidate recall survives; measurement must not, or the
+    crossing lands in the grain residual anyway. Tolerating and then measuring the whole stack is
+    what the previous version did — it detected the disturbance, allowed the tile, and then
+    included the disturbed frames.
+    """
 
     @property
     def stable(self) -> bool:
@@ -1418,6 +1435,7 @@ def scout_tiles(
                     unstable_fraction=float(counts[row, column]),
                     longest_unstable_run=int(longest[row, column]),
                     transitions=int(unstable.shape[0]),
+                    clean_throughout=bool(counts[row, column] == 0.0),
                 )
             )
     return scouts
@@ -1465,48 +1483,84 @@ class DualResidual:
         fields = frames - frames.mean(axis=0)     # spatial character, PSD, autocorrelation
         deltas = frames[1:] - frames[:-1]         # amplitude, temporal independence
 
-    Forcing every statistic through the lagged difference — as this study did — loses the spatial
-    representation entirely, and makes every spatial question depend on the temporal trust gate.
-    A tile that drifts slowly is a poor subject for a correlation estimate and a perfectly good
-    subject for a noise power spectrum.
+    **What is implemented here is the scalar comparison, not full dual routing.** The noise power
+    spectrum this study reports still comes from lag-one difference residuals. That is defensible
+    — difference residuals suppress fixed picture structure more safely — but it is not the same
+    thing as producing the NPS from mean-removed fields, and the difference should not be implied.
 
-    Their agreement is itself the evidence: for a stationary, temporally independent field,
-    ``std(fields) ≈ std(deltas)/sqrt(2)``. A large excess in the mean-removed residual means
-    persistent picture structure is sitting in it — exactly the cross-check the legacy path used.
+    Nor is a drifting tile automatically a good subject for a mean-removed NPS: subtracting the
+    mean does not remove a translating edge, it spreads it through the residual stack. A tile
+    qualifies when its *correlation-adjusted* comparison shows no material excess.
+
+    Their agreement is itself the evidence — but only after correlation is accounted for. For a
+    stationary AR(1) field with lag-one correlation rho,
+
+        std(I - mean) / (std(dI)/sqrt(2))  ~  1 / sqrt(1 - rho)
+
+    so **positive temporal correlation raises the ratio with no drift whatever**. Reading a raw
+    ratio above 1.25 as "persistent structure" mislabels any correlated field: rho = 0.4 gives
+    1.29 and rho = 0.85 gives 2.58, both perfectly stationary. That error made this diagnostic
+    report drift on Sony tiles whose ratios are what their own correlation predicts.
+
+    :attr:`adjusted` removes the correlation term. Only an *adjusted* ratio appreciably above one
+    is evidence of persistent structure or non-stationarity, and when rho itself cannot be
+    trusted the answer is ambiguous rather than either verdict.
     """
 
     mean_removed_std: float
     difference_std_over_root2: float
     ratio: float
-    """``mean_removed_std`` over ``difference_std/sqrt(2)``. 1.0 is agreement."""
+    """``mean_removed_std`` over ``difference_std/sqrt(2)``. Rises with correlation on its own."""
 
+    rho: float
+    rho_trusted: bool
     frames: int
 
     @property
+    def expected_from_rho(self) -> float:
+        """What a stationary AR(1) field of this correlation would produce with no drift."""
+        return float(1.0 / np.sqrt(max(1.0 - self.rho, 1e-9)))
+
+    @property
+    def adjusted(self) -> float:
+        """``ratio * sqrt(1 - rho)`` — the excess that correlation does *not* explain."""
+        return float(self.ratio * np.sqrt(max(1.0 - self.rho, 1e-9)))
+
+    @property
     def agree(self) -> bool:
-        """Within 25%: enough to say persistent structure is not dominating."""
-        return 0.75 <= self.ratio <= 1.25
+        return self.rho_trusted and 0.8 <= self.adjusted <= 1.2
 
     @property
     def verdict(self) -> str:
+        if not self.rho_trusted:
+            return (
+                f"ambiguous — raw ratio {self.ratio:.2f} is consistent with correlation up to "
+                f"rho {1.0 - 1.0 / self.ratio**2:.2f}, and rho here is not trusted"
+            )
         if self.agree:
-            return "agree — no dominant persistent structure"
-        if self.ratio > 1.25:
-            return "mean-removed residual is larger: persistent picture structure or slow drift"
-        return "mean-removed residual is smaller: the field is temporally correlated"
+            return "agree once correlation is accounted for — no persistent structure"
+        if self.adjusted > 1.2:
+            return "excess beyond correlation: persistent structure, drift or a non-AR(1) process"
+        return "below the correlation prediction: the model does not describe this tile"
 
     def as_record(self) -> dict[str, Any]:
         return {
             "mean_removed_std": self.mean_removed_std,
             "difference_std_over_root2": self.difference_std_over_root2,
             "ratio": self.ratio,
+            "rho": self.rho,
+            "rho_trusted": self.rho_trusted,
+            "expected_from_rho": self.expected_from_rho,
+            "adjusted": self.adjusted,
             "agree": self.agree,
             "verdict": self.verdict,
             "frames": self.frames,
         }
 
 
-def dual_residual(frames: np.ndarray) -> DualResidual:
+def dual_residual(
+    frames: np.ndarray, *, rho: float = 0.0, rho_trusted: bool = False
+) -> DualResidual:
     """Compare the temporal-mean residual against the lagged difference on the same pixels."""
     stack = np.asarray(frames, dtype=np.float64)
     if stack.ndim != 3 or stack.shape[0] < 2:
@@ -1522,6 +1576,8 @@ def dual_residual(frames: np.ndarray) -> DualResidual:
         mean_removed_std=mean_removed,
         difference_std_over_root2=difference,
         ratio=mean_removed / difference if difference > 1e-15 else 0.0,
+        rho=float(rho),
+        rho_trusted=bool(rho_trusted),
         frames=int(stack.shape[0]),
     )
 
@@ -1653,6 +1709,8 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
     considered = accepted_count = 0
     window_rejects: dict[str, int] = {}
     per_interval: list[IntervalEvidence] = []
+    measured_total = 0
+    dropped_disturbed = 0
     shortlisted: list[tuple[iv.Interval, windows.Window]] = []
     anchor_stacks: list[tuple[iv.Interval, np.ndarray, list[windows.Window]]] = []
 
@@ -1730,7 +1788,22 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             )
         )
         if as_windows:
-            per_interval.append(_measure_interval(interval.start_s, linear, signal, as_windows))
+            # Two-stage rule. Scouting tolerated brief disturbances; measurement does not, and
+            # the stratified cap is applied here rather than only documented — pooling 1,135
+            # residual stacks is what the cap exists to prevent.
+            clean = [one for one in kept if one.clean_throughout]
+            measured = shortlist(clean, per_stratum=max(1, plan.max_tiles_measured // 9))
+            if measured:
+                per_interval.append(
+                    _measure_interval(
+                        interval.start_s,
+                        linear,
+                        signal,
+                        [_as_window(one, linear.shape) for one in measured],
+                    )
+                )
+                measured_total += len(measured)
+                dropped_disturbed += len(kept) - len(clean)
             shortlisted.extend(
                 (interval, _as_window(one, linear.shape)) for one in shortlist(kept, per_stratum=1)
             )
@@ -1763,6 +1836,19 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             considered=considered,
             accepted=accepted_count,
             rejected={k: v for k, v in window_rejects.items() if v},
+        )
+    )
+    stages.append(
+        StageCount(
+            stage="tiles measured",
+            considered=accepted_count,
+            accepted=measured_total,
+            rejected={
+                "disturbed at some transition": dropped_disturbed,
+                "beyond the stratified cap": max(
+                    0, accepted_count - dropped_disturbed - measured_total
+                ),
+            },
         )
     )
     index = rg.index(collected)

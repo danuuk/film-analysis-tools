@@ -401,29 +401,81 @@ def test_the_scout_refuses_a_single_frame() -> None:
 # ------------------------------------------------- both residual representations
 
 
+def _ar1(rho: float, *, frames: int = 60, size: int = 96, sigma: float = 0.01) -> np.ndarray:
+    """A stationary AR(1) field: correlated in time, with no drift and no structure."""
+    rng = np.random.default_rng(int(abs(rho) * 1000) + 3)
+    stack = np.zeros((frames, size, size))
+    stack[0] = rng.normal(0.0, sigma, (size, size))
+    innovation = sigma * np.sqrt(1.0 - rho**2)
+    for index in range(1, frames):
+        stack[index] = rho * stack[index - 1] + rng.normal(0.0, innovation, (size, size))
+    return 0.2 + stack
+
+
 def test_the_two_residuals_agree_on_independent_grain() -> None:
-    """The legacy cross-check: std(fields) ~ std(deltas)/sqrt(2) when the field is stationary
-    and temporally independent."""
-    rng = np.random.default_rng(9)
-    stack = 0.2 + rng.normal(0.0, 0.01, (40, 96, 96))
-    found = gs.dual_residual(stack)
+    found = gs.dual_residual(_ar1(0.0), rho=0.0, rho_trusted=True)
     assert found.ratio == pytest.approx(1.0, abs=0.1)
     assert found.agree
-    assert "agree" in found.verdict
 
 
-def test_persistent_structure_shows_up_as_a_larger_mean_removed_residual() -> None:
-    """A slow drift sits in the mean-removed residual and cancels in the lagged difference —
-    which is exactly what the pair of them exists to reveal."""
-    rng = np.random.default_rng(10)
-    stack = 0.2 + rng.normal(0.0, 0.002, (40, 96, 96))
-    stack += np.linspace(0.0, 0.05, 40)[:, None, None]
-    found = gs.dual_residual(stack)
-    assert found.ratio > 1.25
+@pytest.mark.parametrize("rho", [0.4, 0.85])
+def test_a_correlated_stationary_field_is_not_called_drift(rho: float) -> None:
+    """The defect this replaced.
+
+    For a stationary AR(1) field the ratio is 1/sqrt(1-rho) with no drift whatever — 1.29 at
+    rho 0.4 and 2.58 at rho 0.85. Reading a raw ratio above 1.25 as "persistent structure"
+    therefore mislabels every correlated field, which is what it did to the Sony tiles.
+    """
+    stack = _ar1(rho)
+    found = gs.dual_residual(stack, rho=rho, rho_trusted=True)
+
+    assert found.ratio == pytest.approx(1.0 / np.sqrt(1.0 - rho), rel=0.15)
+    assert found.ratio > 1.25, "the raw ratio does look like 'structure' — that is the trap"
+    assert found.adjusted == pytest.approx(1.0, abs=0.2)
+    assert found.agree, "but correlation explains it entirely"
+
+
+def test_persistent_structure_shows_up_after_correlation_is_removed() -> None:
+    """A slow drift survives the correction; correlation alone does not."""
+    stack = _ar1(0.0)
+    stack += np.linspace(0.0, 0.05, stack.shape[0])[:, None, None]
+    found = gs.dual_residual(stack, rho=0.0, rho_trusted=True)
+    assert found.adjusted > 1.2
     assert not found.agree
-    assert "persistent" in found.verdict
+    assert "excess beyond correlation" in found.verdict
+
+
+def test_an_untrusted_correlation_leaves_the_answer_ambiguous() -> None:
+    """If rho cannot be believed, neither verdict can be reached from the ratio alone."""
+    found = gs.dual_residual(_ar1(0.85), rho=0.85, rho_trusted=False)
+    assert not found.agree
+    assert "ambiguous" in found.verdict
 
 
 def test_the_dual_residual_needs_two_frames() -> None:
     with pytest.raises(DataError, match="at least two frames"):
         gs.dual_residual(np.zeros((1, 32, 32)))
+
+
+def test_a_tolerated_disturbance_is_still_barred_from_measurement() -> None:
+    """Two-stage rule. Scouting tolerates a brief crossing so candidate recall survives;
+    measurement must not, or the crossing lands in the grain residual anyway. The previous
+    version detected the disturbance, allowed the tile, and then measured the whole stack."""
+    scene = _scene()
+    scene[4:6, 0:128, 0:128] += 0.4
+    found = {(one.x, one.y): one for one in gs.scout_tiles(scene, size=128, stride=64)}
+    brief = found[(0, 0)]
+
+    assert brief.stable, "scouting keeps it"
+    assert not brief.clean_throughout, "measurement does not"
+    assert all(
+        one.clean_throughout
+        for one in gs.shortlist([o for o in found.values() if o.clean_throughout])
+    )
+
+
+def test_the_deep_span_does_not_exceed_the_scouted_span() -> None:
+    """60 frames is 2.5 s against a two-second interval, so its final half-second was never
+    scouted and motion there could invalidate an otherwise correct tile."""
+    plan = _plan()
+    assert plan.deep_frames / (24000 / 1001) <= plan.window_s + 0.05

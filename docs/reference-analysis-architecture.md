@@ -453,6 +453,43 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    The Pulp tiles agree on this test while still failing the drift gate — exactly the case for not
    routing every statistic through one residual.
 
+   **The dual-residual verdict was wrong, and it made me overstate a conclusion.** For a
+   stationary AR(1) field the ratio is `1/√(1−ρ)` with no drift whatever — 1.29 at ρ = 0.4 and
+   2.58 at ρ = 0.85 — so reading a raw ratio above 1.25 as "persistent structure" mislabels every
+   correlated field. It now reports `adjusted = ratio·√(1−ρ)` and stays *ambiguous* when ρ is
+   untrusted. Corrected, the three Pulp tiles read **1.028, 1.026, 1.014 — agreement**, and my
+   claim that "Sony ρ ≈ 0.4 is not safe" was itself too strong: only one of the three Sony tiles
+   shows genuine excess beyond what its own correlation predicts. AR(1) null cases at ρ = 0.4 and
+   0.85 now sit alongside the linear-drift case.
+
+   Three implementation defects went with it. **Disturbed transitions were tolerated but never
+   excluded** — a brief crossing was detected, allowed, and then measured anyway; measurement now
+   requires `clean_throughout` while scouting keeps tolerating, which is the two-stage rule.
+   **The 48-tile cap was documented and unused**, so one interval pooled 1,135 residual stacks;
+   it is applied now (159 measured of 2,550 catalogued, reported as its own coverage stage).
+   **The deep probe ran 2.5 s against a 2 s scouted span**, leaving its last half-second
+   unscouted; it is 48 frames now.
+
+   **The new scout was checked against the four legacy scenes** it is modelled on. Stable counts,
+   against the legacy pass of 1,392 candidates:
+
+   | scene | legacy | new, native cadence | new, 0.2 s spread |
+   |---|---|---|---|
+   | 001 (00:21:17) | 1,363 | 1,335 | 1,277 |
+   | 003 (00:14:48) | 1,027 | 614 | 858 |
+   | 004 (00:36:40) | 818 | 754 | 566 |
+   | 005 (01:07:25) | 951 | 884 | 755 |
+
+   Same order and the same ranking of scenes, with native cadence closest to legacy on three of
+   four — as expected, since legacy differenced adjacent 24 fps frames. Scene 003 is the one real
+   disagreement and is not yet explained. The scout is *not* numerically identical to the legacy
+   moving box blur: it uses a block mean, and its 0.005 threshold now applies between frames
+   ~0.2 s apart rather than adjacent ones.
+
+   One documentation correction: the dual representation is a **scalar comparison on the deep
+   probes only**. The reported NPS still comes from lag-one difference residuals, which is
+   defensible but is not the fuller dual routing the previous wording implied.
+
    Still open: the deep probe's alignment gate rejects almost everything at 60 frames — a
    sub-pixel residual of 0.63–1.10 px over 2.5 s is ordinary gate weave or scan drift, not a
    defect, but the current gate has no way to accept a tile that drifts slowly and steadily. Until
