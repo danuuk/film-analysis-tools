@@ -1,0 +1,7 @@
+spatial footprint stability (log-spectral distance):
+  split-half     median 0.043  p90 0.064  (n=6)
+  between-interval median 0.076  p90 0.116  (n=13)
+  between-level  median 0.097  p90 0.135  (n=3)
+    midtone    28w/3iv  grain_radius 1.20px  anisotropy 2.00  block_peak 1.07  level 0.0207..0.1488
+    shadow     38w/5iv  grain_radius 1.23px  anisotropy 2.00  block_peak 1.08  level 0.0002..0.0198
+  verdict: ONE footprint suffices

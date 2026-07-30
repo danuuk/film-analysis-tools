@@ -45,7 +45,13 @@ from film_analysis_tools.capabilities.catalogue import intervals as iv
 from film_analysis_tools.capabilities.catalogue import regions as rg
 from film_analysis_tools.capabilities.catalogue.survey import FrameSurvey
 from film_analysis_tools.capabilities.fit import amplitude
-from film_analysis_tools.capabilities.measure import admissibility, evidence, residual, windows
+from film_analysis_tools.capabilities.measure import (
+    admissibility,
+    evidence,
+    footprint,
+    residual,
+    windows,
+)
 from film_analysis_tools.capabilities.source.record import (
     Cadence,
     Crop,
@@ -71,6 +77,10 @@ DIFFUSE_WHITE_NITS = 100.0
 #: Fraction of a window's samples that may sit at the container limits before it is unfit for a
 #: distribution measurement. Tails are the first thing clipping distorts.
 MAX_WINDOW_CLIPPED = 0.01
+
+#: Cap on clean windows per interval that receive a footprint spectrum. The spectra are small,
+#: but each is several FFTs over a tile stack, so the count is bounded.
+FOOTPRINT_WINDOW_CAP = 16
 
 #: Minimum separation between the two intervals compared for screen anchoring.
 #:
@@ -558,6 +568,7 @@ class IntervalEvidence:
     """
 
     tails: TailDiagnostics | None = None
+    spectra: tuple[footprint.WindowSpectrum, ...] = ()
     skipped: tuple[str, ...] = ()
 
     def as_record(self) -> dict[str, Any]:
@@ -586,6 +597,7 @@ class IntervalEvidence:
             "tails": self.tails.as_record() if self.tails else None,
             "heterogeneity": self.heterogeneity.as_record() if self.heterogeneity else None,
             "temporal": self.temporal.as_record() if self.temporal else None,
+            "footprint_spectra": [one.as_record() for one in self.spectra],
             "skipped": list(self.skipped),
         }
 
@@ -741,6 +753,19 @@ class SourceOutcome:
             for point in one.amplitude.trusted
         ]
 
+    def footprint_stability(self) -> footprint.FootprintStability | None:
+        """The spatial-footprint stability decision, or ``None`` when there is too little.
+
+        Answers the one question of the spatial study: once amplitude is out, is the grain shape
+        stable enough across level and interval to use a single footprint? The shape metrics are
+        scale-invariant, so this verdict does not depend on the amplitude fit at all -- which is a
+        strength, not a gap: the footprint conclusion cannot be an artefact of amplitude-fit error.
+        """
+        spectra = [one for interval in self.per_interval for one in interval.spectra]
+        if len(spectra) < 4:
+            return None
+        return footprint.assess_stability(spectra)
+
     def amplitude_fit(self) -> amplitude.ModelComparison | None:
         """The compact sigma(level) fit, or ``None`` when there is too little to fit honestly."""
         points = self.amplitude_points()
@@ -786,6 +811,9 @@ class SourceOutcome:
             },
             "per_interval": [one.as_record() for one in self.per_interval],
             "amplitude_fit": _fit.as_record() if (_fit := self.amplitude_fit()) else None,
+            "footprint_stability": (
+                _fp.as_record() if (_fp := self.footprint_stability()) else None
+            ),
             "deep_probes": [one.as_record() for one in self.deep],
             "duration_vs_pooling": (
                 self.duration_vs_pooling.as_record() if self.duration_vs_pooling else None
@@ -1686,6 +1714,22 @@ def _measure_interval(
             "distribution (trustworthy): no window is both unclipped and temporally trustworthy"
         )
 
+    # Spatial footprint spectra for the clean windows: temporally trustworthy and unclipped. The
+    # aligned lag-one residual removes static picture structure, so a textured-but-static window
+    # is a valid spectral subject even though it is not "flat". Shape is scale-invariant, so it is
+    # computed here without the amplitude fit; the amplitude-consistency check happens later, with
+    # leave-one-interval-out predictions.
+    spectra = tuple(
+        footprint.window_spectrum(
+            window.slice_of(linear),
+            interval=f"{start_s:.0f}",
+            level=window.level,
+            band=windows.band_of(window.level, windows.DEFAULT_BAND_EDGES),
+            sigma_hat=1.0,  # shape is scale-invariant; see the module docstring
+        )
+        for window in clean[:FOOTPRINT_WINDOW_CAP]
+    )
+
     return IntervalEvidence(
         interval_start_s=start_s,
         windows=len(accepted),
@@ -1699,6 +1743,7 @@ def _measure_interval(
         temporal=temporal,
         distribution_trustworthy=distribution_trustworthy,
         tails=tail_diagnostics(linear, container, unclipped or accepted),
+        spectra=spectra,
         skipped=tuple(skipped),
     )
 
@@ -2143,6 +2188,9 @@ def report(result: StudyResult) -> str:
         fit = outcome.amplitude_fit()
         if fit is not None:
             lines.append("  " + fit.summary().replace("\n", "\n  "))
+        stability = outcome.footprint_stability()
+        if stability is not None:
+            lines.append("  " + stability.summary().replace("\n", "\n  "))
 
         if outcome.duration_vs_pooling:
             lines += outcome.duration_vs_pooling.lines()

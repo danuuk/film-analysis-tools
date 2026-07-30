@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from film_analysis_tools.capabilities.fit import amplitude as amp
-from film_analysis_tools.core.errors import DataError
+from film_analysis_tools.core.errors import DataError, SelectionError
 
 
 def _power_points(
@@ -117,3 +117,53 @@ def test_too_few_points_or_intervals_is_refused() -> None:
     one_interval = [amp.AmplitudePoint(0.1, 0.01, "only") for _ in range(6)]
     with pytest.raises(DataError, match="at least two intervals"):
         amp.compare_models(one_interval)
+
+
+# -------------------------------------------------------------- out-of-range policy
+
+
+def _fitted() -> amp.FittedModel:
+    return amp.fit_power_floor(_power_points(a=0.06, b=0.73))
+
+
+def test_clamp_holds_the_envelope_at_the_measured_endpoints() -> None:
+    """The default. There is no highlight evidence above 0.177, so the safe behaviour is to hold
+    the last measured value rather than extrapolate a power law into a region never observed."""
+    model = _fitted()
+    _, high = model.supported_level
+    assert model.predict(1.0, outside="clamp") == pytest.approx(model.predict(high))
+    assert model.predict(1e-9, outside="clamp") == pytest.approx(
+        model.predict(model.supported_level[0])
+    )
+
+
+def test_extrapolation_is_opt_in_and_differs_from_clamp() -> None:
+    model = _fitted()
+    extrapolated = float(model.predict(1.0, outside="extrapolate"))
+    clamped = float(model.predict(1.0, outside="clamp"))
+    assert extrapolated > clamped, "the power law keeps rising above the range"
+
+
+def test_error_policy_refuses_to_guess() -> None:
+    model = _fitted()
+    with pytest.raises(SelectionError, match="outside the supported range"):
+        model.predict(1.0, outside="error")
+    # in range is fine
+    mid = sum(model.supported_level) / 2
+    assert model.predict(mid, outside="error") > 0
+
+
+def test_an_unknown_policy_is_refused() -> None:
+    with pytest.raises(SelectionError, match="unknown out-of-range policy"):
+        _fitted().predict(0.1, outside="wing-it")
+
+
+def test_the_piecewise_and_power_models_now_agree_on_policy() -> None:
+    """The defect this closes: the power model extrapolated while the piecewise model clamped, so
+    a consumer got different out-of-range behaviour by accident."""
+    points = _power_points(a=0.06, b=0.73)
+    power = amp.fit_power_floor(points)
+    piecewise = amp.fit_piecewise(points)
+    _, high = power.supported_level
+    for model in (power, piecewise):
+        assert model.predict(2.0, outside="clamp") == pytest.approx(model.predict(high), rel=1e-6)

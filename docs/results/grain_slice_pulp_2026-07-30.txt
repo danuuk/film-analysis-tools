@@ -20,7 +20,7 @@ pulp_fiction_1994_uhd   [UHD HDR10 remux]
     texture: flat 797, textured 1753
   measurements (5 intervals, each measured independently):
     raw sigma    median +0.0028  range +0.0012..+0.0072  n=5   (all points — descriptive only)
-    trusted sig  median +0.0046  range +0.0004..+0.0072  n=5   (identified rho only)
+    trusted sig  median +0.0046  range +0.0004..+0.0072  n=5   (identified rho, lag-consistent, no coherent drift)
     whiteness    median +0.0449  range +0.0246..+0.2252  n=4
     kurtosis     median +11.1647  range +4.4960..+493.1307  n=5   (pooled, all unclipped)
       normalised median +21.0040  range +3.3519..+57.0070  n=5   (per-window scale removed)
@@ -30,7 +30,7 @@ pulp_fiction_1994_uhd   [UHD HDR10 remux]
     exact zeros  median +0.0065  range +0.0030..+0.0090  n=5
     rho          median +0.0050  range +0.0030..+0.0242  n=5
     envelope     median +0.7587  range +0.2895..+1.0837  n=5
-    amplitude    111 identified / 111 trustworthy / 159 points   (0 saturated, all rejected)
+    amplitude    111 trustworthy / 159 points; 111 identified, 0 saturated estimates
     routed       flat/unclipped/trustworthy: 16f/33u/26t of 33; 3f/21u/18t of 21; 0f/35u/32t of 35; 17f/35u/33t of 35; 19f/35u/2t of 35
       t=5051s  spectrum: no flat window (every accepted tile carries picture structure)
   deep probe (48 frames per tile):
@@ -45,6 +45,19 @@ pulp_fiction_1994_uhd   [UHD HDR10 remux]
     by texture : flattest third 14.7%, roughest third 12.3%
     16px blocks almost all-frozen or all-live: 10.9%   long unchanged runs: 0.0%
     steps      : -2:9.0%, -1:11.3%, 0:13.9%, 1:11.2%, 2:9.0%
+  amplitude vs level — 111 points, 5 intervals (leave-one-interval-out)
+    model              params   in-sample   held-out
+    constant                1      1.4758     1.6484
+    power_floor             3      0.1969     0.2062  <- chosen
+    piecewise_4knot         4      0.1701     0.1810
+    supported level range: 0.00016 .. 0.17695 linear (no highlight data)
+    sigma(L) = sqrt(0.00000^2 + (0.0616 L^0.732)^2)
+    no amplitude floor resolved: a pure power law describes sigma across the whole measured range (the shadow tails are a shape effect, not a sigma floor)
+  spatial footprint stability (log-spectral distance):
+    split-half     median 0.043  p90 0.064  (n=6)
+    between-interval median 0.076  p90 0.116  (n=13)
+    between-level  median 0.097  p90 0.135  (n=3)
+    verdict: ONE footprint suffices
   duration vs pooling (3 tiles, exact central 128px, excess kurtosis):
     A 10f single   median +42.6529  range +0.9022..+109.0139  n=3
     B 48f single   median +43.4210  range +0.5519..+120.3592  n=3

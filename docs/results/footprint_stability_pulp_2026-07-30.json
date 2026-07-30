@@ -1,0 +1,47 @@
+{
+  "bands_present": [
+    "midtone",
+    "shadow"
+  ],
+  "bands": [
+    {
+      "band": "midtone",
+      "windows": 28,
+      "intervals": 3,
+      "grain_radius": 1.1950622385080116,
+      "anisotropy": 2.0,
+      "block_peak": 1.0688481382874115,
+      "level_min": 0.020706374260986316,
+      "level_max": 0.1488461277899205
+    },
+    {
+      "band": "shadow",
+      "windows": 38,
+      "intervals": 5,
+      "grain_radius": 1.2347547441046047,
+      "anisotropy": 2.0,
+      "block_peak": 1.0836652214492077,
+      "level_min": 0.0001578533157280404,
+      "level_max": 0.019750358731162265
+    }
+  ],
+  "split_half": {
+    "kind": "split_half",
+    "n": 6,
+    "median": 0.04266894160167371,
+    "p90": 0.06395524266714014
+  },
+  "between_interval": {
+    "kind": "between_interval",
+    "n": 13,
+    "median": 0.07603168547211639,
+    "p90": 0.11636535889868846
+  },
+  "between_level": {
+    "kind": "between_level",
+    "n": 3,
+    "median": 0.09715292771457595,
+    "p90": 0.13491342657333988
+  },
+  "one_footprint_suffices": true
+}

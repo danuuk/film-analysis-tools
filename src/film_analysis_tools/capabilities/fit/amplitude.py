@@ -33,7 +33,7 @@ from typing import Any
 
 import numpy as np
 
-from film_analysis_tools.core.errors import DataError
+from film_analysis_tools.core.errors import DataError, SelectionError
 
 EPS = 1.0e-12
 
@@ -78,8 +78,39 @@ class FittedModel:
     held_out_log_rmse: float
     supported_level: tuple[float, float]
 
-    def predict(self, level: np.ndarray | float) -> np.ndarray:
-        raise NotImplementedError  # replaced per model at construction
+    def _predict_raw(self, levels: np.ndarray) -> np.ndarray:
+        raise NotImplementedError  # each model implements its own formula
+
+    def predict(self, level: np.ndarray | float, *, outside: str = "clamp") -> np.ndarray:
+        """sigma at one or more levels, with an **explicit** out-of-range policy.
+
+        The models disagree outside the supported range — the power law extrapolates, the
+        piecewise curve clamps — so a consumer must not get one behaviour by accident. Extrapolation
+        is opt-in:
+
+        * ``"clamp"`` (default): levels are clipped to the supported range before evaluation, so the
+          envelope is held flat at its measured endpoints. Safe, and there is no highlight evidence
+          above 0.177 to extrapolate from.
+        * ``"extrapolate"``: evaluate the formula as-is. The caller is asserting the model holds
+          beyond where it was measured.
+        * ``"error"``: raise on any level outside the range — for a compiler that must refuse to
+          guess.
+        """
+        levels = np.asarray(level, dtype=np.float64)
+        low, high = self.supported_level
+        if outside == "error":
+            if np.any(levels < low) or np.any(levels > high):
+                raise SelectionError(
+                    f"level outside the supported range [{low:.5f}, {high:.5f}] and outside="
+                    "'error'; pass outside='clamp' or 'extrapolate' to state a policy"
+                )
+        elif outside == "clamp":
+            levels = np.clip(levels, low, high)
+        elif outside != "extrapolate":
+            raise SelectionError(
+                f"unknown out-of-range policy {outside!r}; expected clamp, extrapolate or error"
+            )
+        return self._predict_raw(levels)
 
     def as_record(self) -> dict[str, Any]:
         low, high = self.supported_level
@@ -104,14 +135,13 @@ class FittedModel:
 
 @dataclass(frozen=True)
 class _Constant(FittedModel):
-    def predict(self, level: np.ndarray | float) -> np.ndarray:
-        return np.full_like(np.asarray(level, dtype=np.float64), self.params["sigma0"])
+    def _predict_raw(self, levels: np.ndarray) -> np.ndarray:
+        return np.full_like(levels, self.params["sigma0"])
 
 
 @dataclass(frozen=True)
 class _PowerFloor(FittedModel):
-    def predict(self, level: np.ndarray | float) -> np.ndarray:
-        levels = np.asarray(level, dtype=np.float64)
+    def _predict_raw(self, levels: np.ndarray) -> np.ndarray:
         s0, a, b = self.params["sigma0"], self.params["a"], self.params["b"]
         return np.sqrt(s0**2 + (a * np.maximum(levels, 0.0) ** b) ** 2)
 
@@ -154,9 +184,9 @@ class _Piecewise(FittedModel):
     knot_log_levels: tuple[float, ...] = ()
     knot_log_sigmas: tuple[float, ...] = ()
 
-    def predict(self, level: np.ndarray | float) -> np.ndarray:
-        levels = np.log(np.maximum(np.asarray(level, dtype=np.float64), EPS))
-        interpolated = np.interp(levels, self.knot_log_levels, self.knot_log_sigmas)
+    def _predict_raw(self, levels: np.ndarray) -> np.ndarray:
+        log_levels = np.log(np.maximum(levels, EPS))
+        interpolated = np.interp(log_levels, self.knot_log_levels, self.knot_log_sigmas)
         return np.exp(interpolated)
 
 

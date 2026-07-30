@@ -581,6 +581,58 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    the dual diagnostic exists to test the drift gate, so gating it on the drift verdict would be
    circular.
 
+   **The spatial-footprint study.** `capabilities/measure/footprint` answers the one question that
+   comes after amplitude: once predicted amplitude is divided out, is the grain *shape* stable
+   enough across level and interval to use a single footprint? The shape metrics are
+   scale-invariant by construction — the radial PSD is normalised to unit in-band mean, and grain
+   radius, anisotropy and the block peak are all ratios — so **the footprint verdict does not
+   depend on the amplitude fit at all**, which means it cannot be an artefact of amplitude-fit
+   error. The independent unit is the interval, and the decision is made against a null:
+
+   | comparison | log-spectral distance (median / p90) |
+   |---|---|
+   | split-half within interval+band | 0.043 / 0.064 |
+   | between interval, same band | 0.076 / 0.116 |
+   | **between level band, same interval** | **0.097 / 0.135** |
+
+   Between-level variation (median 0.097) is within the between-interval baseline (p90 0.116):
+   the footprint changes no more with level than it changes between scenes. **One common footprint
+   suffices** — no level-dependent kernel is justified on this evidence. The shape itself, on 66
+   clean windows across the two bands present (no highlight data):
+
+   | band | windows / intervals | grain radius | anisotropy | block peak | level range |
+   |---|---|---|---|---|---|
+   | shadow | 38 / 5 | 1.23 px | ~2.0 | 1.08 | 0.0002–0.020 |
+   | midtone | 28 / 3 | 1.20 px | ~2.0 | 1.07 | 0.021–0.149 |
+
+   Two features are consistent across both bands. The grain is **~1.2 px** — near the resolution
+   floor, close to spatially white — and it is **anisotropic, roughly 2:1 horizontal** (the
+   autocorrelation is twice as wide across as down; the ratio is coarsely quantised to integer
+   pixel lags, so "about 2:1" is the honest precision). The block peak near 1.07 says the encoder's
+   block grid, which the zero-inflation study found freezing 20% of 16 px blocks, is **not**
+   strongly imprinting a periodic pattern in the grain frequency band — the frozen blocks are a
+   time-domain effect, not a spatial-frequency one. The shadow distribution shape stays out of this
+   fit, as required: shadow windows contributed spectral evidence, but their heavy tails are not
+   read as a particle law.
+
+   The three components of the statistical grain candidate are now available *separately*, which
+   was the point of keeping the questions apart:
+
+   ```
+   appearance amplitude : sigma(L) = 0.0616 * L^0.732   (appearance envelope, luma)
+   spatial structure    : one common footprint, ~1.2 px, ~2:1 horizontal anisotropy
+   temporal baseline    : independent frames (rho ~ 0.005)
+   ```
+
+   Colour and layer covariance remain a separate question: this luma reference cannot supply
+   trustworthy chromatic grain evidence, and nothing here pretends to.
+
+   One contract issue closed alongside: the amplitude model now takes an explicit out-of-range
+   policy (`predict(level, outside=...)`), because the power law extrapolated while the piecewise
+   curve clamped and a consumer must not get one behaviour by accident. Default is `clamp` (hold
+   the envelope at the measured endpoints); `extrapolate` and `error` are opt-in. Artefacts:
+   [`footprint_stability_pulp_2026-07-30.txt`](results/footprint_stability_pulp_2026-07-30.txt)
+   and its JSON.
    Still open: the deep probe's alignment gate rejects almost everything at 60 frames — a
    sub-pixel residual of 0.63–1.10 px over 2.5 s is ordinary gate weave or scan drift, not a
    defect, but the current gate has no way to accept a tile that drifts slowly and steadily. Until
@@ -594,10 +646,11 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
 7. **The compact fit** — begun. `capabilities/fit/amplitude` fits σ(level) on the 111 trustworthy
    Pulp points with leave-one-interval-out validation and a compact model chosen on held-out
    error: a pure power law σ(L) = 0.0616·L^0.732 over the supported range 0.00016–0.177 linear.
-   Still to come on this line: holdout residual reconstruction, the spatial footprint (only after
-   normalising residuals by predicted amplitude and checking spectral stability across levels),
-   and the map into the negative-density stage — which is kept explicitly separate from this
-   appearance-envelope fit.
+   The **spatial footprint** is now measured too (`capabilities/measure/footprint`): once
+   amplitude is divided out, the grain shape is stable enough across level and interval to use one
+   common footprint (~1.2 px, ~2:1 horizontal anisotropy). Still to come on this line: holdout
+   residual reconstruction and several-second renders, then the map into the negative-density
+   stage — kept explicitly separate from this appearance-envelope fit.
 
 Steps 1-3 and 5-6 are architecture; step 4 is the slice that proves the architecture runs.
 Only after them does refining an estimator have a defined meaning, because only then is there an
