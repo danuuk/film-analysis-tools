@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import numpy as np
 import pytest
 
@@ -91,8 +93,26 @@ def test_values_beyond_the_declared_range_are_not_clipped() -> None:
 def test_intervals_tile_the_survey_with_overlap() -> None:
     built = iv.build_intervals(_survey(60.0), window_s=2.0, stride_s=1.0)
     assert len(built) > 50
-    assert built[0].duration_s == pytest.approx(1.75, abs=0.01)  # 8 samples at 4 Hz
     assert built[1].start_s - built[0].start_s == pytest.approx(1.0, abs=0.01)
+
+
+def test_an_interval_covers_the_window_it_was_asked_for() -> None:
+    """Intervals are half-open: ``[start, end)`` spans ``sample_count`` sample periods.
+
+    Taking the last sample's timestamp as the end reported 1.75 s for a window requested as 2.0 s
+    at 4 Hz, so ``min_duration_s=2.0`` rejected every interval built with ``window_s=2.0``, and
+    every span lost one sample period of coverage.
+    """
+    built = iv.build_intervals(_survey(60.0), window_s=2.0, stride_s=1.0)
+    assert built[0].sample_count == 8
+    assert built[0].duration_s == pytest.approx(2.0, abs=0.001)
+    assert iv.index(built).select(min_duration_s=2.0)
+
+
+def test_adjacent_intervals_cover_contiguous_time_without_gaps() -> None:
+    built = iv.build_intervals(_survey(60.0), window_s=2.0, stride_s=2.0)
+    assert built[0].end_s == pytest.approx(built[1].start_s, abs=0.001)
+    assert iv.index(built[:2]).total_duration_s() == pytest.approx(4.0, abs=0.001)
 
 
 def test_an_interval_is_short_enough_to_describe_its_own_frames() -> None:
@@ -183,6 +203,18 @@ def test_selection_filters_on_every_stated_condition() -> None:
 def test_a_per_source_cap_stops_one_source_dominating() -> None:
     idx = iv.index(iv.build_intervals(_survey(60.0), window_s=2.0, stride_s=1.0))
     assert len(idx.select(per_source_cap=5)) == 5
+
+
+def test_sources_have_independent_time_axes() -> None:
+    """Two films each contributing 0-2 s cover four seconds, not two.
+
+    Pooling spans across sources collided unrelated timelines at the origin and reported half the
+    coverage. Single-source work could never surface it.
+    """
+    first = iv.build_intervals(_survey(20.0), window_s=2.0, stride_s=2.0)[:1]
+    second = [replace(first[0], source_id="other")]
+    assert iv.index(first).total_duration_s() == pytest.approx(2.0, abs=0.001)
+    assert iv.index(first + second).total_duration_s() == pytest.approx(4.0, abs=0.001)
 
 
 def test_covered_time_does_not_double_count_overlap() -> None:

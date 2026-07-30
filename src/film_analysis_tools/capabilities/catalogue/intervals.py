@@ -175,6 +175,7 @@ def build_intervals(
             f"survey has {total} samples, fewer than the {per_window} a {window_s}s interval needs"
         )
 
+    sample_period = 1.0 / survey.sample_rate_hz
     time = survey.column("time_s")
     motion = survey.column("motion")
     cut = survey.column("cut_score")
@@ -205,7 +206,12 @@ def build_intervals(
                 source_id=survey.source_id,
                 index=index,
                 start_s=float(time[start]),
-                end_s=float(time[start + per_window - 1]),
+                # Half-open: [start_s, end_s). The span ends one sample period after the last
+                # sample, not *at* it, so an interval requested as 2.0 s at 4 Hz covers 8 samples
+                # and reports 2.0 s. Taking the last sample's timestamp reported 1.75 s, which
+                # made `min_duration_s=2.0` reject a window asked for as two seconds and lost one
+                # sample period of coverage from every span.
+                end_s=float(time[start + per_window - 1]) + sample_period,
                 sample_count=per_window,
                 motion_mean=float(motion[window].mean()),
                 motion_p90=float(np.percentile(motion[window], 90)),
@@ -299,16 +305,24 @@ class IntervalIndex:
         return counts
 
     def total_duration_s(self) -> float:
-        """Union of covered time, so overlapping intervals are not counted twice."""
-        spans = sorted((i.start_s, i.end_s) for i in self.intervals)
-        total, current_end = 0.0, -np.inf
-        for start, end in spans:
-            if start > current_end:
-                total += end - start
-                current_end = end
-            elif end > current_end:
-                total += end - current_end
-                current_end = end
+        """Union of covered time, so overlapping intervals are not counted twice.
+
+        Unioned **within each source and then summed**. Different sources have independent time
+        axes: two films each contributing 0-2 s cover four seconds of material, not two. Pooling
+        the spans made them collide at the origin and under-reported coverage by exactly the
+        overlap between unrelated timelines.
+        """
+        total = 0.0
+        for source in {interval.source_id for interval in self.intervals}:
+            spans = sorted((i.start_s, i.end_s) for i in self.intervals if i.source_id == source)
+            current_end = -np.inf
+            for start, end in spans:
+                if start > current_end:
+                    total += end - start
+                    current_end = end
+                elif end > current_end:
+                    total += end - current_end
+                    current_end = end
         return float(total)
 
     def as_record(self) -> dict[str, Any]:

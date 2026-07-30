@@ -158,6 +158,24 @@ def test_overlapping_intervals_do_not_count_twice() -> None:
     assert report.span_seconds == pytest.approx(6.0)
 
 
+def test_sources_have_independent_time_axes() -> None:
+    """Two regions from two different films, both at 0-2 s, are two spans covering four seconds.
+
+    Pooling spans across sources merged unrelated timelines at the origin and reported one span
+    of two seconds — understating independence exactly where a multi-film corpus needs it.
+    """
+    built = [_region(source_id="filmA"), _region(source_id="filmB")]
+    report = rg.index(built).independence()
+    assert report.sources == 2
+    assert report.spans == 2
+    assert report.span_seconds == pytest.approx(4.0)
+
+
+def test_a_per_interval_cap_is_scoped_per_source() -> None:
+    built = [_region(source_id=name) for name in ("filmA", "filmB") for _ in range(5)]
+    assert len(rg.index(built).select(per_interval_cap=2)) == 4
+
+
 def test_disjoint_intervals_are_counted_separately() -> None:
     built = [
         _region(interval_start_s=0.0, interval_end_s=2.0),

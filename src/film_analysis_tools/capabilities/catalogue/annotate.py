@@ -79,6 +79,14 @@ class FaceObservation:
     detection_score: float = 0.0
     bbox: tuple[float, float, float, float] | None = None
     source_scene: str = ""
+    source_id: str = ""
+    """Which source this probe was taken from.
+
+    Empty means unscoped. A timestamp alone is not an address: two films both have a second 1.0,
+    and joining on time alone let a probe from one film mark intervals in another as carrying an
+    *observed* face. :func:`annotate` accepts unscoped probes only when there is exactly one
+    source to attach them to, and refuses to guess otherwise.
+    """
 
 
 @dataclass(frozen=True)
@@ -202,20 +210,47 @@ def annotate(
 ) -> list[AnnotatedInterval]:
     """Attach colour and the nearest face observation to each interval.
 
-    The join is temporal: an interval takes the closest probe in time, and records how far away
-    it was. Nothing is dropped for being distant — the distance is reported and the caller decides
-    what it is worth.
+    The join is temporal *within a source*: an interval takes the closest probe in time from its
+    own source, and records how far away it was. Nothing is dropped for being distant — the
+    distance is reported and the caller decides what it is worth.
+
+    Sources have independent time axes, so a probe only ever joins intervals from the source it
+    came from. An observation with no ``source_id`` is unscoped; it is accepted only when the
+    intervals name exactly one source, and raises otherwise rather than attaching a face from one
+    film to another.
     """
-    ordered = sorted(observations, key=lambda observation: observation.time_s)
-    times = [observation.time_s for observation in ordered]
+    interval_sources = {interval.source_id for interval in intervals}
+    unscoped = [o for o in observations if not o.source_id]
+    if unscoped and len(interval_sources) > 1:
+        raise SelectionError(
+            f"{len(unscoped)} face observation(s) carry no source_id but the intervals span "
+            f"{len(interval_sources)} sources ({sorted(interval_sources)}). A timestamp alone "
+            "cannot say which source a probe belongs to; set FaceObservation.source_id."
+        )
+
+    only_source = next(iter(interval_sources)) if len(interval_sources) == 1 else ""
+    by_source: dict[str, list[FaceObservation]] = {}
+    for observation in observations:
+        key = observation.source_id or only_source
+        by_source.setdefault(key, []).append(observation)
+    ordered_by_source = {
+        key: sorted(group, key=lambda observation: observation.time_s)
+        for key, group in by_source.items()
+    }
+    times_by_source = {
+        key: [observation.time_s for observation in group]
+        for key, group in ordered_by_source.items()
+    }
 
     annotated: list[AnnotatedInterval] = []
     for interval in intervals:
+        ordered = ordered_by_source.get(interval.source_id, [])
+        times = times_by_source.get(interval.source_id, [])
         nearest, distance = None, float("inf")
         if ordered:
             position = bisect.bisect_left(times, interval.start_s)
             for candidate in ordered[max(0, position - 1) : position + 2]:
-                if interval.start_s <= candidate.time_s <= interval.end_s:
+                if interval.start_s <= candidate.time_s < interval.end_s:
                     gap = 0.0
                 elif candidate.time_s < interval.start_s:
                     gap = interval.start_s - candidate.time_s
@@ -350,6 +385,7 @@ def observations_from_probes(
     area_ratios: Sequence[float] | None = None,
     scores: Sequence[float] | None = None,
     scenes: Sequence[str] | None = None,
+    source_id: str = "",
 ) -> list[FaceObservation]:
     """Build observations from parallel columns, whatever produced them."""
     length = len(times_s)
@@ -367,6 +403,7 @@ def observations_from_probes(
             area_ratio=float(zeros_f[i]),
             detection_score=float(scores_f[i]),
             source_scene=str(names[i]),
+            source_id=source_id,
         )
         for i in range(length)
     ]

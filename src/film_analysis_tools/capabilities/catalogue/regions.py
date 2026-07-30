@@ -256,17 +256,30 @@ def merged_span_seconds(regions: Sequence[Region]) -> tuple[int, float]:
 
     Intervals are built overlapping — 2 s windows on a 1 s stride — so neighbouring intervals
     share half their frames. Counting them as separate samples double-counts the material.
+
+    Merged **within each source, then summed**, because different sources have independent time
+    axes. Two regions from two different films, both at 0-2 s, are two spans covering four
+    seconds — not one span covering two. Pooling the spans collided unrelated timelines at the
+    origin and understated independence exactly where a multi-film corpus needs it most.
     """
-    spans = sorted({(r.provenance.interval_start_s, r.provenance.interval_end_s) for r in regions})
-    if not spans:
-        return (0, 0.0)
-    merged: list[list[float]] = [list(spans[0])]
-    for start, end in spans[1:]:
-        if start <= merged[-1][1]:
-            merged[-1][1] = max(merged[-1][1], end)
-        else:
-            merged.append([start, end])
-    return (len(merged), sum(end - start for start, end in merged))
+    by_source: dict[str, set[tuple[float, float]]] = {}
+    for region in regions:
+        by_source.setdefault(region.source_id, set()).add(
+            (region.provenance.interval_start_s, region.provenance.interval_end_s)
+        )
+
+    spans_total, seconds_total = 0, 0.0
+    for source_spans in by_source.values():
+        ordered = sorted(source_spans)
+        merged: list[list[float]] = [list(ordered[0])]
+        for start, end in ordered[1:]:
+            if start <= merged[-1][1]:
+                merged[-1][1] = max(merged[-1][1], end)
+            else:
+                merged.append([start, end])
+        spans_total += len(merged)
+        seconds_total += sum(end - start for start, end in merged)
+    return (spans_total, seconds_total)
 
 
 @dataclass(frozen=True)

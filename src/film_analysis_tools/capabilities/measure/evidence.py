@@ -264,20 +264,171 @@ def distribution_evidence(frames: np.ndarray, windows: Sequence[Window]) -> Dist
 
 
 # ------------------------------------------------------ 4. slow spatial heterogeneity
+#
+# Two different questions live here, and conflating them was a real defect.
+#
+#   "Does a fixed pattern sit on top of every frame?"      -> additive_pattern_evidence
+#   "Does a fixed envelope modulate the grain amplitude?"  -> heterogeneity_evidence
+#
+# The first is scanner shading, vignetting, dirt, fixed-pattern offsets. It lives in the temporal
+# *mean*. The second is grain heterogeneity, and it is invisible in the temporal mean by
+# construction: a zero-mean grain field multiplied by an envelope still averages to zero.
+#
+# Measured on two unrelated sequences sharing one multiplicative envelope, correlating blurred
+# temporal means reported **-0.07** and declared the envelope not screen-anchored. The same
+# detector on a shared *additive* pattern reports **0.98**. It was answering the additive question
+# almost perfectly and the multiplicative question not at all.
+
+
+@dataclass(frozen=True)
+class AdditivePatternEvidence:
+    """A fixed image added to every frame: scanner shading, vignetting, dirt, gate weave residue.
+
+    Detected in the temporal mean, which is where an additive pattern survives and where a grain
+    envelope does not. This says nothing about grain amplitude — see :class:`HeterogeneityEvidence`
+    for that question.
+    """
+
+    cross_source_correlation: float | None
+    """Correlation of the blurred temporal mean with a second, unrelated source.
+
+    ``None`` when no second source was supplied. High means the same pattern sits at the same
+    screen coordinates in different pictures, so it belongs to the scan.
+    """
+
+    sample_count: int
+
+    @property
+    def is_screen_anchored(self) -> bool | None:
+        if self.cross_source_correlation is None:
+            return None
+        return self.cross_source_correlation > 0.3
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "evidence": "additive_fixed_pattern",
+            "cross_source_correlation": self.cross_source_correlation,
+            "is_screen_anchored": self.is_screen_anchored,
+            "sample_count": self.sample_count,
+        }
+
+
+def additive_pattern_evidence(
+    frames: np.ndarray,
+    *,
+    other_source: np.ndarray | None = None,
+    blur_radius: int = 12,
+) -> AdditivePatternEvidence:
+    """Shared additive structure between two sources with unrelated pictures.
+
+    Averaging over frames suppresses grain and leaves whatever is fixed. If the same low-frequency
+    pattern appears at the same screen coordinates in different material, it is in the scan.
+    """
+    stack = np.asarray(frames, dtype=np.float64)
+    correlation: float | None = None
+    if other_source is not None:
+        other = np.asarray(other_source, dtype=np.float64)
+        if other.shape[1:] != stack.shape[1:]:
+            raise DataError(
+                f"cross-source comparison needs matching frame geometry: "
+                f"{other.shape[1:]} vs {stack.shape[1:]}"
+            )
+        first = box_blur(stack.mean(axis=0), blur_radius)
+        second = box_blur(other.mean(axis=0), blur_radius)
+        correlation = _correlate(first - first.mean(), second - second.mean())
+    return AdditivePatternEvidence(
+        cross_source_correlation=correlation, sample_count=int(stack.size)
+    )
+
+
+def _correlate(first: np.ndarray, second: np.ndarray) -> float | None:
+    if first.std() <= EPS or second.std() <= EPS:
+        return None
+    return float(np.corrcoef(first.ravel(), second.ravel())[0, 1])
+
+
+def grain_energy_map(
+    frames: np.ndarray,
+    *,
+    blur_radius: int = 8,
+    normalise_for_level: bool = True,
+    level_bins: int = 12,
+) -> np.ndarray:
+    """Local grain energy per pixel, smoothed, with the amplitude-versus-level trend divided out.
+
+    This is the quantity a grain envelope actually modulates. Built as:
+
+    1. aligned temporal residuals (lag-1 differences, so a static picture cancels);
+    2. local RMS over time, which is a noisy per-pixel estimate;
+    3. division by the expected amplitude at that pixel's own level, so the ordinary
+       amplitude-versus-level relationship is not mistaken for a spatial envelope;
+    4. smoothing, because the envelope of interest is low-frequency.
+
+    Step 3 matters most. Without it a bright object and a dark one differ in grain energy simply
+    because grain amplitude depends on level, and that difference would read as heterogeneity in
+    every source — including sources that share nothing.
+
+    It also has a cost, and it is worth stating. When a fixed *additive* pattern happens to be
+    collinear with the grain envelope — the shading and the amplitude modulation having the same
+    shape, as with some vignetting — level normalisation attributes the energy variation to level
+    and the envelope correlation collapses (measured: 0.98 to 0.20 on such a case). That is the
+    correct answer to "is this variation explained by level", but it is not the same question as
+    "is there an envelope". Pass ``normalise_for_level=False`` to ask the second question directly,
+    and read it alongside :func:`additive_pattern_evidence` rather than on its own.
+    """
+    stack = np.asarray(frames, dtype=np.float64)
+    if stack.ndim != 3 or stack.shape[0] < 2:
+        raise DataError(f"grain energy needs at least two frames of (h, w); got {stack.shape}")
+
+    residual = _residuals(stack)
+    energy = np.sqrt(np.mean(residual**2, axis=0))
+    energy = box_blur(energy, blur_radius)
+
+    if normalise_for_level:
+        level = box_blur(stack.mean(axis=0), blur_radius)
+        expected = _expected_energy_at_level(level, energy, bins=level_bins)
+        energy = energy / np.maximum(expected, EPS)
+    return energy
+
+
+def _expected_energy_at_level(level: np.ndarray, energy: np.ndarray, *, bins: int) -> np.ndarray:
+    """Median grain energy as a function of level, interpolated back onto every pixel.
+
+    Binned and interpolated rather than fitted to a shape: the amplitude-versus-level relationship
+    is what the whole measurement exists to discover, so assuming a form for it here would be
+    circular.
+    """
+    flat_level, flat_energy = level.ravel(), energy.ravel()
+    edges = np.quantile(flat_level, np.linspace(0.0, 1.0, bins + 1))
+    edges = np.unique(edges)
+    if edges.size < 3:
+        return np.full_like(energy, float(np.median(flat_energy)))
+
+    centres, medians = [], []
+    index = np.clip(np.searchsorted(edges, flat_level, side="right") - 1, 0, edges.size - 2)
+    for bin_number in range(edges.size - 1):
+        selected = flat_energy[index == bin_number]
+        if selected.size:
+            centres.append(0.5 * (edges[bin_number] + edges[bin_number + 1]))
+            medians.append(float(np.median(selected)))
+    if len(centres) < 2:
+        return np.full_like(energy, float(np.median(flat_energy)))
+    return np.interp(level, np.asarray(centres), np.asarray(medians))
 
 
 @dataclass(frozen=True)
 class HeterogeneityEvidence:
-    """Slow spatial variation in grain level, and whether it is anchored to the screen."""
+    """A fixed spatial envelope modulating grain amplitude, and whether it is screen-anchored."""
 
     envelope_ratio: float
     """Spread of local residual RMS across the frame, relative to its mean."""
 
     screen_anchored_correlation: float | None
-    """Correlation of the low-frequency pattern with a second, unrelated source.
+    """Correlation of the level-normalised *grain energy* map with a second, unrelated source.
 
-    ``None`` when no second source was supplied. A high value means the pattern sits in screen
-    coordinates rather than in the picture — scanner fixed-pattern or dirty-gate, not grain.
+    ``None`` when no second source was supplied. A high value means grain amplitude is modulated
+    by the same pattern at the same screen coordinates in different pictures, so the envelope
+    belongs to the scan or the optics rather than to the negative.
     """
 
     sample_count: int
@@ -315,14 +466,19 @@ def heterogeneity_evidence(
     windows: Sequence[Window],
     *,
     other_source: np.ndarray | None = None,
-    blur_radius: int = 12,
+    blur_radius: int = 8,
+    normalise_for_level: bool = True,
 ) -> HeterogeneityEvidence:
-    """Slow spatial variation, with an optional cross-source test for screen anchoring.
+    """Spatial variation in grain *amplitude*, with a cross-source test for screen anchoring.
 
-    Temporal differencing cannot see a pattern that is identical in every frame — it cancels
-    exactly. Detecting screen-anchored structure therefore needs a *spatial* comparison against
-    unrelated content: if the same low-frequency pattern appears at the same screen coordinates in
-    material with different pictures, it belongs to the scan rather than the scene.
+    The cross-source test compares level-normalised grain-energy maps, not temporal means. A grain
+    envelope is multiplicative on a zero-mean field, so it leaves the temporal mean untouched and
+    a mean-image comparison cannot see it — measured at **-0.07** on two unrelated sequences built
+    with an identical envelope, against **0.98** for the same detector on a shared additive
+    pattern. Comparing energy maps answers the question actually being asked.
+
+    For the additive question — scanner shading, vignetting, dirt — use
+    :func:`additive_pattern_evidence`, which is the old behaviour under an accurate name.
     """
     levels: list[float] = []
     total = 0
@@ -338,21 +494,19 @@ def heterogeneity_evidence(
 
     correlation: float | None = None
     if other_source is not None:
-        if other_source.shape[1:] != frames.shape[1:]:
+        other = np.asarray(other_source, dtype=np.float64)
+        if other.shape[1:] != frames.shape[1:]:
             raise DataError(
                 f"cross-source comparison needs matching frame geometry: "
-                f"{other_source.shape[1:]} vs {frames.shape[1:]}"
+                f"{other.shape[1:]} vs {frames.shape[1:]}"
             )
-        # Compare the LOW-frequency structure, not the high-pass residue. Slow heterogeneity
-        # lives in exactly the band a high-pass throws away; subtracting a blur would remove the
-        # thing being looked for. Averaging over frames suppresses grain, and the two sources
-        # carry different pictures, so shared low-frequency structure is screen-anchored.
-        first = box_blur(frames.mean(axis=0), blur_radius)
-        second = box_blur(np.asarray(other_source, dtype=np.float64).mean(axis=0), blur_radius)
-        pattern_a = first - first.mean()
-        pattern_b = second - second.mean()
-        if pattern_a.std() > EPS and pattern_b.std() > EPS:
-            correlation = float(np.corrcoef(pattern_a.ravel(), pattern_b.ravel())[0, 1])
+        first = grain_energy_map(
+            frames, blur_radius=blur_radius, normalise_for_level=normalise_for_level
+        )
+        second = grain_energy_map(
+            other, blur_radius=blur_radius, normalise_for_level=normalise_for_level
+        )
+        correlation = _correlate(first - first.mean(), second - second.mean())
 
     return HeterogeneityEvidence(
         envelope_ratio=envelope_ratio,
@@ -430,14 +584,17 @@ def temporal_evidence(
 
 
 __all__ = [
+    "AdditivePatternEvidence",
     "AmplitudeEvidence",
     "AmplitudePoint",
     "DistributionEvidence",
     "HeterogeneityEvidence",
     "SpectrumEvidence",
     "TemporalEvidence",
+    "additive_pattern_evidence",
     "amplitude_evidence",
     "distribution_evidence",
+    "grain_energy_map",
     "heterogeneity_evidence",
     "spectrum_evidence",
     "temporal_evidence",

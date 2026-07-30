@@ -137,28 +137,111 @@ def test_uniform_grain_has_a_flat_envelope() -> None:
     assert evidence.heterogeneity_evidence(frames, selected).envelope_ratio < 0.15
 
 
-def test_screen_anchored_pattern_is_caught_by_cross_source_comparison() -> None:
-    """The check the legacy path could not make, because it never compared across sources.
+def _envelope(shape: tuple[int, int], *, centre: tuple[float, float]) -> np.ndarray:
+    """A smooth multiplicative envelope fixed in screen coordinates."""
+    height, width = shape
+    ys, xs = np.mgrid[0:height, 0:width]
+    cy, cx = centre[0] * height, centre[1] * width
+    return 0.5 + 1.5 * np.exp(-(((xs - cx) ** 2 + (ys - cy) ** 2) / (2 * (width * 0.25) ** 2)))
 
-    A pattern fixed in screen coordinates cancels exactly under temporal differencing, so no
-    temporal method can see it at any amplitude. It shows up as correlation between the
-    low-frequency residue of two sources whose *pictures* are unrelated.
+
+def _modulated(
+    seed: int,
+    envelope: np.ndarray,
+    *,
+    pattern: np.ndarray | None = None,
+    frames: int = 14,
+) -> np.ndarray:
+    """Unrelated picture content, grain scaled by ``envelope``, plus an optional additive
+    ``pattern``. The two are kept separate on purpose: conflating them is the defect under test."""
+    rng = np.random.default_rng(seed)
+    height, width = envelope.shape
+    picture = 0.25 * rng.random((height, width))  # unrelated content per source
+    grain = rng.normal(0.0, 0.02, (frames, height, width)) * envelope
+    fixed = 0.0 if pattern is None else pattern
+    return 0.2 + picture + fixed + grain
+
+
+def test_a_shared_grain_envelope_is_caught_by_cross_source_comparison() -> None:
+    """The defect this replaced.
+
+    A grain envelope is *multiplicative on a zero-mean field*, so it leaves the temporal mean
+    untouched — comparing blurred mean images scored **-0.07** here and declared the envelope not
+    screen-anchored, while scoring 0.98 on a merely additive pattern. Comparing level-normalised
+    grain-energy maps answers the question actually being asked.
     """
-    frames, selected = _material()
-    ys, xs = np.mgrid[0 : frames.shape[1], 0 : frames.shape[2]]
-    envelope = 0.06 * (np.sin(xs / 37.0) * np.cos(ys / 41.0))
+    shape = (192, 192)
+    shared = _envelope(shape, centre=(0.3, 0.3))
+    selected = windows.select_windows(_modulated(1, shared), size=48, stride=48).accepted
 
-    other, _ = _material(seed=77, base_level=0.5)
-    dirty = frames + envelope[None, :, :]
-    dirty_other = other + envelope[None, :, :]
-
-    anchored = evidence.heterogeneity_evidence(dirty, selected, other_source=dirty_other)
-    clean = evidence.heterogeneity_evidence(frames, selected, other_source=other)
-
+    anchored = evidence.heterogeneity_evidence(
+        _modulated(1, shared), selected, other_source=_modulated(2, shared)
+    )
+    assert anchored.screen_anchored_correlation is not None
+    assert anchored.screen_anchored_correlation > 0.8
     assert anchored.is_screen_anchored is True
     assert anchored.belongs_in_a_negative_model is False
-    assert clean.is_screen_anchored is False
-    assert clean.belongs_in_a_negative_model is True
+
+
+def test_unrelated_envelopes_are_not_called_screen_anchored() -> None:
+    shape = (192, 192)
+    here = _envelope(shape, centre=(0.3, 0.3))
+    there = _envelope(shape, centre=(0.75, 0.75))
+    selected = windows.select_windows(_modulated(1, here), size=48, stride=48).accepted
+
+    result = evidence.heterogeneity_evidence(
+        _modulated(1, here), selected, other_source=_modulated(2, there)
+    )
+    assert result.is_screen_anchored is False
+    assert result.belongs_in_a_negative_model is True
+
+
+def test_an_additive_pattern_does_not_masquerade_as_a_grain_envelope() -> None:
+    """The two questions must not answer for each other. Uniform grain plus a shared additive
+    pattern is a dirty scan, not heterogeneous grain."""
+    shape = (192, 192)
+    flat = np.ones(shape)
+    pattern = 0.05 * _envelope(shape, centre=(0.3, 0.3))  # additive, and *not* a grain envelope
+    here = _modulated(1, flat, pattern=pattern)
+    there = _modulated(2, flat, pattern=pattern)
+    selected = windows.select_windows(here, size=48, stride=48).accepted
+
+    assert (
+        evidence.heterogeneity_evidence(here, selected, other_source=there).is_screen_anchored
+        is False
+    )
+    assert evidence.additive_pattern_evidence(here, other_source=there).is_screen_anchored is True
+
+
+def test_a_grain_envelope_does_not_register_as_an_additive_pattern() -> None:
+    shape = (192, 192)
+    shared = _envelope(shape, centre=(0.3, 0.3))
+    result = evidence.additive_pattern_evidence(
+        _modulated(1, shared), other_source=_modulated(2, shared)
+    )
+    assert result.is_screen_anchored is False
+    assert result.as_record()["evidence"] == "additive_fixed_pattern"
+
+
+def test_the_energy_map_divides_out_the_amplitude_versus_level_trend() -> None:
+    """Grain amplitude depends on level. Without normalising, a bright half and a dark half
+    differ in grain energy for that reason alone, and every source would look heterogeneous."""
+    rng = np.random.default_rng(3)
+    level = np.ones((128, 128)) * 0.1
+    level[:, 64:] = 0.6
+    grain = rng.normal(0.0, 1.0, (14, 128, 128)) * (0.01 + 0.05 * level)  # amplitude tracks level
+    stack = level[None, :, :] + grain
+
+    raw = evidence.grain_energy_map(stack, normalise_for_level=False)
+    normalised = evidence.grain_energy_map(stack, normalise_for_level=True)
+    contrast = lambda m: abs(m[:, :48].mean() - m[:, 80:].mean()) / m.mean()  # noqa: E731
+    assert contrast(raw) > 0.5
+    assert contrast(normalised) < 0.15
+
+
+def test_the_energy_map_needs_at_least_two_frames() -> None:
+    with pytest.raises(DataError, match="at least two frames"):
+        evidence.grain_energy_map(np.zeros((1, 32, 32)))
 
 
 def test_without_a_second_source_screen_anchoring_is_unknown_not_assumed() -> None:

@@ -111,6 +111,7 @@ def read_face_probes(
     report_path: Path | str,
     scene_catalog_path: Path | str,
     *,
+    source_id: str = "",
     probe_fraction: float = 0.5,
 ) -> list[FaceObservation]:
     """Load per-scene face verdicts, timed at the frame the scout actually probed.
@@ -140,6 +141,7 @@ def read_face_probes(
                     area_ratio=float(row.get("best_face_area_ratio") or 0.0),
                     detection_score=float(row.get("max_detection_score") or 0.0),
                     source_scene=row["scene_id"],
+                    source_id=source_id,
                 )
             )
     if not observations:

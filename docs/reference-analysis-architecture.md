@@ -156,7 +156,7 @@ much material was needed — it was the shape of the selection tooling.
    bounding box; FaceMesh gives pixel geometry but is not joined to the catalogue.
 
    Step 2 joined what exists to intervals and, more usefully, *measured how thin it is*: of 8,660
-   intervals only **311 contain the probe frame** and 494 sit within 2 s of one. The other 4,406
+   intervals only **352 contain the probe frame** and 488 sit within 2 s of one. The other 4,371
    "face" intervals inherit a verdict from up to 439 s away. So this is not merely a resolution
    gap to be refined later — **the face evidence for most of the film does not exist yet**, and
    the honest fix is to re-probe at interval cadence rather than to interpolate what is there.
@@ -166,12 +166,26 @@ much material was needed — it was the shape of the selection tooling.
 5. ~~**No traceability from parameter to region.**~~ — closed by step 3. A knot in the amplitude
    curve could not name the regions behind it; `Region.region_id` is that name.
 6. **No holdout by construction.** The sixth control scene was chosen by hand and remembered.
-7. **Thresholds are scale-bound and nothing declares it.** Found while running step 3. Both
+7. ~~**Multi-source time axes were merged.**~~ — closed by review. Every temporal union pooled
+   spans across sources, so two films each contributing 0–2 s reported two seconds of coverage
+   instead of four, and `FaceObservation` carried no source identity at all — a probe from one
+   film could mark intervals in another as carrying an *observed* face. Unions and joins now
+   operate within `source_id`. Single-source work could never surface any of this, which is
+   exactly why it needed finding before profiles combine films, scans or reels.
+8. **Thresholds are scale-bound and nothing declares it.** Found while running step 3. Both
    `DEFAULT_BAND_EDGES` and `WindowGate.max_motion_energy` are absolute numbers compared against
    levels whose scale is chosen by the caller, so the same gate is 100× stricter or looser
    depending on what 1.0 means. Regions now *record* the scale, and a mismatch between edges and
    data is detected — but the gate itself still cannot check its own units. The fix is to declare
    thresholds against a named scale with a reference white, not to keep tuning the numbers.
+9. **Slow heterogeneity answered the wrong question.** — closed by review. The cross-source test
+   correlated blurred temporal *mean* images, which detects a shared **additive** fixed pattern
+   (scanner shading, vignetting, dirt) and cannot see a **multiplicative** envelope modulating
+   grain amplitude — the latter leaves the temporal mean untouched by construction. Measured on
+   two unrelated sequences built with an identical envelope, it scored **−0.07** and declared the
+   envelope not screen-anchored, while scoring **0.98** on a merely additive pattern. It now
+   compares level-normalised grain-energy maps, and the mean-image detector survives under its
+   accurate name, `additive_pattern_evidence`. The two are orthogonal on all four cases.
 
 ## 7. What survives from the work already done
 
@@ -191,8 +205,8 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
 ## 8. Sequencing
 
 1. ~~**Build the interval layer**~~ — done. `capabilities/catalogue/{survey,intervals}`. Run over
-   the existing 37,084-row survey it yields **8,660 cut-free intervals covering 147.6 minutes**,
-   of which **2,860 are stable at motion p90 ≤ 1.0, covering 55.0 minutes** — against 4 scenes ×
+   the existing 37,084-row survey it yields **8,660 cut-free intervals covering 148.6 minutes**,
+   of which **2,860 are stable at motion p90 ≤ 1.0, covering 57.5 minutes** — against 4 scenes ×
    5 s = 0.3 minutes in use. No decoding was needed.
 
    The within-frame decomposition earned its place immediately. By frame *mean* the film has 98
@@ -213,15 +227,15 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
 
    | | intervals | of which stable |
    |---|---|---|
-   | face reported, any confidence | 5,211 | 1,865 |
-   | — observed (probe inside the interval) | 311 | **117** |
-   | — near (≤ 2 s) | 494 | **154** |
-   | — inherited (same range, far away) | 4,406 | 1,594 |
+   | face reported, any confidence | 5,211 | 1,864 |
+   | — observed (probe inside the interval) | 352 | **130** |
+   | — near (≤ 2 s) | 488 | **150** |
+   | — inherited (same range, far away) | 4,371 | 1,584 |
 
-   A query for "stable intervals with a face" returns 1,865, but **1,594 of those rest on a probe
-   frame that may be minutes away**. The honest skin corpus is 271 intervals, and 51 of those also
+   A query for "stable intervals with a face" returns 1,864, but **1,584 of those rest on a probe
+   frame that may be minutes away**. The honest skin corpus is 280 intervals, and 58 of those also
    carry a face large enough to sample (area ≥ 5%). Still an order of magnitude above the four
-   scenes in use — and now the difference between 1,865 and 271 is visible instead of assumed.
+   scenes in use — and now the difference between 1,864 and 280 is visible instead of assumed.
 
    Saturation bands were calibrated against the measured distribution over 37,084 frames
    (p25 13.2, p75 21.4, p95 32.2) rather than guessed: neutral 1,437, low 4,932, moderate 1,712,
@@ -243,7 +257,7 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    gaps 2 and 5. Four things came out of running it that were not visible before:
 
    **A region count is not a sample size.** Those 629 regions are 8 disjoint spans totalling
-   **14.0 seconds** — 79 tiles per span, all views of the same few frames. `independence()`
+   **16.0 seconds** — 79 tiles per span, all views of the same few frames. `independence()`
    reports the merged, disjoint time behind any selection, and `per_interval_cap` forces spread
    over depth. A corpus that reports 629 has said almost nothing about how much film it saw.
 

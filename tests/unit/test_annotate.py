@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import numpy as np
 import pytest
 
@@ -186,6 +188,46 @@ def test_an_annotated_interval_serialises_with_both_annotations() -> None:
     assert record["face"]["confidence"]
     assert "saturation_band" in record["colour"]
     assert record["source_id"] == "src"
+
+
+# -------------------------------------------------------------- multiple sources
+
+
+def _two_source_intervals() -> list[iv.Interval]:
+    first = _intervals()[:3]
+    return first + [replace(one, source_id="other") for one in first]
+
+
+def test_a_probe_only_joins_intervals_from_its_own_source() -> None:
+    """Two films both have a second 1.0. Joining on time alone marked intervals in one film as
+    carrying an *observed* face because the other film had a probe there."""
+    intervals = _two_source_intervals()
+    probe = replace(_probe(intervals[0].start_s + 0.5), source_id="src")
+    annotated = an.annotate(intervals, [probe])
+
+    for entry in annotated:
+        if entry.source_id == "src":
+            continue
+        assert not entry.face.detected
+        assert entry.face.confidence is an.FaceConfidence.NONE
+    assert any(e.face.confidence is an.FaceConfidence.OBSERVED for e in annotated)
+
+
+def test_an_unscoped_probe_is_refused_when_the_source_is_ambiguous() -> None:
+    with pytest.raises(SelectionError, match="cannot say which source"):
+        an.annotate(_two_source_intervals(), [_probe(1.0)])
+
+
+def test_an_unscoped_probe_is_fine_with_a_single_source() -> None:
+    """The ordinary single-film case must stay as simple as it was."""
+    intervals = _intervals()[:3]
+    annotated = an.annotate(intervals, [_probe(intervals[0].start_s + 0.5)])
+    assert annotated[0].face.confidence is an.FaceConfidence.OBSERVED
+
+
+def test_observations_carry_the_source_they_came_from() -> None:
+    built = an.observations_from_probes([1.0], [True], source_id="filmA")
+    assert built[0].source_id == "filmA"
 
 
 def test_observations_can_be_built_from_parallel_columns() -> None:
