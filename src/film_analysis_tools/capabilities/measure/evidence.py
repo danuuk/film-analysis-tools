@@ -357,6 +357,10 @@ def additive_pattern_evidence(
 
 
 def _correlate(first: np.ndarray, second: np.ndarray) -> float | None:
+    if first.shape != second.shape:
+        raise DataError(
+            f"cannot correlate maps of different geometry: {first.shape} vs {second.shape}"
+        )
     if first.std() <= EPS or second.std() <= EPS:
         return None
     return float(np.corrcoef(first.ravel(), second.ravel())[0, 1])
@@ -400,10 +404,22 @@ def grain_energy_map(
     energy = box_blur(energy, blur_radius)
 
     if normalise_for_level:
-        level = box_blur(stack.mean(axis=0), blur_radius)
+        # The aligned residual is trimmed by the alignment margin, so the level map has to be
+        # trimmed to match. Without this the two grids differ by a few pixels per edge and the
+        # per-level lookup indexes one array with the other's mask.
+        level = _match(box_blur(stack.mean(axis=0), blur_radius), energy.shape)
         expected = _expected_energy_at_level(level, energy, bins=level_bins)
         energy = energy / np.maximum(expected, EPS)
     return energy
+
+
+def _match(image: np.ndarray, shape: tuple[int, ...]) -> np.ndarray:
+    """Centre-crop ``image`` onto ``shape``."""
+    top = (image.shape[0] - shape[0]) // 2
+    left = (image.shape[1] - shape[1]) // 2
+    if top < 0 or left < 0:
+        raise DataError(f"cannot crop {image.shape} onto the larger {shape}")
+    return np.asarray(image[top : top + shape[0], left : left + shape[1]])
 
 
 def _expected_energy_at_level(level: np.ndarray, energy: np.ndarray, *, bins: int) -> np.ndarray:

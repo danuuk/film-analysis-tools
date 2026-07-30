@@ -80,6 +80,16 @@ MIN_ALIGNMENT_GAIN = 0.05
 #: mis-aligned: anti-correlation makes zero lag the *worst* cross-correlation, so the peak search
 #: moves away from it and the measured correlation collapses toward zero.
 MIN_STRUCTURE_SNR = 1.5
+
+#: Magnitude at which the correlation estimate is clamped.
+#:
+#: A solution sitting on this bound is **not identified**: the data said "at least this
+#: correlated" and the estimator had nowhere further to go. Two saturated estimates then agree
+#: with each other perfectly, so a consistency check alone calls them trustworthy — while the
+#: amplitude correction 1/sqrt(1-rho) multiplies sigma by 10 at the bound. Measured on the
+#: committed run, Sony's six saturated points had median sigma 0.00736 against 0.000759 for the
+#: nineteen identified ones: a tenfold inflation produced entirely by the boundary.
+RHO_BOUND = 0.99
 EPS = 1.0e-12
 
 
@@ -281,9 +291,38 @@ class ResidualEstimate:
 
     sample_count: int
 
+    raw_rho: float = 0.0
+    """The unclamped lag-2 solution. Beyond ``+/-RHO_BOUND`` the AR(1) model does not fit, and the
+    clamped ``rho`` is a lower limit rather than a measurement."""
+
+    raw_rho_from_lag4: float = 0.0
+    """The unclamped lag-4 solution, for the same reason."""
+
+    @property
+    def rho_saturated(self) -> bool:
+        """Whether either correlation estimate sat on the clamp rather than inside it."""
+        return abs(self.rho) >= RHO_BOUND - 1e-9 or abs(self.rho_from_lag4) >= RHO_BOUND - 1e-9
+
+    @property
+    def parameter_identified(self) -> bool:
+        """Whether the correlation was actually determined by the data.
+
+        False at the bound. A saturated estimate is a lower limit, not a measurement, and it must
+        not receive the ``1/sqrt(1-rho)`` amplitude correction or a trustworthy label — two
+        estimates pinned to the same edge look perfectly consistent while carrying no information
+        about how correlated the window really is.
+        """
+        return not self.rho_saturated
+
     @property
     def correlation_consistent(self) -> bool:
-        """Whether lag 4 agrees with lag 1 and 2 on the correlation."""
+        """Whether lag 4 agrees with lag 1 and 2 on the correlation.
+
+        Saturation is excluded first: agreement between two clamped values is an artefact of the
+        clamp, not evidence.
+        """
+        if self.rho_saturated:
+            return False
         return abs(self.rho - self.rho_from_lag4) <= 0.10
 
     @property
@@ -299,7 +338,7 @@ class ResidualEstimate:
         So the correlation is only meaningful on a window that is not drifting. This is the
         difference between rejecting a window and mismeasuring it.
         """
-        return not self.drifting and self.correlation_consistent
+        return not self.drifting and self.parameter_identified and self.correlation_consistent
 
     @property
     def has_alignable_structure(self) -> bool:
@@ -426,7 +465,7 @@ def aligned_residuals(
     picture's own edges into the residual — which is exactly what a noise power spectrum and a
     tail statistic are most sensitive to.
     """
-    deltas, _, aligned = _aligned_differences(
+    deltas, _, _ = _aligned_differences(
         np.asarray(frames, dtype=np.float64),
         lag,
         blur_radius=blur_radius,
@@ -436,7 +475,10 @@ def aligned_residuals(
     )
     if deltas.size == 0:
         raise DataError("cannot form residuals: too few frames for the requested lag")
-    return np.asarray(_trim(deltas, max_shift if aligned else 0) / np.sqrt(2.0))
+    # Trimmed whenever alignment was *requested*, not only when it fired. Otherwise the output
+    # geometry depends on the picture — two windows of identical size come back different shapes,
+    # and anything that compares them across sources fails or, worse, silently misaligns.
+    return np.asarray(_trim(deltas, max_shift if align else 0) / np.sqrt(2.0))
 
 
 def _trim(deltas: np.ndarray, margin: int) -> np.ndarray:
@@ -500,16 +542,22 @@ def extract(
     var4 = variances.get(4)
 
     # rho from the lag-2 to lag-1 variance ratio: Var(d2)/Var(d1) = 1 + rho.
-    rho = float(np.clip(var2 / var1 - 1.0, -0.99, 0.99)) if var2 is not None and var1 > EPS else 0.0
+    raw_rho = float(var2 / var1 - 1.0) if var2 is not None and var1 > EPS else 0.0
+    rho = float(np.clip(raw_rho, -RHO_BOUND, RHO_BOUND))
 
     # Lag 4 must satisfy Var(d4)/Var(d1) = 1 + rho + rho^2 + rho^3. Solve numerically for an
     # independent estimate; disagreement means the AR(1) model does not describe this window.
+    raw_rho_from_lag4 = raw_rho
     rho_from_lag4 = rho
     if var4 is not None and var1 > EPS:
         target = var4 / var1
-        candidates = np.linspace(-0.99, 0.99, 1991)
+        candidates = np.linspace(-RHO_BOUND, RHO_BOUND, 1991)
         predicted = 1.0 + candidates + candidates**2 + candidates**3
         rho_from_lag4 = float(candidates[int(np.argmin(np.abs(predicted - target)))])
+        # Whether the solution actually sat inside the search range, or was pinned to its edge.
+        raw_rho_from_lag4 = rho_from_lag4
+        if abs(rho_from_lag4) >= RHO_BOUND - 1e-9:
+            raw_rho_from_lag4 = float(np.sign(rho_from_lag4) * max(abs(target), RHO_BOUND))
 
     legacy_sigma = float(np.sqrt(max(var1, 0.0) / 2.0))
     sigma = float(np.sqrt(max(var1, 0.0) / (2.0 * max(1.0 - rho, EPS))))
@@ -523,6 +571,8 @@ def extract(
         legacy_sigma=legacy_sigma,
         lag_variances=variances,
         rho_from_lag4=rho_from_lag4,
+        raw_rho=raw_rho,
+        raw_rho_from_lag4=raw_rho_from_lag4,
         subpixel_residual=max((shift.subpixel_magnitude for shift in all_shifts), default=0.0),
         at_bound=any(shift.at_bound for shift in all_shifts),
         max_integer_shift=max(
@@ -547,6 +597,7 @@ __all__ = [
     "DEFAULT_MOTION_BLUR_RADIUS",
     "MIN_ALIGNMENT_GAIN",
     "MIN_STRUCTURE_SNR",
+    "RHO_BOUND",
     "SUBPIXEL_REJECT",
     "ResidualEstimate",
     "Shift",

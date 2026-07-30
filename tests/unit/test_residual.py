@@ -258,3 +258,56 @@ def test_fixed_pattern_noise_is_invisible_to_temporal_differencing() -> None:
     with_pattern = residual.extract(clean + envelope[None, :, :])
     without = residual.extract(clean)
     assert with_pattern.sigma == pytest.approx(without.sigma, rel=1e-9)
+
+
+# ---------------------------------------------------- correlation identifiability
+
+
+def _estimate(**kwargs: float) -> residual.ResidualEstimate:
+    base: dict[str, object] = {
+        "sigma": 0.01,
+        "rho": 0.5,
+        "legacy_sigma": 0.01,
+        "lag_variances": {1: 1.0},
+        "rho_from_lag4": 0.5,
+        "subpixel_residual": 0.0,
+        "max_integer_shift": 0,
+        "structure_snr": 1.0,
+        "at_bound": False,
+        "structure": 0.0,
+        "alignment_applied": False,
+        "motion_energy": 0.0,
+        "grain_hp_std": 0.01,
+        "sample_count": 100,
+    }
+    base.update(kwargs)
+    return residual.ResidualEstimate(**base)  # type: ignore[arg-type]
+
+
+def test_a_saturated_correlation_is_not_identified() -> None:
+    """The failure this exists for.
+
+    rho is clamped to +/-0.99. Two estimates pinned to the same edge agree perfectly, so a
+    consistency check alone called them trustworthy — while the amplitude correction
+    1/sqrt(1-rho) multiplies sigma by 10 there. On the committed run Sony's six saturated points
+    had median sigma 0.00736 against 0.000759 for the nineteen identified ones.
+    """
+    saturated = _estimate(rho=residual.RHO_BOUND, rho_from_lag4=residual.RHO_BOUND)
+    assert saturated.rho_saturated
+    assert not saturated.parameter_identified
+    assert not saturated.correlation_consistent, "agreement at the clamp is an artefact"
+    assert not saturated.correlation_trustworthy
+
+
+def test_an_interior_correlation_is_identified() -> None:
+    inside = _estimate(rho=0.40, rho_from_lag4=0.43)
+    assert not inside.rho_saturated
+    assert inside.parameter_identified
+    assert inside.correlation_trustworthy
+
+
+def test_the_unclamped_solution_is_kept() -> None:
+    """A clamped rho is a lower limit; the raw value says how far outside the model the data is."""
+    frames = synthetic.sequence(synthetic.SyntheticSpec(frames=8, sigma=0.01, rho=0.0, seed=5))
+    estimate = residual.extract(frames)
+    assert estimate.raw_rho == pytest.approx(estimate.rho, abs=1e-6)

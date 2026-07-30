@@ -44,7 +44,7 @@ from film_analysis_tools.capabilities.catalogue import ingest
 from film_analysis_tools.capabilities.catalogue import intervals as iv
 from film_analysis_tools.capabilities.catalogue import regions as rg
 from film_analysis_tools.capabilities.catalogue.survey import FrameSurvey
-from film_analysis_tools.capabilities.measure import admissibility, evidence, windows
+from film_analysis_tools.capabilities.measure import admissibility, evidence, residual, windows
 from film_analysis_tools.capabilities.source.record import (
     Cadence,
     Crop,
@@ -100,6 +100,9 @@ class SourcePlan:
     the slice unusable on exactly the material it exists for.
     """
 
+    survey_is_cropped: bool = False
+    """Whether ``survey_csv`` was produced with the active-picture crop already applied."""
+
     survey_fps: float = 4.0
     survey_width: int = 640
     window_s: float = 2.0
@@ -115,6 +118,12 @@ class SourcePlan:
     frames_per_interval: int = 10
     tile_size: int = 128
     tile_stride: int = 256
+
+    deep_frames: int = 60
+    """Frames to follow a single tile for, in the deep probe."""
+
+    deep_tiles: int = 3
+    """How many tiles to follow. Spatial coverage traded for temporal support."""
 
     def __post_init__(self) -> None:
         if self.transfer not in ("pq", "slog3"):
@@ -491,6 +500,15 @@ class IntervalEvidence:
     distribution: evidence.DistributionEvidence | None
     heterogeneity: evidence.HeterogeneityEvidence | None
     temporal: evidence.TemporalEvidence | None
+    distribution_trustworthy: evidence.DistributionEvidence | None = None
+    """The same measurement restricted to windows that pass the temporal trust gate.
+
+    Alignment removes integer translation; it does not remove sub-pixel deformation, local motion
+    or model failure. "Heavy tails survive alignment" and "heavy tails survive contamination
+    rejection" are different claims, and only this one supports the second.
+    """
+
+    tails: TailDiagnostics | None = None
     skipped: tuple[str, ...] = ()
 
     def as_record(self) -> dict[str, Any]:
@@ -503,9 +521,20 @@ class IntervalEvidence:
                 "distribution_unclipped": self.unclipped_windows,
                 "temporal_trustworthy": self.trustworthy_windows,
             },
+            "temporal_trusted_share_of_accepted": (
+                self.trustworthy_windows / self.windows if self.windows else 0.0
+            ),
+            "note": (
+                "temporal.trusted_fraction is 1.0 by construction: only trustworthy windows are "
+                "passed to the estimator. Use temporal_trusted_share_of_accepted instead."
+            ),
             "amplitude": self.amplitude.as_record() if self.amplitude else None,
             "spectrum": self.spectrum.as_record() if self.spectrum else None,
             "distribution": self.distribution.as_record() if self.distribution else None,
+            "distribution_trustworthy": (
+                self.distribution_trustworthy.as_record() if self.distribution_trustworthy else None
+            ),
+            "tails": self.tails.as_record() if self.tails else None,
             "heterogeneity": self.heterogeneity.as_record() if self.heterogeneity else None,
             "temporal": self.temporal.as_record() if self.temporal else None,
             "skipped": list(self.skipped),
@@ -550,6 +579,7 @@ class SourceOutcome:
     regions: rg.RegionIndex
     seconds: Seconds
     per_interval: tuple[IntervalEvidence, ...]
+    deep: tuple[DeepProbe, ...] = ()
     screen_anchoring: dict[str, Any] = field(default_factory=dict)
     notes: tuple[str, ...] = ()
 
@@ -561,12 +591,31 @@ class SourceOutcome:
         values = [pick(one) for one in self.per_interval]
         return Spread(values=tuple(v for v in values if v is not None))
 
-    def sigma(self) -> Spread:
+    def raw_sigma(self) -> Spread:
+        """Median sigma over **every** point, trustworthy or not.
+
+        A descriptive median of all residual estimates, not a validated grain amplitude. Reported
+        under its own name because 3 of 245 Pulp points and 28 of 94 Sony points were trustworthy,
+        and quoting the all-points median as "sigma" implies support that does not exist.
+        """
         return self._spread(
             lambda one: (
                 float(np.median([p.sigma for p in one.amplitude.points]))
                 if one.amplitude and one.amplitude.points
                 else None
+            )
+        )
+
+    def trusted_sigma(self) -> Spread:
+        """Median sigma over points that are trustworthy *and* whose correlation was identified.
+
+        A point pinned to the correlation bound is excluded: it receives a ``1/sqrt(1-rho)``
+        correction of 10x that the data never justified. On the previous run Sony's six saturated
+        points had median sigma 0.00736 against 0.000759 for the nineteen identified ones.
+        """
+        return self._spread(
+            lambda one: (
+                float(np.median([p.sigma for p in _identified(one)])) if _identified(one) else None
             )
         )
 
@@ -581,21 +630,53 @@ class SourceOutcome:
     def rho(self) -> Spread:
         return self._spread(lambda one: one.temporal.rho if one.temporal else None)
 
+    def kurtosis_normalised(self) -> Spread:
+        return self._spread(lambda one: one.tails.kurtosis_normalised if one.tails else None)
+
+    def mixing_prediction(self) -> Spread:
+        return self._spread(lambda one: one.tails.mixing_prediction if one.tails else None)
+
+    def exact_zero(self) -> Spread:
+        return self._spread(lambda one: one.tails.exact_zero_fraction if one.tails else None)
+
+    def skew(self) -> Spread:
+        return self._spread(lambda one: one.tails.skew_pooled if one.tails else None)
+
+    def kurtosis_trustworthy(self) -> Spread:
+        return self._spread(
+            lambda one: (
+                one.distribution_trustworthy.excess_kurtosis
+                if one.distribution_trustworthy
+                else None
+            )
+        )
+
     def envelope(self) -> Spread:
         return self._spread(
             lambda one: one.heterogeneity.envelope_ratio if one.heterogeneity else None
         )
 
-    def trusted_points(self) -> tuple[int, int]:
-        trusted = total = 0
+    def trusted_points(self) -> tuple[int, int, int]:
+        """``(identified, trustworthy, total)`` amplitude points."""
+        identified = trusted = total = 0
         for one in self.per_interval:
             if one.amplitude:
+                identified += len(_identified(one))
                 trusted += len(one.amplitude.trusted)
                 total += len(one.amplitude.points)
-        return trusted, total
+        return identified, trusted, total
+
+    def saturated_points(self) -> int:
+        return sum(
+            1
+            for one in self.per_interval
+            if one.amplitude
+            for point in one.amplitude.trusted
+            if abs(point.rho) >= residual.RHO_BOUND - 1e-9
+        )
 
     def as_record(self) -> dict[str, Any]:
-        trusted, total = self.trusted_points()
+        identified, trusted, total = self.trusted_points()
         return {
             "source": self.record.as_record(),
             "plan": {
@@ -610,18 +691,317 @@ class SourceOutcome:
             "seconds": self.seconds.as_record(),
             "regions": self.regions.as_record(),
             "intervals_measured": len(self.per_interval),
-            "amplitude_points": {"trusted": trusted, "total": total},
+            "amplitude_points": {
+                "identified": identified,
+                "trustworthy": trusted,
+                "total": total,
+                "saturated_rho": self.saturated_points(),
+            },
             "aggregate": {
-                "sigma": self.sigma().as_record(),
+                "raw_sigma": self.raw_sigma().as_record(),
+                "trusted_sigma": self.trusted_sigma().as_record(),
                 "whiteness": self.whiteness().as_record(),
                 "excess_kurtosis": self.kurtosis().as_record(),
                 "rho": self.rho().as_record(),
                 "envelope_ratio": self.envelope().as_record(),
+                "kurtosis_normalised": self.kurtosis_normalised().as_record(),
+                "kurtosis_trustworthy": self.kurtosis_trustworthy().as_record(),
+                "mixing_prediction": self.mixing_prediction().as_record(),
+                "skew": self.skew().as_record(),
+                "exact_zero_fraction": self.exact_zero().as_record(),
             },
             "per_interval": [one.as_record() for one in self.per_interval],
+            "deep_probes": [one.as_record() for one in self.deep],
             "screen_anchoring": self.screen_anchoring,
             "notes": list(self.notes),
         }
+
+
+# ------------------------------------------------------- why the tails are heavy
+
+
+@dataclass(frozen=True)
+class TailDiagnostics:
+    """What is actually producing the heavy tails, separated into candidate causes.
+
+    Excess kurtosis of +90 on Pulp Fiction and +2989 on the Sony clip is a real property of the
+    extracted residual arrays. It is not automatically a property of grain, and four different
+    mechanisms produce it:
+
+    * **scale mixing** — pooling windows of different amplitudes makes a narrow peak with broad
+      tails even when every window is perfectly Gaussian. ``mixing_prediction`` is the excess
+      kurtosis expected from the observed per-window variance spread *alone*.
+    * **quantisation and zero inflation** — pixels that do not change between frames pile up at
+      exactly zero. ``exact_zero_fraction`` and ``step_occupancy`` measure it in code units.
+    * **isolated events** — one bad frame pair dominating. ``outlier_fraction_per_pair`` shows
+      whether the tails are spread across pairs or concentrated in one transition.
+    * **genuinely non-Gaussian grain** — what is left after the other three are accounted for.
+
+    ``kurtosis_normalised`` is the one that answers "after accounting for its changing strength,
+    what shape does this residual have": each window is divided by its own robust scale before
+    pooling, so mixing cannot contribute.
+    """
+
+    kurtosis_pooled: float
+    kurtosis_normalised: float
+    kurtosis_per_window: Spread
+    mixing_prediction: float
+    skew_pooled: float
+    exact_zero_fraction: float
+    step_occupancy: dict[str, float]
+    outlier_fraction_per_pair: tuple[float, ...]
+    windows_used: int
+
+    @property
+    def mixing_explains(self) -> float:
+        """Share of the observed excess kurtosis the variance spread alone would produce."""
+        return self.mixing_prediction / self.kurtosis_pooled if self.kurtosis_pooled > 0 else 0.0
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "kurtosis_pooled": self.kurtosis_pooled,
+            "kurtosis_normalised": self.kurtosis_normalised,
+            "kurtosis_per_window": self.kurtosis_per_window.as_record(),
+            "mixing_prediction": self.mixing_prediction,
+            "mixing_explains": self.mixing_explains,
+            "skew_pooled": self.skew_pooled,
+            "exact_zero_fraction": self.exact_zero_fraction,
+            "step_occupancy": self.step_occupancy,
+            "outlier_fraction_per_pair": list(self.outlier_fraction_per_pair),
+            "windows_used": self.windows_used,
+        }
+
+
+def _excess_kurtosis(values: np.ndarray) -> float:
+    centred = values - values.mean()
+    scale = float(np.std(centred))
+    if scale <= 1e-15:
+        return 0.0
+    return float(np.mean((centred / scale) ** 4) - 3.0)
+
+
+def _skew(values: np.ndarray) -> float:
+    centred = values - values.mean()
+    scale = float(np.std(centred))
+    if scale <= 1e-15:
+        return 0.0
+    return float(np.mean((centred / scale) ** 3))
+
+
+def _robust_scale(values: np.ndarray) -> float:
+    """1.4826 x MAD, with a floor at a fraction of the standard deviation.
+
+    MAD collapses toward zero on a zero-inflated window — where a third of pixels do not change
+    between frames, the median absolute deviation can be a single quantisation step or less.
+    Dividing by that *amplifies* the tails instead of removing the scale, which is exactly what
+    happened on Pulp Fiction: per-window normalisation reported a median excess kurtosis of
+    +1481 against +24.8 pooled. The floor keeps the normalisation a scale correction rather than
+    an outlier magnifier.
+    """
+    median = float(np.median(values))
+    mad = float(1.4826 * np.median(np.abs(values - median)))
+    return max(mad, 0.25 * float(np.std(values)))
+
+
+def tail_diagnostics(
+    linear: np.ndarray,
+    container: np.ndarray,
+    selected: Sequence[windows.Window],
+) -> TailDiagnostics:
+    """Decompose the residual's heavy tails into the mechanisms that could produce them."""
+    stacks = [residual.aligned_residuals(window.slice_of(linear)) for window in selected]
+    pooled = np.concatenate([stack.ravel() for stack in stacks])
+
+    variances = np.asarray([float(np.var(stack)) for stack in stacks])
+    # A scale mixture of zero-mean Gaussians has kurtosis 3 E[v^2]/E[v]^2, so the excess produced
+    # by mixing alone is that minus 3 -- with no contribution from the shape of any component.
+    mean_variance = float(np.mean(variances)) if variances.size else 0.0
+    mixing = (
+        3.0 * float(np.mean(variances**2)) / (mean_variance**2) - 3.0
+        if mean_variance > 1e-30
+        else 0.0
+    )
+
+    normalised = np.concatenate(
+        [
+            (stack / scale).ravel()
+            for stack, scale in ((s, _robust_scale(s.ravel())) for s in stacks)
+            if scale > 1e-15
+        ]
+        or [np.zeros(1)]
+    )
+
+    # Quantisation is only visible in code units: the transfer smears the steps.
+    code_deltas = np.diff(container * 1023.0, axis=0)
+    tiles = np.concatenate([window.slice_of(code_deltas).ravel() for window in selected])
+    rounded = np.rint(tiles)
+    occupancy = {
+        str(int(step)): float(np.mean(rounded == step)) for step in (-2.0, -1.0, 0.0, 1.0, 2.0)
+    }
+
+    scale = _robust_scale(pooled)
+    per_pair: list[float] = []
+    for index in range(stacks[0].shape[0] if stacks else 0):
+        pair = np.concatenate([stack[index].ravel() for stack in stacks])
+        per_pair.append(float(np.mean(np.abs(pair) > 5.0 * scale)) if scale > 1e-15 else 0.0)
+
+    return TailDiagnostics(
+        kurtosis_pooled=_excess_kurtosis(pooled),
+        kurtosis_normalised=_excess_kurtosis(normalised),
+        kurtosis_per_window=Spread(tuple(_excess_kurtosis(s.ravel()) for s in stacks)),
+        mixing_prediction=mixing,
+        skew_pooled=_skew(pooled),
+        exact_zero_fraction=float(np.mean(tiles == 0.0)),
+        step_occupancy=occupancy,
+        outlier_fraction_per_pair=tuple(per_pair),
+        windows_used=len(selected),
+    )
+
+
+# --------------------------------------------------------------- the deep probe
+
+
+@dataclass(frozen=True)
+class DeepProbe:
+    """One tile, followed for far longer than the wide pass can afford.
+
+    Ten frames is 0.417 s at 23.976 fps, and it is too short to say anything firm about temporal
+    behaviour: an AR(1) correlation estimated from nine difference pairs is barely constrained,
+    which is part of why so many estimates ran to the clamp. Following a handful of tiles for
+    48-72 frames costs about the same decode as the wide pass and answers the temporal question
+    properly, at the price of spatial coverage.
+    """
+
+    interval_start_s: float
+    x: int
+    y: int
+    size: int
+    frames: int
+    level: float
+    sigma: float
+    legacy_sigma: float
+    rho: float
+    raw_rho: float
+    rho_from_lag4: float
+    identified: bool
+    trustworthy: bool
+    tails: TailDiagnostics
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "interval_start_s": self.interval_start_s,
+            "tile": {"x": self.x, "y": self.y, "size": self.size},
+            "frames": self.frames,
+            "level": self.level,
+            "sigma": self.sigma,
+            "legacy_sigma": self.legacy_sigma,
+            "rho": self.rho,
+            "raw_rho": self.raw_rho,
+            "rho_from_lag4": self.rho_from_lag4,
+            "parameter_identified": self.identified,
+            "trustworthy": self.trustworthy,
+            "tails": self.tails.as_record(),
+        }
+
+    def line(self) -> str:
+        flag = "identified" if self.identified else "SATURATED"
+        return (
+            f"    t={self.interval_start_s:7.0f}s ({self.x},{self.y})  {self.frames}f  "
+            f"level {self.level:.4f}  sigma {self.sigma:.5f}  rho {self.rho:+.3f} "
+            f"(raw {self.raw_rho:+.3f}, {flag})  kurt {self.tails.kurtosis_pooled:+.1f} -> "
+            f"{self.tails.kurtosis_normalised:+.1f} norm  zeros "
+            f"{self.tails.exact_zero_fraction:.1%}"
+        )
+
+
+def decode_tile(
+    plan: SourcePlan,
+    stream: dict[str, Any],
+    crop: Crop,
+    window: windows.Window,
+    start_s: float,
+    count: int,
+    *,
+    margin: int = 16,
+) -> np.ndarray:
+    """A long run of frames for one tile, in the container domain.
+
+    Cropping in ffmpeg rather than decoding whole frames is what makes the long run affordable:
+    72 frames of one 160 px tile is a rounding error beside 72 frames of 4K.
+    """
+    origin_x, origin_y, active_w, active_h = crop.applied_to(
+        int(stream["width"]), int(stream["height"])
+    )
+    left = max(0, window.x - margin)
+    top = max(0, window.y - margin)
+    width = min(window.size + 2 * margin, active_w - left)
+    height = min(window.size + 2 * margin, active_h - top)
+    result = subprocess.run(
+        [
+            FFMPEG, "-hide_banner", "-loglevel", "error", "-nostdin",
+            "-ss", f"{start_s:.3f}", "-i", str(plan.path), "-map", "0:v:0",
+            "-frames:v", str(count),
+            "-vf", f"crop={width}:{height}:{origin_x + left}:{origin_y + top},format=gray16le",
+            "-f", "rawvideo", "-pix_fmt", "gray16le", "-",
+        ],
+        capture_output=True, check=False,
+    )  # fmt: skip
+    needed = count * width * height * 2
+    if len(result.stdout) < needed:
+        raise DataError(
+            f"{plan.source_id}: deep probe decoded "
+            f"{len(result.stdout) // max(width * height * 2, 1)} of {count} frames"
+        )
+    raw = np.frombuffer(result.stdout[:needed], dtype="<u2").reshape(count, height, width)
+    return raw.astype(np.float64) / 64.0 / 1023.0
+
+
+def deep_probe(
+    plan: SourcePlan,
+    stream: dict[str, Any],
+    crop: Crop,
+    interval: iv.Interval,
+    window: windows.Window,
+) -> DeepProbe:
+    """Follow one tile for ``plan.deep_frames`` frames and re-ask the temporal question."""
+    container = decode_tile(plan, stream, crop, window, interval.start_s, plan.deep_frames)
+    linear = to_linear(plan, container)
+    estimate = residual.extract(linear)
+    whole = windows.Window(
+        x=0,
+        y=0,
+        size=min(linear.shape[1], linear.shape[2]),
+        level=float(linear.mean()),
+        motion_energy=estimate.motion_energy,
+        structure_snr=estimate.structure_snr,
+        subpixel_residual=estimate.subpixel_residual,
+        band=window.band,
+        texture=window.texture,
+        position=window.position,
+    )
+    return DeepProbe(
+        interval_start_s=interval.start_s,
+        x=window.x,
+        y=window.y,
+        size=window.size,
+        frames=int(linear.shape[0]),
+        level=float(linear.mean()),
+        sigma=estimate.sigma,
+        legacy_sigma=estimate.legacy_sigma,
+        rho=estimate.rho,
+        raw_rho=estimate.raw_rho,
+        rho_from_lag4=estimate.rho_from_lag4,
+        identified=estimate.parameter_identified,
+        trustworthy=estimate.correlation_trustworthy,
+        tails=tail_diagnostics(linear, container, [whole]),
+    )
+
+
+def _identified(one: IntervalEvidence) -> list[evidence.AmplitudePoint]:
+    """Trustworthy points whose correlation was determined rather than pinned to the clamp."""
+    if not one.amplitude:
+        return []
+    return [point for point in one.amplitude.trusted if abs(point.rho) < residual.RHO_BOUND - 1e-9]
 
 
 def _clipped_fraction(container: np.ndarray, window: windows.Window) -> float:
@@ -665,6 +1045,18 @@ def _measure_interval(
     else:
         skipped.append("temporal: no window could vouch for its own correlation estimate")
 
+    # temporal_evidence reports the trusted fraction *of the windows it was given*. Since only
+    # trustworthy windows are passed, that is 1.0 by construction — the previous run recorded
+    # "100% trusted" for an interval where 1 of 60 accepted windows qualified. The honest figure
+    # is the share of accepted windows, and it is recorded here rather than left to be misread.
+
+    clean = [w for w in trustworthy if _clipped_fraction(container, w) <= MAX_WINDOW_CLIPPED]
+    distribution_trustworthy = evidence.distribution_evidence(linear, clean) if clean else None
+    if not clean:
+        skipped.append(
+            "distribution (trustworthy): no window is both unclipped and temporally trustworthy"
+        )
+
     return IntervalEvidence(
         interval_start_s=start_s,
         windows=len(accepted),
@@ -676,6 +1068,8 @@ def _measure_interval(
         distribution=distribution,
         heterogeneity=evidence.heterogeneity_evidence(linear, accepted),
         temporal=temporal,
+        distribution_trustworthy=distribution_trustworthy,
+        tails=tail_diagnostics(linear, container, unclipped or accepted),
         skipped=tuple(skipped),
     )
 
@@ -690,7 +1084,7 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
     stages: list[StageCount] = []
 
     frame_survey = load_survey(plan, stream, active)
-    if plan.survey_csv is not None and not active.is_full_frame:
+    if plan.survey_csv is not None and not active.is_full_frame and not plan.survey_is_cropped:
         notes.append(
             "the reused survey is a CODED-FRAME survey: its motion and level statistics include "
             f"the {active.y * 2 / int(stream['height']):.1%} of each frame that is letterbox, "
@@ -826,6 +1220,19 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
     ]
     evidence_s = len(per_interval) * plan.frames_per_interval / fps
 
+    # Follow a few tiles for much longer. Ten frames gives nine difference pairs, which is why so
+    # many correlation estimates ran to the clamp; deep_frames gives an actually constrained one.
+    deep: list[DeepProbe] = []
+    candidates: list[tuple[iv.Interval, windows.Window]] = []
+    for interval, _, _, accepted in measurable:
+        ranked = sorted(accepted, key=lambda w: w.motion_energy)
+        candidates.extend((interval, window) for window in ranked[:2])
+    for interval, window in candidates[: plan.deep_tiles]:
+        try:
+            deep.append(deep_probe(plan, stream, active, interval, window))
+        except DataError as error:
+            notes.append(f"deep probe skipped: {error}")
+
     return SourceOutcome(
         plan=plan,
         record=record,
@@ -833,6 +1240,7 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
         regions=index,
         seconds=Seconds(candidate=candidate_s, decoded=decoded_s, evidence=evidence_s),
         per_interval=tuple(per_interval),
+        deep=tuple(deep),
         screen_anchoring=_screen_anchoring(measurable),
         notes=tuple(notes),
     )
@@ -854,6 +1262,26 @@ def _screen_anchoring(
         return {"available": False, "reason": "needs two admissible intervals from one source"}
     first, last = measurable[0], measurable[-1]
     separation = abs(last[0].start_s - first[0].start_s)
+    pairs: list[dict[str, Any]] = []
+    for left in range(len(measurable)):
+        for right in range(left + 1, len(measurable)):
+            gap = abs(measurable[right][0].start_s - measurable[left][0].start_s)
+            if gap < MIN_ANCHOR_SEPARATION_S:
+                continue
+            a, b = measurable[left], measurable[right]
+            pairs.append(
+                {
+                    "interval_a_s": a[0].start_s,
+                    "interval_b_s": b[0].start_s,
+                    "separation_s": gap,
+                    "grain_envelope": evidence.heterogeneity_evidence(
+                        a[1], a[3], other_source=b[1]
+                    ).as_record(),
+                    "additive_pattern": evidence.additive_pattern_evidence(
+                        a[1], other_source=b[1]
+                    ).as_record(),
+                }
+            )
     if separation < MIN_ANCHOR_SEPARATION_S:
         return {
             "available": False,
@@ -864,15 +1292,20 @@ def _screen_anchoring(
                 "here would measure the same scene, not screen-anchored structure"
             ),
         }
-    envelope = evidence.heterogeneity_evidence(first[1], first[3], other_source=last[1])
-    additive = evidence.additive_pattern_evidence(first[1], other_source=last[1])
+    envelopes = [p["grain_envelope"]["screen_anchored_correlation"] for p in pairs]
+    additives = [p["additive_pattern"]["cross_source_correlation"] for p in pairs]
     return {
         "available": True,
-        "interval_a_s": first[0].start_s,
-        "interval_b_s": last[0].start_s,
-        "separation_s": separation,
-        "grain_envelope": envelope.as_record(),
-        "additive_pattern": additive.as_record(),
+        "pairs": len(pairs),
+        "widest_separation_s": separation,
+        "grain_envelope": Spread(tuple(v for v in envelopes if v is not None)).as_record(),
+        "additive_pattern": Spread(tuple(v for v in additives if v is not None)).as_record(),
+        "per_pair": pairs,
+        "claim": (
+            "No strong scan-fixed envelope was detected between these sampled interval pairs. "
+            "A correlation near zero rejects a strong common pattern; it does not rule out a "
+            "weaker scan-fixed component, and no null distribution was computed."
+        ),
     }
 
 
@@ -956,16 +1389,25 @@ def report(result: StudyResult) -> str:
             lines.append("  " + outcome.regions.summary().replace("\n", "\n  "))
 
         if outcome.measured:
-            trusted, total = outcome.trusted_points()
+            identified, trusted, total = outcome.trusted_points()
             lines += [
                 f"  measurements ({len(outcome.per_interval)} intervals, each measured "
                 "independently):",
-                f"    sigma        {outcome.sigma().line()}",
+                f"    raw sigma    {outcome.raw_sigma().line()}   (all points — descriptive only)",
+                f"    trusted sig  {outcome.trusted_sigma().line()}   (identified rho only)",
                 f"    whiteness    {outcome.whiteness().line()}",
-                f"    kurtosis     {outcome.kurtosis().line()}",
+                f"    kurtosis     {outcome.kurtosis().line()}   (pooled, all unclipped)",
+                f"      normalised {outcome.kurtosis_normalised().line()}   "
+                "(per-window scale removed)",
+                f"      mixing pred{outcome.mixing_prediction().line()}   "
+                "(expected from variance spread alone)",
+                f"      trustworthy{outcome.kurtosis_trustworthy().line()}",
+                f"    skew         {outcome.skew().line()}",
+                f"    exact zeros  {outcome.exact_zero().line()}",
                 f"    rho          {outcome.rho().line()}",
                 f"    envelope     {outcome.envelope().line()}",
-                f"    amplitude    {trusted}/{total} points trustworthy",
+                f"    amplitude    {identified} identified / {trusted} trustworthy / {total} "
+                f"points   ({outcome.saturated_points()} rejected at the rho bound)",
             ]
             routed = [
                 f"{one.flat_windows}f/{one.unclipped_windows}u/{one.trustworthy_windows}t "
@@ -979,16 +1421,20 @@ def report(result: StudyResult) -> str:
         else:
             lines.append("  measurements: NONE — nothing survived the chain")
 
+        if outcome.deep:
+            lines.append(f"  deep probe ({outcome.deep[0].frames} frames per tile):")
+            lines += [one.line() for one in outcome.deep]
+
         anchoring = outcome.screen_anchoring
         if anchoring.get("available"):
-            envelope = anchoring["grain_envelope"]
-            additive = anchoring["additive_pattern"]
             lines += [
-                f"  screen anchoring (same source, {anchoring['separation_s']:.0f}s apart):",
-                f"    grain envelope    corr {envelope['screen_anchored_correlation']}  "
-                f"anchored={envelope['is_screen_anchored']}",
-                f"    additive pattern  corr {additive['cross_source_correlation']}  "
-                f"anchored={additive['is_screen_anchored']}",
+                f"  screen anchoring ({anchoring['pairs']} interval pairs, up to "
+                f"{anchoring['widest_separation_s']:.0f}s apart):",
+                "    grain envelope    "
+                + Spread(tuple(anchoring["grain_envelope"]["values"])).line(),
+                "    additive pattern  "
+                + Spread(tuple(anchoring["additive_pattern"]["values"])).line(),
+                f"    {anchoring['claim']}",
             ]
         elif anchoring:
             lines.append(f"  screen anchoring: unavailable — {anchoring.get('reason')}")
@@ -998,12 +1444,25 @@ def report(result: StudyResult) -> str:
     return "\n".join(lines)
 
 
+def _redact(payload: dict[str, Any]) -> dict[str, Any]:
+    """Strip absolute paths, leaving the content hash as the identity.
+
+    The material lives outside every repository, so a committed result must not carry a path into
+    someone's home directory. The sha256 is what makes the source findable anyway.
+    """
+    for source in payload.get("sources", []):
+        record = source.get("source", {})
+        if record.get("path_hint"):
+            record["path_hint"] = Path(record["path_hint"]).name
+    return payload
+
+
 def write_outputs(result: StudyResult, directory: Path) -> tuple[Path, Path]:
     """Evidence JSON and the human report, side by side."""
     directory.mkdir(parents=True, exist_ok=True)
     json_path = directory / "grain_slice.json"
     text_path = directory / "grain_slice.txt"
-    json_path.write_text(json.dumps(result.as_record(), indent=2, allow_nan=False))
+    json_path.write_text(json.dumps(_redact(result.as_record()), indent=2, allow_nan=False))
     text_path.write_text(report(result) + "\n")
     return json_path, text_path
 
@@ -1011,6 +1470,7 @@ def write_outputs(result: StudyResult, directory: Path) -> tuple[Path, Path]:
 __all__ = [
     "MAX_WINDOW_CLIPPED",
     "MIN_ANCHOR_SEPARATION_S",
+    "DeepProbe",
     "IntervalEvidence",
     "Seconds",
     "SourceOutcome",
@@ -1018,7 +1478,10 @@ __all__ = [
     "Spread",
     "StageCount",
     "StudyResult",
+    "TailDiagnostics",
     "decode_signal",
+    "decode_tile",
+    "deep_probe",
     "detect_crop",
     "load_survey",
     "probe",
@@ -1027,6 +1490,7 @@ __all__ = [
     "run_source",
     "source_record",
     "survey",
+    "tail_diagnostics",
     "to_linear",
     "write_outputs",
 ]

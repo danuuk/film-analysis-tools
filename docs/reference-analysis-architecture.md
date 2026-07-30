@@ -334,33 +334,53 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
      two different cameras cannot. Comparing intervals 3 s apart in a tripod shot returned 0.93
      and 0.99 — a measurement of "same scene" — so a 60 s minimum separation is now enforced.
 
-   **What the corrected run says.** Reported as medians with ranges over independently measured
-   intervals:
+   **What the corrected run says**, after a second review round fixed four more defects:
 
-   | | σ | excess kurtosis | ρ | trustworthy points | whiteness |
-   |---|---|---|---|---|---|
-   | Pulp Fiction | 0.0056 (0.0025–0.0092, n=6) | +23.2 (+7.0…+89.8, n=6) | +0.38 (n=**2**) | **3 / 245** | **unavailable** |
-   | Sony C0014 | 0.0015 (0.0013–0.0026, n=4) | +640.7 (+82.5…+2989, n=4) | +0.42 (n=4) | 28 / 94 | **unavailable** |
+   - **ρ was saturating.** The estimate is clamped to ±0.99, and two estimates pinned to the same
+     edge agree perfectly — so a consistency check called them trustworthy while the amplitude
+     correction `1/√(1−ρ)` multiplied σ by 10. Sony's six saturated points had median σ 0.00736
+     against 0.000759 for the identified ones. A boundary solution is now `rho_saturated` and
+     never `parameter_identified`, the unclamped solution is kept, and **0 saturated points are
+     accepted** in the rerun.
+   - **σ mixed trustworthy and untrustworthy points.** Split into `raw_sigma` (descriptive, all
+     points) and `trusted_sigma` (identified ρ only).
+   - **`trusted_fraction` was 1.0 by construction**, since only trustworthy windows were passed to
+     the estimator — it read 100% where 1 of 60 accepted windows qualified. The share of *accepted*
+     windows is now recorded instead.
+   - **The Pulp survey was regenerated with the crop applied** (37,084 frames, ~50 min). It matters:
+     the letterbox was damping every frame's motion, so cut-free intervals fell from 2,671 to
+     **2,095** and detected cuts rose from 610 to 1,522.
 
-   Two results matter more than the numbers. **Whiteness is unavailable for both sources**: every
-   accepted tile in both is textured, so there was never a flat window to measure a noise power
-   spectrum on. The earlier "structured spectrum, whiteness 0.21 / 0.12" was computed on textured
-   windows and was not evidence of anything about grain — that claim is withdrawn. And Pulp
-   Fiction produced **3 trustworthy amplitude points out of 245**, with only 2 of 6 intervals able
-   to support a temporal estimate at all.
+   **The heavy tails were an artefact of the wide pass.** Ten frames gives nine difference pairs,
+   and pooling tiles at different amplitudes adds scale mixing on top. Following three tiles for
+   **60 frames** each says something entirely different:
 
-   Screen anchoring within Pulp Fiction, between intervals 6,498 s apart: grain envelope −0.023,
-   additive pattern −0.108. **No scan-fixed structure detected** — the first substantive negative
-   result the chain has produced. The Sony clip is too short to ask.
+   | | wide pass (10 frames, pooled) | deep probe (60 frames, one tile) |
+   |---|---|---|
+   | Pulp Fiction | kurtosis +24.8, σ 0.0044 raw | **kurtosis +1.0 / +0.7**, ρ +0.038 / +0.047, σ 0.00050 / 0.00061 |
+   | Sony C0014 | kurtosis +666, σ 0.0015 raw | **kurtosis +0.7 / +0.7 / +1.4**, ρ +0.372 / +0.390 / +0.443, σ ≈ 0.0006 |
 
-   The heavy tails survive alignment and unclipped-window routing and remain unexplained; they are
-   still consistent with codec damage but are not yet evidence of it. This is the concrete reason
-   the compact fit, holdout reconstruction and profile export are **not** built yet: with 3
-   trustworthy points and no spectrum, there is nothing a fit would be honest to run on.
+   Both sources are **near-Gaussian** when a tile is followed properly. The +2989 excess kurtosis
+   was the measurement, not the material. One Pulp tile remains pathological (kurtosis +198,
+   ρ +0.904) and is exactly the kind of contaminated tile the trust gates exist to catch.
 
-   Both artefacts are kept: [`docs/results/grain_slice_2026-07-30.json`](results/grain_slice_2026-07-30.json)
-   carries interval identities, point-level trust and full distributions;
-   [`docs/results/grain_slice_2026-07-30.txt`](results/grain_slice_2026-07-30.txt) is the report.
+   Two real differences between the sources survive:
+
+   - **Temporal correlation.** Pulp ρ ≈ 0.04 — effectively independent, as scanned film grain
+     should be. Sony ρ ≈ 0.37–0.44, consistent across tiles and with the wide pass's trusted
+     median. That is temporal processing in the camera, not grain.
+   - **Zero inflation.** Pulp ~3% of pixels unchanged between frames; Sony **28–34%**. A third of
+     the Sony frame does not move at all frame to frame.
+
+   Scale mixing was measured rather than assumed: predicted excess kurtosis from the per-window
+   variance spread alone is +5.5 (Pulp) and +16.3 (Sony), so it explains part of the wide-pass
+   figure and not the rest — the rest was the short sequence.
+
+   Screen anchoring now runs over **15 interval pairs** up to 6,512 s apart: grain envelope median
+   −0.003 (−0.085…+0.103), additive pattern median −0.006 (−0.133…+0.219). Stated as the bounded
+   claim it is: *no strong scan-fixed envelope was detected between these sampled pairs*; a
+   correlation near zero rejects a strong common pattern but does not rule out a weaker one, and
+   no null distribution was computed.
 
    Still open: the reused Pulp survey is a **coded-frame** survey, so its motion and level
    statistics include the 24.4% of each frame that is letterbox while extraction uses the active

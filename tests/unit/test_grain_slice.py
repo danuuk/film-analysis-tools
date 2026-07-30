@@ -270,3 +270,66 @@ def test_screen_anchoring_refuses_intervals_that_share_a_picture() -> None:
     grain envelope and 0.99 for the additive pattern. That is the same scene twice, not a
     scan-fixed pattern, and the test must decline rather than report it."""
     assert gs.MIN_ANCHOR_SEPARATION_S >= 30.0
+
+
+# ------------------------------------------------------- tail diagnostics
+
+
+def _tile(x: int, size: int = 64) -> object:
+    from film_analysis_tools.capabilities.measure import windows as win
+
+    return win.Window(
+        x=x, y=0, size=size, level=0.1, motion_energy=0.0, structure_snr=0.5,
+        subpixel_residual=0.0, band="midtone", texture="flat", position="centre",
+    )  # fmt: skip
+
+
+def test_scale_mixing_alone_produces_heavy_tails() -> None:
+    """The first candidate explanation, isolated.
+
+    Pooling Gaussian windows of different amplitudes gives a narrow peak with broad tails even
+    though every component is perfectly Gaussian. The diagnostic has to separate that from a
+    genuinely non-Gaussian residual, so: pooled kurtosis high, prediction close to it, and
+    per-window normalisation collapsing it back to zero.
+    """
+    rng = np.random.default_rng(11)
+    frames, size = 12, 64
+    stack = np.zeros((frames, size, size * 3))
+    for index, amplitude in enumerate((0.0004, 0.004, 0.04)):
+        stack[:, :, index * size : (index + 1) * size] = rng.normal(
+            0.0, amplitude, (frames, size, size)
+        )
+    stack += 0.2
+
+    tiles = [_tile(index * size, size) for index in range(3)]
+    found = gs.tail_diagnostics(stack, np.clip(stack, 0.0, 1.0), tiles)  # type: ignore[arg-type]
+
+    assert found.kurtosis_pooled > 2.0, "mixing three amplitudes must show heavy tails"
+    assert found.mixing_prediction > 2.0
+    assert found.mixing_explains > 0.5, "and the prediction must account for most of it"
+    assert abs(found.kurtosis_normalised) < 0.5, "which per-window normalisation removes"
+
+
+def test_a_single_gaussian_window_is_not_flagged() -> None:
+    rng = np.random.default_rng(3)
+    stack = 0.2 + rng.normal(0.0, 0.01, (12, 64, 64))
+    found = gs.tail_diagnostics(stack, np.clip(stack, 0.0, 1.0), [_tile(0)])  # type: ignore[arg-type]
+    assert abs(found.kurtosis_pooled) < 0.6
+    assert abs(found.mixing_prediction) < 0.6
+
+
+def test_quantisation_shows_up_as_exact_zeros() -> None:
+    """Pixels that do not change between frames pile up at exactly zero in code units."""
+    rng = np.random.default_rng(7)
+    stack = 0.2 + rng.normal(0.0, 0.01, (12, 64, 64))
+    frozen = np.repeat(stack[:1], 12, axis=0)
+    live = gs.tail_diagnostics(stack, np.clip(stack, 0.0, 1.0), [_tile(0)])  # type: ignore[arg-type]
+    dead = gs.tail_diagnostics(stack, np.clip(frozen, 0.0, 1.0), [_tile(0)])  # type: ignore[arg-type]
+    assert dead.exact_zero_fraction > 0.99
+    assert live.exact_zero_fraction < dead.exact_zero_fraction
+
+
+def test_the_committed_record_carries_no_absolute_paths() -> None:
+    """Material lives outside every repository; the hash is the identity, not someone's home."""
+    payload = {"sources": [{"source": {"path_hint": "/Users/someone/Movies/Film.mkv"}}]}
+    assert gs._redact(payload)["sources"][0]["source"]["path_hint"] == "Film.mkv"
