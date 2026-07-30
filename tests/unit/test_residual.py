@@ -213,3 +213,48 @@ def test_estimate_serialises_with_its_evidence() -> None:
         "sample_count",
     ):
         assert field in record, field
+
+
+# --------------------------------------------------- trust in the reported correlation
+
+
+def test_correlation_is_trustworthy_on_a_static_window() -> None:
+    estimate = residual.extract(synthetic.sequence(_spec(sigma=0.01, rho=0.5)))
+    assert estimate.correlation_trustworthy
+    assert estimate.rho == pytest.approx(0.5, abs=RHO_TOLERANCE)
+
+
+def test_drift_masks_real_correlation_and_the_estimate_says_so() -> None:
+    """The scene-005 shape: restoration correlation *and* gate weave together.
+
+    Sub-pixel drift decorrelates consecutive frames, so a genuinely correlated window reads back
+    as independent — a true rho of 0.5 with 0.7 px of drift measures about 0.05. Amplitude
+    survives because the two errors partly cancel; the correlation does not. Reporting
+    "temporal independence established" here would be exactly the wrong conclusion, so the
+    estimate refuses to vouch for its own rho.
+    """
+    frames = synthetic.sequence(
+        _spec(sigma=0.01, rho=0.5, texture_amplitude=0.05, drift_px_per_frame=(0.7, 0.0), seed=9)
+    )
+    estimate = residual.extract(frames)
+    assert estimate.rho < 0.2, "drift is expected to mask the true correlation"
+    assert estimate.drifting
+    assert not estimate.correlation_trustworthy
+
+
+def test_fixed_pattern_noise_is_invisible_to_temporal_differencing() -> None:
+    """A pattern identical in every frame contributes nothing to Var(f_t - f_t-1).
+
+    Screen-anchored heterogeneity is therefore not something this method can find, at any
+    amplitude — detecting it needs a spatial comparison across sources, not a temporal one.
+    Recorded as a test so the limit is not rediscovered as a surprise.
+    """
+    spec = _spec(sigma=0.01, rho=0.0, seed=9)
+    clean = synthetic.sequence(spec)
+    ys, xs = np.mgrid[0 : spec.height, 0 : spec.width]
+    envelope = 0.06 * (np.sin(xs / 37.0) * np.cos(ys / 41.0))
+    assert float(envelope.std()) > 2.0 * spec.sigma
+
+    with_pattern = residual.extract(clean + envelope[None, :, :])
+    without = residual.extract(clean)
+    assert with_pattern.sigma == pytest.approx(without.sigma, rel=1e-9)

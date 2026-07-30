@@ -284,6 +284,21 @@ class ResidualEstimate:
         return abs(self.rho - self.rho_from_lag4) <= 0.10
 
     @property
+    def correlation_trustworthy(self) -> bool:
+        """Whether the reported correlation may be believed.
+
+        Sub-pixel drift decorrelates consecutive frames, and integer alignment cannot remove it.
+        A window that is both drifting *and* genuinely correlated therefore reports a correlation
+        near zero — measured on synthetic material, a true rho of 0.50 combined with 0.7 px of
+        drift reads back as 0.045. The amplitude survives, because the two errors partly cancel,
+        but "temporal independence established" would be exactly the wrong conclusion.
+
+        So the correlation is only meaningful on a window that is not drifting. This is the
+        difference between rejecting a window and mismeasuring it.
+        """
+        return not self.drifting and self.correlation_consistent
+
+    @property
     def drifting(self) -> bool:
         """Whether this window should be rejected rather than measured."""
         return self.subpixel_residual > SUBPIXEL_REJECT or self.at_bound
@@ -301,6 +316,7 @@ class ResidualEstimate:
             "correlation_correction": self.correlation_correction,
             "rho_from_lag4": self.rho_from_lag4,
             "correlation_consistent": self.correlation_consistent,
+            "correlation_trustworthy": self.correlation_trustworthy,
             "lag_variances": {str(lag): value for lag, value in self.lag_variances.items()},
             "subpixel_residual": self.subpixel_residual,
             "max_integer_shift": self.max_integer_shift,
