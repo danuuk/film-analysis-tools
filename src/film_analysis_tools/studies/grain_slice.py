@@ -54,6 +54,7 @@ from film_analysis_tools.capabilities.source.record import (
 )
 from film_analysis_tools.capabilities.source.slog3 import slog3_to_linear
 from film_analysis_tools.core.errors import DataError
+from film_analysis_tools.core.io import write_json
 
 FFMPEG = "ffmpeg"
 FFPROBE = "ffprobe"
@@ -107,22 +108,51 @@ class SourcePlan:
     survey_width: int = 640
     window_s: float = 2.0
     stride_s: float = 1.0
-    max_motion: float = 0.01
-    """Motion gate as a **fraction of full scale**, so it means the same on every source.
+    max_motion: float = 0.05
+    """Whole-frame motion **hard reject**, as a fraction of full scale.
 
-    Motion arrives as ``ydif`` in code values, which is bit-depth dependent and roughly 10.2x
-    ``mafd`` on the same footage — the gap-8 defect on the motion axis. Dividing by the code
-    ceiling makes the gate dimensionless; 0.01 corresponds to the ``mafd <= 1.0`` used earlier.
+    Deliberately loose. Global motion answers "is the camera moving or did the shot change", not
+    "does this interval contain a stable region" — and the legacy run shows why the difference
+    matters: its scene 004 kept 818 of 1,392 patches in a scene that was plainly not static. A
+    tight global gate discards intervals before anything asks whether they hold stable ground, so
+    this rejects cuts and large camera movement only, and intervals are **ranked** by motion
+    rather than filtered by it.
+
+    Motion arrives as ``ydif`` in code values, roughly 10.2x ``mafd`` on the same footage — the
+    gap-8 defect on the motion axis — so it is divided by the code ceiling to be dimensionless.
     """
     intervals_to_measure: int = 8
     frames_per_interval: int = 10
+    """Scout frames, spread evenly across the whole interval rather than taken consecutively from
+    its start. Ten consecutive frames is 0.417 s of a two-second interval, so a tile could be
+    accepted for being still during the first fifth of a span an actor crosses later."""
     tile_size: int = 128
-    tile_stride: int = 256
+    tile_stride: int = 64
+    """128 px on a 64 px stride: the geometry of the shipped legacy profile, which evaluated
+    **1,392 overlapping positions** per 4K frame. A 256 px stride examined 90 positions covering
+    23.5% of the picture, with a 128 px gap between every tested tile — easily enough to miss the
+    stationary background beside a moving actor."""
+
+    tile_motion_threshold: float = 0.005
+    """Per-transition motion above which a tile counts as disturbed. The legacy
+    ``max_motion_energy``."""
 
     deep_frames: int = 60
     """Frames to follow a single tile for, in the deep probe."""
 
+    max_tiles_measured: int = 48
+    """Cap on tiles fed to the per-interval estimators, stratified across level and texture.
+
+    Every stable tile is still catalogued as a region — the 1,392-position search is the point of
+    the scout — but pooling 283 aligned residual stacks per interval costs about 1.5 GB of
+    transient memory and the run was killed for it. The cap bounds measurement, not selection,
+    and the coverage figures report the full count.
+    """
+
     deep_tiles: int = 3
+    anchor_stacks: int = 3
+    """How many decoded stacks to retain for the screen-anchoring pairs. Each is a full-resolution
+    interval, so this is the memory ceiling of the run."""
     """How many tiles to follow. Spatial coverage traded for temporal support."""
 
     def __post_init__(self) -> None:
@@ -345,6 +375,7 @@ def decode_signal(
     start_s: float,
     count: int,
     crop: Crop | None = None,
+    span_s: float = 0.0,
 ) -> np.ndarray:
     """Native-resolution luma for one interval, as the **encoded signal** on 0..1.
 
@@ -359,7 +390,13 @@ def decode_signal(
     """
     active = crop or Crop()
     _, _, width, height = active.applied_to(int(stream["width"]), int(stream["height"]))
-    filters = _crop_filter(crop, stream) + "format=gray16le"
+    filters = _crop_filter(crop, stream)
+    if span_s:
+        # Sample across the whole interval instead of taking a consecutive burst from its start.
+        # Motion is then measured over span_s/count rather than one frame period, which is the
+        # timescale the question "is this tile stable throughout" actually lives on.
+        filters += f"fps={count / span_s:.6f},"
+    filters += "format=gray16le"
     result = subprocess.run(
         [
             FFMPEG, "-hide_banner", "-loglevel", "error", "-nostdin",
@@ -376,8 +413,10 @@ def decode_signal(
             f"frames at {start_s:.2f}s"
         )
     raw = np.frombuffer(result.stdout[:needed], dtype="<u2").reshape(count, height, width)
-    code = raw.astype(np.float64) / 64.0  # 16-bit container back to the 10-bit code axis
-    return code / 1023.0
+    # float32 on purpose: a 10-frame 4K stack is 250 MB here against 500 MB in float64, and
+    # holding several intervals at double precision is what exhausted memory on the full run.
+    code = raw.astype(np.float32) / 64.0  # 16-bit container back to the 10-bit code axis
+    return code / np.float32(1023.0)
 
 
 def to_linear(plan: SourcePlan, container: np.ndarray) -> np.ndarray:
@@ -903,6 +942,7 @@ class DeepProbe:
 
     tails: TailDiagnostics
     zeros: ZeroInflation | None = None
+    dual: DualResidual | None = None
 
     def as_record(self) -> dict[str, Any]:
         return {
@@ -920,6 +960,7 @@ class DeepProbe:
             "trust_reasons": list(self.trust_reasons),
             "tails": self.tails.as_record(),
             "zeros": self.zeros.as_record() if self.zeros else None,
+            "dual_residual": self.dual.as_record() if self.dual else None,
         }
 
     def line(self) -> str:
@@ -930,6 +971,12 @@ class DeepProbe:
             f"kurt {self.tails.kurtosis_pooled:+.1f}  zeros "
             f"{self.tails.exact_zero_fraction:.1%}   [{verdict}]"
         )
+        if self.dual:
+            head += (
+                f"\n        dual residual: mean-removed {self.dual.mean_removed_std:.5f} vs "
+                f"diff/sqrt2 {self.dual.difference_std_over_root2:.5f}  "
+                f"ratio {self.dual.ratio:.2f} — {self.dual.verdict}"
+            )
         if self.trust_reasons:
             head += "\n        " + "; ".join(self.trust_reasons)
         return head
@@ -1030,6 +1077,7 @@ def deep_probe(
         trust_reasons=tuple(reasons),
         tails=tail_diagnostics(linear, container, [whole]),
         zeros=zero_inflation(_centre_128(container)),
+        dual=dual_residual(_centre_128(linear)),
     )
     return probe_record, linear
 
@@ -1228,6 +1276,256 @@ def zero_inflation(container: np.ndarray, *, block: int = 16) -> ZeroInflation:
     )
 
 
+# ----------------------------------------------- tile scouting, the legacy geometry
+
+
+@dataclass(frozen=True)
+class TileScout:
+    """One candidate tile, described by a motion *time series* rather than one number.
+
+    The shipped legacy profile is the empirical anchor for this stage: 128 px patches on a 64 px
+    stride, **1,392 candidate positions per 4K frame**, 72-120 consecutive native-cadence frames,
+    fixed coordinates, per-patch motion measured across the whole sequence. Its scene 004 rejected
+    574 of those 1,392 and kept 818 — the frame was never static, and the point of the stage is to
+    find the stationary regions *inside* a moving scene.
+
+    A single aggregate cannot express that. A brief actor crossing should truncate or split a
+    tile's usable run, not disqualify the tile, so this records how often the tile is unstable and
+    how long its worst continuous disturbance lasts.
+    """
+
+    x: int
+    y: int
+    size: int
+    level: float
+    texture: float
+    motion_median: float
+    motion_p90: float
+    unstable_fraction: float
+    """Share of sampled transitions above the motion threshold."""
+
+    longest_unstable_run: int
+    """Longest run of consecutive unstable transitions. One actor crossing, not many."""
+
+    transitions: int
+
+    @property
+    def stable(self) -> bool:
+        """Usable when most of the interval is quiet and no disturbance dominates it."""
+        return self.unstable_fraction <= 0.25 and self.longest_unstable_run <= 2
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "x": self.x,
+            "y": self.y,
+            "size": self.size,
+            "level": self.level,
+            "texture": self.texture,
+            "motion_median": self.motion_median,
+            "motion_p90": self.motion_p90,
+            "unstable_fraction": self.unstable_fraction,
+            "longest_unstable_run": self.longest_unstable_run,
+            "stable": self.stable,
+        }
+
+
+def _block_mean(image: np.ndarray, factor: int) -> np.ndarray:
+    """Average over ``factor`` x ``factor`` blocks — a box low-pass and a decimation at once."""
+    if factor <= 1:
+        return image
+    height = image.shape[0] // factor * factor
+    width = image.shape[1] // factor * factor
+    trimmed = image[:height, :width]
+    return np.asarray(
+        trimmed.reshape(height // factor, factor, width // factor, factor).mean(axis=(1, 3))
+    )
+
+
+def _tile_means(image: np.ndarray, size: int, stride: int) -> np.ndarray:
+    """Mean of every ``size`` x ``size`` tile on a ``stride`` grid, via an integral image."""
+    integral = np.zeros((image.shape[0] + 1, image.shape[1] + 1), dtype=np.float64)
+    integral[1:, 1:] = np.cumsum(np.cumsum(image, axis=0), axis=1)
+    tops = np.arange(0, image.shape[0] - size + 1, stride)
+    lefts = np.arange(0, image.shape[1] - size + 1, stride)
+    block = (
+        integral[np.ix_(tops + size, lefts + size)]
+        - integral[np.ix_(tops, lefts + size)]
+        - integral[np.ix_(tops + size, lefts)]
+        + integral[np.ix_(tops, lefts)]
+    )
+    return np.asarray(block / float(size * size))
+
+
+def scout_tiles(
+    frames: np.ndarray,
+    *,
+    size: int = 128,
+    stride: int = 64,
+    motion_threshold: float = 0.005,
+    blur_radius: int = 8,
+) -> list[TileScout]:
+    """Every tile position on the legacy grid, with its motion history across the interval.
+
+    No registration is attempted here. Estimating a shift per tile costs an FFT per tile per pair
+    and, on a dark 128 px tile, produces a noise-driven answer anyway — so registration is
+    deferred to the shortlist, where there are three tiles rather than fourteen hundred.
+    """
+    stack = np.asarray(frames, dtype=np.float64)
+    if stack.ndim != 3 or stack.shape[0] < 2:
+        raise DataError(f"tile scouting needs at least two frames; got {stack.shape}")
+
+    # The low-pass is a block mean, computed by reshape rather than by a separable convolution.
+    # Structured motion survives averaging and grain does not, which is all this needs; running a
+    # row-wise box blur over a 3840x1634 frame for every transition of every interval does not
+    # finish in usable time.
+    factor = max(1, blur_radius)
+    per_transition = np.stack(
+        [
+            np.sqrt(_tile_means(_block_mean(one, factor) ** 2, size // factor, stride // factor))
+            for one in np.diff(stack, axis=0)
+        ]
+    )
+
+    level = _tile_means(_block_mean(stack.mean(axis=0), factor), size // factor, stride // factor)
+    gradient = np.abs(np.diff(stack[0], axis=0, prepend=stack[0][:1])) + np.abs(
+        np.diff(stack[0], axis=1, prepend=stack[0][:, :1])
+    )
+    texture = _tile_means(_block_mean(gradient, factor), size // factor, stride // factor)
+
+    unstable = per_transition > motion_threshold
+    counts = unstable.mean(axis=0)
+    longest = np.zeros(unstable.shape[1:], dtype=np.int32)
+    current = np.zeros(unstable.shape[1:], dtype=np.int32)
+    for one in unstable:
+        current = (current + 1) * one
+        longest = np.maximum(longest, current)
+
+    median = np.median(per_transition, axis=0)
+    upper = np.percentile(per_transition, 90, axis=0)
+
+    scouts: list[TileScout] = []
+    for row in range(level.shape[0]):
+        for column in range(level.shape[1]):
+            scouts.append(
+                TileScout(
+                    x=int(column * stride),
+                    y=int(row * stride),
+                    size=size,
+                    level=float(level[row, column]),
+                    texture=float(texture[row, column]),
+                    motion_median=float(median[row, column]),
+                    motion_p90=float(upper[row, column]),
+                    unstable_fraction=float(counts[row, column]),
+                    longest_unstable_run=int(longest[row, column]),
+                    transitions=int(unstable.shape[0]),
+                )
+            )
+    return scouts
+
+
+def shortlist(
+    scouts: Sequence[TileScout], *, per_stratum: int = 1, level_bands: int = 3
+) -> list[TileScout]:
+    """A spread across level and texture, not the single quietest tile.
+
+    Taking the absolute motion minimum reliably selects a near-black, registration-poor region —
+    which is how the previous deep probes ended up on tiles at linear level 0.0001 that then
+    failed the drift gate. Stratifying by level and texture keeps the shortlist representative of
+    the picture instead of representative of its darkest corner.
+    """
+    usable = [one for one in scouts if one.stable]
+    if not usable:
+        return []
+    levels = np.quantile([one.level for one in usable], np.linspace(0, 1, level_bands + 1))
+    textures = np.quantile([one.texture for one in usable], (0.0, 1 / 3, 2 / 3, 1.0))
+
+    chosen: list[TileScout] = []
+    for band in range(level_bands):
+        for third in range(3):
+            bucket = [
+                one
+                for one in usable
+                if levels[band] <= one.level <= levels[band + 1]
+                and textures[third] <= one.texture <= textures[third + 1]
+            ]
+            bucket.sort(key=lambda one: (one.longest_unstable_run, one.unstable_fraction))
+            chosen.extend(bucket[:per_stratum])
+    return chosen
+
+
+# --------------------------------------------- two residuals, as the legacy path had
+
+
+@dataclass(frozen=True)
+class DualResidual:
+    """Both residual representations on one tile, and whether they agree.
+
+    The legacy `grain_properties` path computed both and used each for what it is good for::
+
+        fields = frames - frames.mean(axis=0)     # spatial character, PSD, autocorrelation
+        deltas = frames[1:] - frames[:-1]         # amplitude, temporal independence
+
+    Forcing every statistic through the lagged difference — as this study did — loses the spatial
+    representation entirely, and makes every spatial question depend on the temporal trust gate.
+    A tile that drifts slowly is a poor subject for a correlation estimate and a perfectly good
+    subject for a noise power spectrum.
+
+    Their agreement is itself the evidence: for a stationary, temporally independent field,
+    ``std(fields) ≈ std(deltas)/sqrt(2)``. A large excess in the mean-removed residual means
+    persistent picture structure is sitting in it — exactly the cross-check the legacy path used.
+    """
+
+    mean_removed_std: float
+    difference_std_over_root2: float
+    ratio: float
+    """``mean_removed_std`` over ``difference_std/sqrt(2)``. 1.0 is agreement."""
+
+    frames: int
+
+    @property
+    def agree(self) -> bool:
+        """Within 25%: enough to say persistent structure is not dominating."""
+        return 0.75 <= self.ratio <= 1.25
+
+    @property
+    def verdict(self) -> str:
+        if self.agree:
+            return "agree — no dominant persistent structure"
+        if self.ratio > 1.25:
+            return "mean-removed residual is larger: persistent picture structure or slow drift"
+        return "mean-removed residual is smaller: the field is temporally correlated"
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "mean_removed_std": self.mean_removed_std,
+            "difference_std_over_root2": self.difference_std_over_root2,
+            "ratio": self.ratio,
+            "agree": self.agree,
+            "verdict": self.verdict,
+            "frames": self.frames,
+        }
+
+
+def dual_residual(frames: np.ndarray) -> DualResidual:
+    """Compare the temporal-mean residual against the lagged difference on the same pixels."""
+    stack = np.asarray(frames, dtype=np.float64)
+    if stack.ndim != 3 or stack.shape[0] < 2:
+        raise DataError(f"dual residual needs at least two frames; got {stack.shape}")
+    fields = stack - stack.mean(axis=0, keepdims=True)
+    deltas = np.diff(stack, axis=0)
+    # The mean-removed field of N frames has variance (1 - 1/N) sigma^2, so undo that bias before
+    # comparing: otherwise short sequences look temporally correlated when they are not.
+    correction = np.sqrt(stack.shape[0] / max(stack.shape[0] - 1, 1))
+    mean_removed = float(np.std(fields)) * correction
+    difference = float(np.std(deltas)) / np.sqrt(2.0)
+    return DualResidual(
+        mean_removed_std=mean_removed,
+        difference_std_over_root2=difference,
+        ratio=mean_removed / difference if difference > 1e-15 else 0.0,
+        frames=int(stack.shape[0]),
+    )
+
+
 def _identified(one: IntervalEvidence) -> list[evidence.AmplitudePoint]:
     """Trustworthy points whose correlation was determined rather than pinned to the clamp."""
     if not one.amplitude:
@@ -1346,25 +1644,35 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
     picks = np.linspace(0, len(stable) - 1, plan.intervals_to_measure).astype(int)
     chosen = list({stable[i].start_s: stable[i] for i in picks}.values())
 
-    admissible: list[tuple[iv.Interval, np.ndarray, np.ndarray, admissibility.OverlayEvidence]] = []
     admissibility_rejects: dict[str, int] = {}
     decode_failures = 0
     noise_free_masked = 0
+    admitted = 0
+
+    collected: list[rg.Region] = []
+    considered = accepted_count = 0
+    window_rejects: dict[str, int] = {}
+    per_interval: list[IntervalEvidence] = []
+    shortlisted: list[tuple[iv.Interval, windows.Window]] = []
+    anchor_stacks: list[tuple[iv.Interval, np.ndarray, list[windows.Window]]] = []
+
+    # One interval at a time, released before the next is decoded. Holding every decoded stack
+    # peaked at 5.4 GB for three intervals and was killed outright at eight.
     for interval in chosen:
         try:
             signal = decode_signal(
-                plan, stream, interval.start_s, plan.frames_per_interval, crop=active
+                plan,
+                stream,
+                interval.start_s,
+                plan.frames_per_interval,
+                crop=active,
+                span_s=interval.duration_s,
             )
         except DataError:
             decode_failures += 1
             continue
-        # Admissibility in the container domain, where 0 and 1 are the format's real limits.
-        verdict = admissibility.scene_admissibility(signal, ceiling=1.0, floor=0.0)
 
-        # Overlay is a *mask*, not a veto. A compressed delivery master carries large blocks the
-        # encoder froze -- 20-22% of 32px blocks in this one have exactly zero temporal variation,
-        # which is real grain loss, not a title card. Rejecting the interval throws away the 78%
-        # that is still measurable; excluding those blocks from window selection does not.
+        verdict = admissibility.scene_admissibility(signal, ceiling=1.0, floor=0.0)
         blocking = [
             reason for reason in verdict.reasons if "carries no temporal noise" not in reason
         ]
@@ -1374,48 +1682,45 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             for reason in blocking:
                 key = reason.split(" contributes")[0].split(" of ")[-1][:28]
                 admissibility_rejects[key] = admissibility_rejects.get(key, 0) + 1
-        elif verdict.overlay.noise_free_fraction >= 1.0:
+            continue
+        if verdict.overlay.noise_free_fraction >= 1.0:
             admissibility_rejects["frame is entirely static"] = (
                 admissibility_rejects.get("frame is entirely static", 0) + 1
             )
-        else:
-            admissible.append((interval, to_linear(plan, signal), signal, verdict.overlay))
-    if decode_failures:
-        admissibility_rejects["decode failed"] = decode_failures
-    if noise_free_masked:
-        notes.append(
-            f"{noise_free_masked} of {len(chosen)} intervals carry frozen, noise-free blocks "
-            "(encoder skip blocks); those blocks were masked out of window selection rather than "
-            "used to reject the interval"
-        )
-    stages.append(
-        StageCount(
-            stage="admissibility",
-            considered=len(chosen),
-            accepted=len(admissible),
-            rejected=admissibility_rejects,
-        )
-    )
-    decoded_s = len(admissible) * plan.frames_per_interval / fps
-    if not admissible:
-        notes.append("every decoded interval was ruled inadmissible")
-        return _empty(plan, record, stages, notes, Seconds(0.0, 0.0, 0.0))
+            continue
 
-    collected: list[rg.Region] = []
-    considered = accepted_count = 0
-    window_rejects: dict[str, int] = {}
-    measurable: list[tuple[iv.Interval, np.ndarray, np.ndarray, list[windows.Window]]] = []
-    for interval, linear, container, overlay in admissible:
-        report_ = windows.select_windows(
-            linear, size=plan.tile_size, stride=plan.tile_stride, overlay=overlay
+        admitted += 1
+        linear = to_linear(plan, signal)
+        overlay = verdict.overlay
+
+        scouts = scout_tiles(
+            linear,
+            size=plan.tile_size,
+            stride=plan.tile_stride,
+            motion_threshold=plan.tile_motion_threshold,
         )
-        considered += len(report_.accepted) + len(report_.rejected)
-        accepted_count += len(report_.accepted)
-        for reason, count in report_.rejection_reasons().items():
-            window_rejects[reason] = window_rejects.get(reason, 0) + count
+        kept = [
+            one for one in scouts if one.stable and not overlay.excludes(one.x, one.y, one.size)
+        ]
+        considered += len(scouts)
+        accepted_count += len(kept)
+        window_rejects["disturbed too often or too long"] = window_rejects.get(
+            "disturbed too often or too long", 0
+        ) + sum(1 for one in scouts if not one.stable)
+        window_rejects["overlaps a composited region"] = window_rejects.get(
+            "overlaps a composited region", 0
+        ) + sum(1 for one in scouts if one.stable and overlay.excludes(one.x, one.y, one.size))
+
+        as_windows = [_as_window(one, linear.shape) for one in kept]
         collected.extend(
             rg.regions_from_report(
-                report_,
+                windows.SelectionReport(
+                    accepted=tuple(as_windows),
+                    rejected=(),
+                    gate=windows.DEFAULT_GATE,
+                    band_edges=windows.DEFAULT_BAND_EDGES,
+                    frames=int(linear.shape[0]),
+                ),
                 source_id=plan.source_id,
                 interval_start_s=interval.start_s,
                 interval_end_s=interval.end_s,
@@ -1424,46 +1729,57 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
                 source_identity=record.identity,
             )
         )
-        if report_.accepted:
-            measurable.append((interval, linear, container, list(report_.accepted)))
+        if as_windows:
+            per_interval.append(_measure_interval(interval.start_s, linear, signal, as_windows))
+            shortlisted.extend(
+                (interval, _as_window(one, linear.shape)) for one in shortlist(kept, per_stratum=1)
+            )
+            if len(anchor_stacks) < plan.anchor_stacks:
+                anchor_stacks.append((interval, linear, as_windows))
+        del signal
+        if not anchor_stacks or anchor_stacks[-1][1] is not linear:
+            del linear
+
+    if decode_failures:
+        admissibility_rejects["decode failed"] = decode_failures
+    if noise_free_masked:
+        notes.append(
+            f"{noise_free_masked} of {len(chosen)} intervals carry frozen, noise-free blocks "
+            "(encoder skip blocks); those blocks were masked out of tile selection rather than "
+            "used to reject the interval"
+        )
     stages.append(
         StageCount(
-            stage="windows",
+            stage="admissibility",
+            considered=len(chosen),
+            accepted=admitted,
+            rejected=admissibility_rejects,
+        )
+    )
+    decoded_s = admitted * plan.frames_per_interval / fps
+    stages.append(
+        StageCount(
+            stage="tiles",
             considered=considered,
             accepted=accepted_count,
-            rejected=window_rejects,
+            rejected={k: v for k, v in window_rejects.items() if v},
         )
     )
     index = rg.index(collected)
     candidate_s = index.independence().span_seconds
-    if not measurable:
-        notes.append("no tile passed the window gate in any admissible interval")
+    if not per_interval:
+        notes.append("no tile passed the motion history gate in any admissible interval")
         return _empty(
             plan, record, stages, notes, Seconds(candidate_s, decoded_s, 0.0), regions=index
         )
-
-    # Every admissible interval is measured, independently. Measuring only the interval that
-    # yielded the most windows -- as the first run did -- reports one picture's statistics as the
-    # source's, and selects for whichever picture happens to pass most easily.
-    per_interval = [
-        _measure_interval(interval.start_s, linear, container, accepted)
-        for interval, linear, container, accepted in measurable
-    ]
     evidence_s = len(per_interval) * plan.frames_per_interval / fps
 
-    # Follow a few tiles for much longer. Ten frames gives nine difference pairs, which is why so
-    # many correlation estimates ran to the clamp; deep_frames gives an actually constrained one.
-    # One tile per interval, spread across the film rather than two from whichever interval came
-    # first: three tiles from one scene answer a narrower question than three from three scenes.
+    # Follow a few shortlisted tiles for much longer, decoding only the tile. Ten scout frames
+    # give nine transitions, which is why so many correlation estimates ran to the clamp.
     deep: list[DeepProbe] = []
     deep_stacks: list[np.ndarray] = []
-    candidates = [
-        (interval, min(accepted, key=lambda w: w.motion_energy))
-        for interval, _, _, accepted in measurable
-        if accepted
-    ]
-    step = max(1, len(candidates) // max(plan.deep_tiles, 1))
-    for interval, window in candidates[::step][: plan.deep_tiles]:
+    step = max(1, len(shortlisted) // max(plan.deep_tiles, 1))
+    for interval, window in shortlisted[::step][: plan.deep_tiles]:
         try:
             probe_record, stack = deep_probe(plan, stream, active, interval, window)
         except DataError as error:
@@ -1485,13 +1801,30 @@ def run_source(plan: SourcePlan) -> SourceOutcome:
             if len(deep_stacks) >= 2
             else None
         ),
-        screen_anchoring=_screen_anchoring(measurable),
+        screen_anchoring=_screen_anchoring(anchor_stacks),
         notes=tuple(notes),
     )
 
 
+def _as_window(scout: TileScout, shape: tuple[int, ...]) -> windows.Window:
+    return windows.Window(
+        x=scout.x,
+        y=scout.y,
+        size=scout.size,
+        level=scout.level,
+        motion_energy=scout.motion_p90,
+        structure_snr=0.0,
+        subpixel_residual=0.0,
+        band=windows.band_of(scout.level, windows.DEFAULT_BAND_EDGES),
+        texture="textured" if scout.texture > 0.001 else "flat",
+        position=windows.position_of(scout.x, scout.y, scout.size, shape[2], shape[1]),
+        level_low=scout.level,
+        level_high=scout.level,
+    )
+
+
 def _screen_anchoring(
-    measurable: Sequence[tuple[iv.Interval, np.ndarray, np.ndarray, list[windows.Window]]],
+    measurable: Sequence[tuple[iv.Interval, np.ndarray, list[windows.Window]]],
 ) -> dict[str, Any]:
     """Compare the two most widely separated intervals *of the same source*.
 
@@ -1519,7 +1852,7 @@ def _screen_anchoring(
                     "interval_b_s": b[0].start_s,
                     "separation_s": gap,
                     "grain_envelope": evidence.heterogeneity_evidence(
-                        a[1], a[3], other_source=b[1]
+                        a[1], a[2], other_source=b[1]
                     ).as_record(),
                     "additive_pattern": evidence.additive_pattern_evidence(
                         a[1], other_source=b[1]
@@ -1712,7 +2045,9 @@ def write_outputs(result: StudyResult, directory: Path) -> tuple[Path, Path]:
     directory.mkdir(parents=True, exist_ok=True)
     json_path = directory / "grain_slice.json"
     text_path = directory / "grain_slice.txt"
-    json_path.write_text(json.dumps(_redact(result.as_record()), indent=2, allow_nan=False))
+    # core.io.write_json, not json.dumps: the payload carries numpy scalars — float32 levels and
+    # the np.bool_ that comes out of comparing them — and a raw dump refuses them outright.
+    write_json(json_path, _redact(result.as_record()))
     text_path.write_text(report(result) + "\n")
     return json_path, text_path
 
@@ -1721,6 +2056,7 @@ __all__ = [
     "MAX_WINDOW_CLIPPED",
     "MIN_ANCHOR_SEPARATION_S",
     "DeepProbe",
+    "DualResidual",
     "FrameCountComparison",
     "IntervalEvidence",
     "Seconds",
@@ -1730,17 +2066,21 @@ __all__ = [
     "StageCount",
     "StudyResult",
     "TailDiagnostics",
+    "TileScout",
     "ZeroInflation",
     "decode_signal",
     "decode_tile",
     "deep_probe",
     "detect_crop",
+    "dual_residual",
     "frame_count_comparison",
     "load_survey",
     "probe",
     "report",
     "run",
     "run_source",
+    "scout_tiles",
+    "shortlist",
     "source_record",
     "survey",
     "tail_diagnostics",

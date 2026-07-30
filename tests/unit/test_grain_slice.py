@@ -333,3 +333,97 @@ def test_the_committed_record_carries_no_absolute_paths() -> None:
     """Material lives outside every repository; the hash is the identity, not someone's home."""
     payload = {"sources": [{"source": {"path_hint": "/Users/someone/Movies/Film.mkv"}}]}
     assert gs._redact(payload)["sources"][0]["source"]["path_hint"] == "Film.mkv"
+
+
+# ------------------------------------------------- tile scouting (legacy geometry)
+
+
+def _scene(frames: int = 10, height: int = 512, width: int = 640, seed: int = 4) -> np.ndarray:
+    rng = np.random.default_rng(seed)
+    base = 0.2 + 0.05 * rng.random((height, width))
+    return base[None, :, :] + rng.normal(0.0, 0.002, (frames, height, width))
+
+
+def test_the_scout_covers_the_whole_picture_on_the_legacy_grid() -> None:
+    """128 px on a 64 px stride is the shipped legacy geometry: 1,392 positions per 4K frame.
+
+    A 256 px stride examined 90 positions covering 23.5% of the picture, with a 128 px gap
+    between every tested tile.
+    """
+    scouts = gs.scout_tiles(_scene(), size=128, stride=64)
+    expected = ((512 - 128) // 64 + 1) * ((640 - 128) // 64 + 1)
+    assert len(scouts) == expected == 7 * 9
+    assert len(gs.scout_tiles(_scene(), size=128, stride=256)) < len(scouts) / 4
+
+
+def test_a_brief_disturbance_truncates_a_tile_rather_than_invalidating_it() -> None:
+    """An actor crossing for two of ten transitions should leave the tile usable; one that is
+    disturbed throughout should not."""
+    scene = _scene()
+    scene[4:6, 0:128, 0:128] += 0.4  # a brief crossing in the top-left tile
+    scene[:, 0:128, 256:384] += np.linspace(0, 0.4, scene.shape[0])[:, None, None]  # constant
+
+    found = {(one.x, one.y): one for one in gs.scout_tiles(scene, size=128, stride=64)}
+    brief = found[(0, 0)]
+    constant = found[(256, 0)]
+    assert 0 < brief.unstable_fraction <= 0.35
+    assert brief.longest_unstable_run <= 2
+    assert constant.unstable_fraction > brief.unstable_fraction
+    assert constant.longest_unstable_run > brief.longest_unstable_run
+    assert not constant.stable
+
+
+def test_a_quiet_tile_is_stable() -> None:
+    scouts = gs.scout_tiles(_scene(), size=128, stride=128)
+    assert all(one.stable for one in scouts)
+    assert all(one.transitions == 9 for one in scouts)
+
+
+def test_the_shortlist_spreads_across_level_instead_of_taking_the_darkest() -> None:
+    """Taking the absolute motion minimum reliably picks a near-black, registration-poor tile —
+    which is how the deep probes ended up at linear level 0.0001 and then failed the drift gate.
+    """
+    scene = _scene()
+    scene[:, :, :128] *= 0.01  # a very dark, very quiet column
+    scouts = gs.scout_tiles(scene, size=128, stride=64)
+    picked = gs.shortlist(scouts, per_stratum=1)
+
+    assert len(picked) > 1
+    quietest = min(scouts, key=lambda one: one.motion_p90)
+    assert max(one.level for one in picked) > quietest.level * 10
+
+
+def test_the_scout_refuses_a_single_frame() -> None:
+    with pytest.raises(DataError, match="at least two frames"):
+        gs.scout_tiles(np.zeros((1, 256, 256)))
+
+
+# ------------------------------------------------- both residual representations
+
+
+def test_the_two_residuals_agree_on_independent_grain() -> None:
+    """The legacy cross-check: std(fields) ~ std(deltas)/sqrt(2) when the field is stationary
+    and temporally independent."""
+    rng = np.random.default_rng(9)
+    stack = 0.2 + rng.normal(0.0, 0.01, (40, 96, 96))
+    found = gs.dual_residual(stack)
+    assert found.ratio == pytest.approx(1.0, abs=0.1)
+    assert found.agree
+    assert "agree" in found.verdict
+
+
+def test_persistent_structure_shows_up_as_a_larger_mean_removed_residual() -> None:
+    """A slow drift sits in the mean-removed residual and cancels in the lagged difference —
+    which is exactly what the pair of them exists to reveal."""
+    rng = np.random.default_rng(10)
+    stack = 0.2 + rng.normal(0.0, 0.002, (40, 96, 96))
+    stack += np.linspace(0.0, 0.05, 40)[:, None, None]
+    found = gs.dual_residual(stack)
+    assert found.ratio > 1.25
+    assert not found.agree
+    assert "persistent" in found.verdict
+
+
+def test_the_dual_residual_needs_two_frames() -> None:
+    with pytest.raises(DataError, match="at least two frames"):
+        gs.dual_residual(np.zeros((1, 32, 32)))

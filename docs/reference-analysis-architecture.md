@@ -407,6 +407,52 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    correlation near zero rejects a strong common pattern but does not rule out a weaker one, and
    no null distribution was computed.
 
+   **The selection stage was rebuilt around the legacy geometry**, which is the empirical anchor
+   the shipped profile provides. Verified in `presets/pulp_fiction_4scene_motion_gated.json`:
+   **128 px patches on a 64 px stride, 1,392 candidate positions per 4K frame**, 72–120
+   consecutive native-cadence frames, fixed coordinates, per-patch motion across the whole
+   sequence — and its scene 004 kept **818 of 1,392** patches in a scene that was plainly not
+   static. Finding stationary regions *inside* moving scenes is the job, and four things prevented
+   it:
+
+   - **Global motion was a hard reject.** `motion_p90 <= 0.01` on the whole frame discarded
+     intervals before anything asked whether they held stable ground. Now a loose reject for cuts
+     and large camera movement only: **5,906 of 9,270 intervals** pass, against 2,095 before.
+   - **The search was sparse.** A 256 px stride examined 90 positions covering 23.5% of the
+     picture. On the legacy grid the run now evaluates **1,416 positions per interval** — 7,080
+     across five — and keeps 2,550.
+   - **A two-second interval was judged on its first 0.417 s.** Scout frames are now spread evenly
+     across the whole interval, so a tile cannot be accepted for being still during the first
+     fifth of a span an actor crosses later.
+   - **One aggregate could not express a brief disturbance.** Each tile now carries a motion
+     *time series*: median, p90, the fraction of transitions above threshold, and the longest
+     continuous unstable run. An actor crossing truncates a tile's usable run instead of
+     disqualifying it.
+
+   Two consequences arrived immediately. **Flat tiles exist again** — 797 of 2,550 on Pulp, 68 of
+   1,531 on Sony — so the noise power spectrum is measurable at all, where the sparse grid had
+   reported it unavailable on every interval. And the stratified shortlist reaches real midtones
+   rather than the darkest corner: the Pulp deep tile at linear level **0.0871** returned excess
+   kurtosis **+1.2**, where minimum-motion selection had been landing on tiles at 0.0001.
+
+   **Both residual representations are computed, as the legacy path did.** `grain_properties`
+   used `fields = frames - frames.mean(axis=0)` for spatial character and `deltas` for amplitude
+   and temporal independence, and compared them. Forcing every statistic through the lagged
+   difference made every spatial question depend on the temporal trust gate. The agreement is
+   itself evidence — for a stationary independent field `std(fields) ≈ std(deltas)/√2` — and it
+   earned its place on the first run:
+
+   | | dual-residual ratio | reading |
+   |---|---|---|
+   | Pulp Fiction, 3 deep tiles | **1.02, 1.04, 1.06** | agree — no dominant persistent structure |
+   | Sony C0014, deep tiles | **2.49, 2.40** | mean-removed residual far larger: persistent structure or slow drift |
+
+   That is a warning about the Sony correlation estimates specifically. A slowly drifting tile
+   produces a high apparent ρ, so "Sony ρ ≈ 0.4 is camera temporal processing" is **not** safe:
+   the same tiles show 2.4× excess in the mean-removed residual, which is what drift looks like.
+   The Pulp tiles agree on this test while still failing the drift gate — exactly the case for not
+   routing every statistic through one residual.
+
    Still open: the deep probe's alignment gate rejects almost everything at 60 frames — a
    sub-pixel residual of 0.63–1.10 px over 2.5 s is ordinary gate weave or scan drift, not a
    defect, but the current gate has no way to accept a tile that drifts slowly and steadily. Until

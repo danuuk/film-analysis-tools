@@ -240,13 +240,13 @@ class SelectionReport:
         return "\n".join(lines)
 
 
-def _band_of(level: float, edges: tuple[float, float]) -> str:
+def band_of(level: float, edges: tuple[float, float]) -> str:
     if level < edges[0]:
         return "shadow"
     return "midtone" if level < edges[1] else "highlight"
 
 
-def _position_of(x: int, y: int, size: int, width: int, height: int) -> str:
+def position_of(x: int, y: int, size: int, width: int, height: int) -> str:
     centre_x, centre_y = x + size / 2, y + size / 2
     inside_x = width * 0.25 <= centre_x <= width * 0.75
     inside_y = height * 0.25 <= centre_y <= height * 0.75
@@ -306,9 +306,9 @@ def select_windows(
                 motion_energy=motion,
                 structure_snr=shift.structure_snr,
                 subpixel_residual=shift.subpixel_magnitude,
-                band=_band_of(level, band_edges),
+                band=band_of(level, band_edges),
                 texture="textured" if shift.structure_snr >= MIN_STRUCTURE_SNR else "flat",
-                position=_position_of(x, y, size, width, height),
+                position=position_of(x, y, size, width, height),
                 level_low=spread_low,
                 level_high=spread_high,
             )
@@ -379,6 +379,8 @@ __all__ = [
     "Window",
     "WindowGate",
     "as_records",
+    "band_of",
+    "position_of",
     "select_windows",
     "stratified",
     "with_gate",

@@ -6,70 +6,63 @@ pulp_fiction_1994_uhd   [UHD HDR10 remux]
   3840x2160  24000/1001 fps  pq  sha256 88219ee6394e
   active picture 3840x1634 (letterbox cropped 263px)
   coverage:
-  intervals                2,095 /   9,270 ( 22.6%)   contains a cut 1522; motion above gate 5653
-  admissibility                6 /       8 ( 75.0%)   samples clipped 2
-  windows                    267 /     540 ( 49.4%)   motion above gate 160; overlaps a composited region 7; sub-pixel drift 106
-  seconds                candidate   12.0   decoded  2.50   evidence  2.50
-  267 regions from 6 intervals (6 disjoint spans, 12.0s) in 1 source(s)
-    treat ~6 as the independent count, not 267: regions tile the same frames (44 per span)
-    CONCENTRATED: one interval supplies 69 of them
-    levels : 0.00008 to 0.18653 on linear scale
-    bands  : shadow 114, midtone 153, highlight 0  (is)
-    bands  : shadow 233, midtone 209, highlight 34  (contains)
-    texture: flat 0, textured 267
-  measurements (6 intervals, each measured independently):
-    raw sigma    median +0.0044  range +0.0023..+0.0068  n=6   (all points — descriptive only)
-    trusted sig  median +0.0006  range +0.0006..+0.0006  n=1   (identified rho only)
-    whiteness    none
-    kurtosis     median +24.8387  range +4.5746..+493.0093  n=6   (pooled, all unclipped)
-      normalised median +23.8137  range +6.9123..+53.7399  n=6   (per-window scale removed)
-      mixing predmedian +5.4568  range +2.5392..+7.1058  n=6   (expected from variance spread alone)
-      trustworthymedian +26.8702  range +26.8702..+26.8702  n=1
-    skew         median +0.0345  range -0.2586..+0.2733  n=6
-    exact zeros  median +0.0704  range +0.0121..+0.1319  n=6
-    rho          median +0.0511  range +0.0511..+0.0511  n=1
-    envelope     median +0.7495  range +0.5099..+0.9692  n=6
-    amplitude    1 identified / 1 trustworthy / 267 points   (3 saturated, all rejected)
-    routed       flat/unclipped/trustworthy: 0f/69u/0t of 69; 0f/49u/0t of 49; 0f/17u/0t of 17; 0f/22u/0t of 22; 0f/42u/1t of 42; 0f/68u/0t of 68
-      t=1114s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=1114s  temporal: no window could vouch for its own correlation estimate
-      t=1114s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
-      t=2289s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=2289s  temporal: no window could vouch for its own correlation estimate
-      t=2289s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
-      t=4024s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=4024s  temporal: no window could vouch for its own correlation estimate
-      t=4024s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
-      t=5144s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=5144s  temporal: no window could vouch for its own correlation estimate
-      t=5144s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
-      t=6473s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=7626s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=7626s  temporal: no window could vouch for its own correlation estimate
-      t=7626s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
+  intervals                5,906 /   9,270 ( 63.7%)   contains a cut 1522; motion above gate 1842
+  admissibility                5 /       8 ( 62.5%)   level ramp 1; samples clipped 3
+  tiles                    2,550 /   7,080 ( 36.0%)   disturbed too often or too long 4200; overlaps a composited region 330
+  seconds                candidate   10.0   decoded  2.09   evidence  2.09
+  2,550 regions from 5 intervals (5 disjoint spans, 10.0s) in 1 source(s)
+    treat ~5 as the independent count, not 2,550: regions tile the same frames (510 per span)
+    CONCENTRATED: one interval supplies 1,135 of them
+    levels : 0.00007 to 0.22231 on linear scale
+    bands  : shadow 1465, midtone 1085, highlight 0  (is)
+    bands  : shadow 1465, midtone 1085, highlight 0  (contains)
+    texture: flat 797, textured 1753
+  measurements (5 intervals, each measured independently):
+    raw sigma    median +0.0045  range +0.0014..+0.0074  n=5   (all points — descriptive only)
+    trusted sig  median +0.0048  range +0.0015..+0.0081  n=2   (identified rho only)
+    whiteness    median +0.0119  range +0.0073..+0.2046  n=5
+    kurtosis     median +18.7613  range +5.2082..+3816.7396  n=5   (pooled, all unclipped)
+      normalised median +24.4343  range +8.7076..+114.3206  n=5   (per-window scale removed)
+      mixing predmedian +5.7131  range +2.0192..+23.9972  n=5   (expected from variance spread alone)
+      trustworthymedian +196.0742  range +19.6419..+372.5064  n=2
+    skew         median -0.0217  range -1.2601..+0.6822  n=5
+    exact zeros  median +0.0055  range +0.0036..+0.0117  n=5
+    rho          median +0.0093  range +0.0002..+0.0184  n=2
+    envelope     median +0.9168  range +0.4585..+1.1473  n=5
+    amplitude    18 identified / 18 trustworthy / 2550 points   (26 saturated, all rejected)
+    routed       flat/unclipped/trustworthy: 130f/348u/0t of 348; 91f/354u/0t of 354; 3f/444u/7t of 444; 451f/1135u/11t of 1135; 122f/269u/0t of 269
+      t=2636s  temporal: no window could vouch for its own correlation estimate
+      t=2636s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
+      t=3998s  temporal: no window could vouch for its own correlation estimate
+      t=3998s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
+      t=7683s  temporal: no window could vouch for its own correlation estimate
+      t=7683s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
   deep probe (60 frames per tile):
-    t=   1114s (0,0)  60f  level 0.0025  sigma 0.00050  rho +0.038  kurt +1.0  zeros 3.2%   [rejected]
-        drifting: sub-pixel residual 0.634; a shift hit the search boundary
-    t=   4024s (3072,1280)  60f  level 0.0003  sigma 0.00010  rho +0.015  kurt +3.3  zeros 3.9%   [rejected]
-        drifting: sub-pixel residual 1.097; a shift hit the search boundary
-    t=   6473s (512,512)  60f  level 0.0001  sigma 0.00004  rho +0.041  kurt +23.5  zeros 5.1%   [rejected]
-        drifting: sub-pixel residual 0.675; a shift hit the search boundary
-  zero inflation: 10.9% of frame-to-frame steps are exactly zero
-    by level   : q1 7.9%, q2 13.5%, q3 14.2%, q4 11.5%, q5 7.0%
-    by texture : flattest third 11.1%, roughest third 10.4%
-    16px blocks almost all-frozen or all-live: 20.3%   long unchanged runs: 0.0%
-    steps      : -2:8.3%, -1:9.5%, 0:10.9%, 1:9.5%, 2:8.2%
+    t=   2636s (3520,0)  60f  level 0.0003  sigma 0.00027  rho +0.021  kurt +94.8  zeros 9.5%   [rejected]
+        dual residual: mean-removed 0.00014 vs diff/sqrt2 0.00014  ratio 1.04 — agree — no dominant persistent structure
+        drifting: sub-pixel residual 0.464
+    t=   3998s (192,448)  60f  level 0.0871  sigma 0.00846  rho +0.037  kurt +1.2  zeros 3.7%   [rejected]
+        dual residual: mean-removed 0.00865 vs diff/sqrt2 0.00814  ratio 1.06 — agree — no dominant persistent structure
+        drifting: sub-pixel residual 0.623
+    t=   6470s (1216,128)  60f  level 0.0013  sigma 0.00048  rho +0.016  kurt +8.9  zeros 1.5%   [rejected]
+        dual residual: mean-removed 0.00053 vs diff/sqrt2 0.00052  ratio 1.02 — agree — no dominant persistent structure
+        drifting: sub-pixel residual 0.523
+  zero inflation: 14.0% of frame-to-frame steps are exactly zero
+    by level   : q1 11.1%, q2 18.0%, q3 18.5%, q4 15.3%, q5 7.2%
+    by texture : flattest third 14.7%, roughest third 12.5%
+    16px blocks almost all-frozen or all-live: 10.9%   long unchanged runs: 0.0%
+    steps      : -2:9.1%, -1:11.3%, 0:14.0%, 1:11.2%, 2:9.0%
   duration vs pooling (3 tiles, exact central 128px, excess kurtosis):
-    A 10f single   median +2.2126  range +1.1357..+10.6379  n=3
-    B 60f single   median +2.2466  range +0.7794..+12.2301  n=3
-    C 10f pooled   +8.57
-    D 60f pooled   +7.53
-    duration effect (B-A) +0.03   pooling effect (D-B) +5.29
-  screen anchoring (15 interval pairs, up to 6512s apart):
-    grain envelope    median -0.0030  range -0.0853..+0.1031  n=15
-    additive pattern  median -0.0059  range -0.1334..+0.2189  n=15
+    A 10f single   median +5.6730  range +1.2847..+109.0139  n=3
+    B 60f single   median +5.3444  range +0.8704..+122.8960  n=3
+    C 10f pooled   +9.73
+    D 60f pooled   +8.51
+    duration effect (B-A) -0.33   pooling effect (D-B) +3.16
+  screen anchoring (1 interval pairs, up to 1362s apart):
+    grain envelope    median +0.2580  range +0.2580..+0.2580  n=1
+    additive pattern  median -0.0397  range -0.0397..-0.0397  n=1
     No strong scan-fixed envelope was detected between these sampled interval pairs. A correlation near zero rejects a strong common pattern; it does not rule out a weaker scan-fixed component, and no null distribution was computed.
-  note: 2 of 8 intervals carry frozen, noise-free blocks (encoder skip blocks); those blocks were masked out of window selection rather than used to reject the interval
+  note: 3 of 8 intervals carry frozen, noise-free blocks (encoder skip blocks); those blocks were masked out of tile selection rather than used to reject the interval
 
 sony_zve10ii_C0014   [ZV-E10 II XAVC S-I, S-Log3]
   1920x1080  24000/1001 fps  slog3  sha256 5299e5f23153
@@ -77,51 +70,48 @@ sony_zve10ii_C0014   [ZV-E10 II XAVC S-I, S-Log3]
   coverage:
   intervals                    4 /       4 (100.0%)   contains a cut 0; motion above gate 0
   admissibility                4 /       4 (100.0%)
-  windows                     94 /     128 ( 73.4%)   motion above gate 9; sub-pixel drift 25
+  tiles                    1,531 /   1,740 ( 88.0%)   disturbed too often or too long 209
   seconds                candidate    5.0   decoded  1.67   evidence  1.67
-  94 regions from 4 intervals (1 disjoint spans, 5.0s) in 1 source(s)
-    treat ~1 as the independent count, not 94: regions tile the same frames (94 per span)
-    CONCENTRATED: one interval supplies 27 of them
-    levels : 0.02628 to 0.54885 on linear scale
-    bands  : shadow 0, midtone 76, highlight 18  (is)
-    bands  : shadow 38, midtone 86, highlight 62  (contains)
-    texture: flat 0, textured 94
+  1,531 regions from 4 intervals (1 disjoint spans, 5.0s) in 1 source(s)
+    treat ~1 as the independent count, not 1,531: regions tile the same frames (1531 per span)
+    CONCENTRATED: one interval supplies 421 of them
+    levels : 0.01362 to 0.74611 on linear scale
+    bands  : shadow 12, midtone 1298, highlight 221  (is)
+    bands  : shadow 12, midtone 1298, highlight 221  (contains)
+    texture: flat 68, textured 1463
   measurements (4 intervals, each measured independently):
-    raw sigma    median +0.0015  range +0.0013..+0.0026  n=4   (all points — descriptive only)
-    trusted sig  median +0.0010  range +0.0007..+0.0011  n=3   (identified rho only)
-    whiteness    none
-    kurtosis     median +666.2808  range +81.8953..+3029.5479  n=4   (pooled, all unclipped)
-      normalised median +18.2061  range +12.0094..+31.8333  n=4   (per-window scale removed)
-      mixing predmedian +16.2971  range +8.1918..+28.2410  n=4   (expected from variance spread alone)
-      trustworthymedian +9.4981  range +1.2579..+76.4343  n=3
-    skew         median -1.3910  range -3.1428..+1.2822  n=4
-    exact zeros  median +0.4556  range +0.4199..+0.4915  n=4
-    rho          median +0.3643  range +0.3421..+0.4088  n=3
-    envelope     median +1.0137  range +0.7604..+1.1872  n=4
-    amplitude    20 identified / 20 trustworthy / 94 points   (27 saturated, all rejected)
-    routed       flat/unclipped/trustworthy: 0f/23u/10t of 23; 0f/27u/7t of 27; 0f/25u/0t of 25; 0f/19u/3t of 19
-      t=0s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=1s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=2s  spectrum: no flat window (every accepted tile carries picture structure)
-      t=2s  temporal: no window could vouch for its own correlation estimate
-      t=2s  distribution (trustworthy): no window is both unclipped and temporally trustworthy
-      t=3s  spectrum: no flat window (every accepted tile carries picture structure)
+    raw sigma    median +0.0024  range +0.0020..+0.0124  n=4   (all points — descriptive only)
+    trusted sig  median +0.0012  range +0.0011..+0.0042  n=4   (identified rho only)
+    whiteness    median +0.1966  range +0.1238..+0.3372  n=4
+    kurtosis     median +559.2847  range +279.0929..+868.8545  n=4   (pooled, all unclipped)
+      normalised median +40.4154  range +28.0468..+50.5257  n=4   (per-window scale removed)
+      mixing predmedian +7.3750  range +5.6539..+10.0535  n=4   (expected from variance spread alone)
+      trustworthymedian +15.3188  range +0.3488..+65.5628  n=4
+    skew         median +1.1501  range -2.2528..+4.2023  n=4
+    exact zeros  median +0.2736  range +0.2657..+0.2924  n=4
+    rho          median +0.1287  range +0.0900..+0.5038  n=4
+    envelope     median +0.6654  range +0.6247..+0.7905  n=4
+    amplitude    57 identified / 57 trustworthy / 1531 points   (407 saturated, all rejected)
+    routed       flat/unclipped/trustworthy: 17f/421u/49t of 421; 17f/380u/2t of 380; 17f/350u/2t of 350; 17f/380u/4t of 380
   deep probe (60 frames per tile):
-    t=      0s (512,768)  60f  level 0.0501  sigma 0.00062  rho +0.372  kurt +0.7  zeros 33.9%   [TRUSTED]
-    t=      1s (1280,768)  60f  level 0.0346  sigma 0.00058  rho +0.443  kurt +1.4  zeros 27.9%   [rejected]
-        drifting: sub-pixel residual 0.479; lag-4 disagrees: rho +0.443 vs +0.552
-    t=      2s (1792,768)  60f  level 0.0258  sigma 0.00049  rho +0.334  kurt +0.4  zeros 24.5%   [rejected]
-        drifting: sub-pixel residual 0.534
-  zero inflation: 32.6% of frame-to-frame steps are exactly zero
-    by level   : q1 30.6%, q2 30.3%, q3 32.2%, q4 33.6%, q5 36.0%
-    by texture : flattest third 32.8%, roughest third 32.4%
+    t=      0s (640,64)  60f  level 0.0297  sigma 0.00233  rho +0.867  kurt +211.4  zeros 19.8%   [TRUSTED]
+        dual residual: mean-removed 0.00085 vs diff/sqrt2 0.00034  ratio 2.49 — mean-removed residual is larger: persistent picture structure or slow drift
+    t=      1s (384,640)  60f  level 0.1252  sigma 0.00110  rho +0.481  kurt +1.6  zeros 49.9%   [rejected]
+        dual residual: mean-removed 0.00184 vs diff/sqrt2 0.00077  ratio 2.40 — mean-removed residual is larger: persistent picture structure or slow drift
+        drifting: sub-pixel residual 0.267; lag-4 disagrees: rho +0.481 vs +0.590
+    t=      2s (0,0)  60f  level 0.2810  sigma 0.00163  rho +0.396  kurt +1.5  zeros 63.7%   [rejected]
+        dual residual: mean-removed 0.00180 vs diff/sqrt2 0.00128  ratio 1.40 — mean-removed residual is larger: persistent picture structure or slow drift
+        drifting: sub-pixel residual 0.531
+  zero inflation: 63.2% of frame-to-frame steps are exactly zero
+    by level   : q1 60.8%, q2 62.5%, q3 61.5%, q4 64.2%, q5 66.3%
+    by texture : flattest third 0.0%, roughest third 62.3%
     16px blocks almost all-frozen or all-live: 0.0%   long unchanged runs: 0.0%
-    steps      : -2:8.8%, -1:22.2%, 0:32.6%, 1:21.6%, 2:8.3%
+    steps      : -2:1.9%, -1:16.7%, 0:63.2%, 1:16.2%, 2:1.8%
   duration vs pooling (3 tiles, exact central 128px, excess kurtosis):
-    A 10f single   median +0.6767  range +0.4088..+1.3912  n=3
-    B 60f single   median +0.6583  range +0.4194..+1.5779  n=3
-    C 10f pooled   +0.85
-    D 60f pooled   +0.94
-    duration effect (B-A) -0.02   pooling effect (D-B) +0.29
-  screen anchoring: unavailable — the two intervals are only 3s apart, below the 60s needed for unrelated pictures; a correlation here would measure the same scene, not screen-anchored structure
+    A 10f single   median +1.9963  range +1.2244..+3.0239  n=3
+    B 60f single   median +1.2646  range +1.1700..+1.4845  n=3
+    C 10f pooled   +5.02
+    D 60f pooled   +4.51
+    duration effect (B-A) -0.73   pooling effect (D-B) +3.24
+  screen anchoring: unavailable — the two intervals are only 1s apart, below the 60s needed for unrelated pictures; a correlation here would measure the same scene, not screen-anchored structure
 
