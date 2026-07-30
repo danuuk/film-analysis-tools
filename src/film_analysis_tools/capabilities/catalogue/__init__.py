@@ -25,7 +25,7 @@ Typical use::
 
 from __future__ import annotations
 
-from film_analysis_tools.capabilities.catalogue import categories
+from film_analysis_tools.capabilities.catalogue import categories, intervals, survey
 from film_analysis_tools.capabilities.catalogue.categories import (
     CATEGORIES,
     Category,
@@ -50,5 +50,7 @@ __all__ = [
     "categories",
     "classify",
     "file_sha256",
+    "intervals",
     "load",
+    "survey",
 ]

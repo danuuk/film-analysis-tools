@@ -177,8 +177,15 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
 
 ## 8. Sequencing
 
-1. **Build the interval layer** by re-aggregating the existing survey. No decoding. This is the
-   step that turns 20 seconds of used material into roughly an hour of available material.
+1. ~~**Build the interval layer**~~ — done. `capabilities/catalogue/{survey,intervals}`. Run over
+   the existing 37,084-row survey it yields **8,660 cut-free intervals covering 147.6 minutes**,
+   of which **2,860 are stable at motion p90 ≤ 1.0, covering 55.0 minutes** — against 4 scenes ×
+   5 s = 0.3 minutes in use. No decoding was needed.
+
+   The within-frame decomposition earned its place immediately. By frame *mean* the film has 98
+   highlight intervals; by what intervals *contain*, **6,265** do — and 1,846 of those are also
+   stable. Highlight material exists after all; it was invisible to any statistic that judged an
+   interval by its average.
 2. **Join face and colour metadata to intervals**, so face-bearing and colour-conditioned
    intervals become queryable rather than inferred.
 3. **Define the region record and index it.** Window selection already computes everything a
