@@ -29,7 +29,7 @@ law and must not be read as one.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
@@ -188,6 +188,9 @@ class WindowSpectrum:
     anisotropy: float
     block_peak_h: float
     block_peak_v: float
+    psd_2d: np.ndarray | None = field(default=None, repr=False, compare=False)
+    """Full normalised 2D power spectrum, kept in memory for kernel materialisation and never
+    serialised. ``None`` on a spectrum rebuilt from a record, which cannot re-form a kernel."""
 
     @property
     def block_peak(self) -> float:
@@ -250,6 +253,7 @@ def window_spectrum(
         anisotropy=width_h / max(width_v, EPS),
         block_peak_h=_block_axis_peak(np.asarray(horizontal)),
         block_peak_v=_block_axis_peak(np.asarray(vertical)),
+        psd_2d=power / max(float(power.mean()), EPS),
     )
 
 

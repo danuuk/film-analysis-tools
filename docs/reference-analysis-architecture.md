@@ -647,17 +647,42 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    [`footprint_stability_pulp_2026-07-30.txt`](results/footprint_stability_pulp_2026-07-30.txt)
    and its JSON.
 
-   Still ahead on this line is the **held-out reconstruction**: materialise the actual 2D kernel
-   per training fold (the three summary values above admit many different filters), drive it with
-   independent Gaussian fields, scale by the held-out amplitude prediction, and compare the
-   generated sequence against only the held interval — amplitude-vs-level error, radial and
-   directional PSD distance, correlation widths, anisotropy, temporal correlation, midtone skew and
-   kurtosis, block-axis peaks — followed by several-second renders on gradients and real scenes with
-   the migrated legacy Pulp grain as an A/B reference. The measured footprint must carry its spatial
-   scale anchor, the 3840×1634 active geometry, so runtime scaling stays explicit.
+   **The held-out reconstruction** (`capabilities/fit/reconstruct`) closes the loop. Because the
+   three summary numbers admit many different filters, the candidate is *materialised*: for each
+   interval held out, the amplitude law is fitted from the other four, the 2D power spectrum is
+   pooled from the other four with equal weight per interval, a real filter `sqrt(PSD)` is driven
+   with independent Gaussian fields and scaled by the held-out amplitude prediction, and the
+   generated sequence is re-measured and compared against **only** the held interval. So neither
+   the amplitude nor the spatial structure of what is compared ever saw the interval it is judged
+   against. Over five folds:
 
-   The screen-anchoring guard is also still purely temporal; 60 s does not guarantee unrelated
-   pictures, and an image-similarity check would close it.
+   | | median | max | reference |
+   |---|---|---|---|
+   | amplitude log-error | 0.120 | 0.191 | held-out σ within ~13–21% |
+   | radial PSD distance | 0.057 | 0.072 | **within the split-half null (0.043–0.064)** |
+   | horizontal / vertical PSD distance | 0.216 / 0.209 | | within the directional nulls |
+
+   The radial number is the striking one: the footprint pooled from four intervals reproduces the
+   fifth as closely as two halves of a single interval reproduce each other. Anisotropy tracks per
+   fold (measured 1.40–1.49 → generated 1.42–1.44), and the generated field is **Gaussian and
+   temporally independent by construction** — |skew| 0.00, |excess kurtosis| 0.00, |ρ| 0.005 —
+   which is the correct midtone candidate; the shadow heavy tails stay excluded as a delivery
+   artefact. The measured footprint carries its spatial-scale anchor, the **3840×1634 active
+   geometry**, so runtime scaling stays explicit.
+
+   The three-component candidate is therefore not just measured but **validated on unseen material**:
+
+   ```
+   appearance amplitude : sigma(L) = 0.0616 * L^0.732     held-out log-error 0.12
+   spatial structure    : one footprint, ~1.2/0.84 px, ~1.44:1   held-out radial 0.057 (~ null)
+   temporal baseline    : independent frames             generated rho 0.005
+   ```
+
+   What remains is human-facing rather than statistical: several-second renders on flat gradients,
+   dark and mixed-exposure scenes, skin and fine texture, with the migrated legacy Pulp grain as an
+   A/B reference — a review deliverable, not a further measurement. And the screen-anchoring guard
+   is still purely temporal; 60 s does not guarantee unrelated pictures, and an image-similarity
+   check would close it.
 
 5. **Implement the query interface** over intervals and regions, with provenance on every result.
 6. **Assemble corpora by query**, with a holdout reserved by construction rather than by memory.

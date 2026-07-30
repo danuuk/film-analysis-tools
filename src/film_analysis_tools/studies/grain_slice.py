@@ -44,7 +44,7 @@ from film_analysis_tools.capabilities.catalogue import ingest
 from film_analysis_tools.capabilities.catalogue import intervals as iv
 from film_analysis_tools.capabilities.catalogue import regions as rg
 from film_analysis_tools.capabilities.catalogue.survey import FrameSurvey
-from film_analysis_tools.capabilities.fit import amplitude
+from film_analysis_tools.capabilities.fit import amplitude, reconstruct
 from film_analysis_tools.capabilities.measure import (
     admissibility,
     evidence,
@@ -766,6 +766,18 @@ class SourceOutcome:
             return None
         return footprint.assess_stability(spectra)
 
+    def reconstruction(self) -> reconstruct.Reconstruction | None:
+        """Held-out reconstruction: materialise the candidate per fold and test it against the
+        interval it was not built from. ``None`` when there are too few intervals with spectra."""
+        spectra = [one for interval in self.per_interval for one in interval.spectra]
+        points = self.amplitude_points()
+        if len({s.interval for s in spectra}) < 2 or len(points) < 4:
+            return None
+        try:
+            return reconstruct.reconstruct(spectra, points)
+        except DataError:
+            return None
+
     def amplitude_fit(self) -> amplitude.ModelComparison | None:
         """The compact sigma(level) fit, or ``None`` when there is too little to fit honestly."""
         points = self.amplitude_points()
@@ -814,6 +826,7 @@ class SourceOutcome:
             "footprint_stability": (
                 _fp.as_record() if (_fp := self.footprint_stability()) else None
             ),
+            "reconstruction": _rc.as_record() if (_rc := self.reconstruction()) else None,
             "deep_probes": [one.as_record() for one in self.deep],
             "duration_vs_pooling": (
                 self.duration_vs_pooling.as_record() if self.duration_vs_pooling else None
@@ -2191,6 +2204,9 @@ def report(result: StudyResult) -> str:
         stability = outcome.footprint_stability()
         if stability is not None:
             lines.append("  " + stability.summary().replace("\n", "\n  "))
+        rebuild = outcome.reconstruction()
+        if rebuild is not None:
+            lines.append("  " + rebuild.summary().replace("\n", "\n  "))
 
         if outcome.duration_vs_pooling:
             lines += outcome.duration_vs_pooling.lines()

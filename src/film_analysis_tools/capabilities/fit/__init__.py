@@ -6,6 +6,6 @@ are testable against a synthetic known-answer model with no engine and no footag
 
 from __future__ import annotations
 
-from film_analysis_tools.capabilities.fit import amplitude
+from film_analysis_tools.capabilities.fit import amplitude, reconstruct
 
-__all__ = ["amplitude"]
+__all__ = ["amplitude", "reconstruct"]
