@@ -30,6 +30,7 @@ from typing import Any
 
 import numpy as np
 
+from film_analysis_tools.capabilities.measure.admissibility import OverlayEvidence
 from film_analysis_tools.capabilities.measure.residual import (
     DEFAULT_BLUR_RADIUS,
     DEFAULT_MOTION_BLUR_RADIUS,
@@ -240,6 +241,7 @@ def select_windows(
     band_edges: tuple[float, float] = DEFAULT_BAND_EDGES,
     blur_radius: int = DEFAULT_BLUR_RADIUS,
     motion_blur_radius: int = DEFAULT_MOTION_BLUR_RADIUS,
+    overlay: OverlayEvidence | None = None,
 ) -> SelectionReport:
     """Find measurable windows across level, texture and frame position.
 
@@ -292,7 +294,9 @@ def select_windows(
             # rejecting on it would discard exactly the windows best suited to measuring grain.
             drift_is_meaningful = shift.structure_snr >= MIN_STRUCTURE_SNR
 
-            if motion > gate.max_motion_energy:
+            if overlay is not None and overlay.excludes(x, y, size):
+                rejected.append(Rejection(window, "overlaps a composited region"))
+            elif motion > gate.max_motion_energy:
                 rejected.append(Rejection(window, "motion above gate"))
             elif drift_is_meaningful and window.subpixel_residual > gate.max_subpixel_residual:
                 rejected.append(Rejection(window, "sub-pixel drift"))

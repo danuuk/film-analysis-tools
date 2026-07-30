@@ -6,6 +6,7 @@ Engine-free by construction. Nothing here needs a forward model or a reference.
 from __future__ import annotations
 
 from film_analysis_tools.capabilities.measure import (
+    admissibility,
     chroma,
     evidence,
     residual,
@@ -27,6 +28,7 @@ __all__ = [
     "SyntheticSpec",
     "Window",
     "WindowGate",
+    "admissibility",
     "chroma",
     "evidence",
     "extract",
