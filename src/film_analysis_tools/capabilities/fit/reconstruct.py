@@ -147,6 +147,102 @@ def materialise_kernel(filter_magnitude: np.ndarray, *, support: int = 15) -> np
     return cropped / norm if norm > EPS else cropped
 
 
+@dataclass(frozen=True)
+class SupportCheck:
+    """How faithfully a compact kernel of a given support reproduces the full filter."""
+
+    support: int
+    retained_energy: float
+    radial_psd_distance: float
+    horizontal_psd_distance: float
+    vertical_psd_distance: float
+    grain_radius_h: float
+    grain_radius_v: float
+    anisotropy: float
+
+    def as_record(self) -> dict[str, Any]:
+        return {
+            "support": self.support,
+            "retained_energy": self.retained_energy,
+            "radial_psd_distance": self.radial_psd_distance,
+            "horizontal_psd_distance": self.horizontal_psd_distance,
+            "vertical_psd_distance": self.vertical_psd_distance,
+            "grain_radius_h": self.grain_radius_h,
+            "grain_radius_v": self.grain_radius_v,
+            "anisotropy": self.anisotropy,
+        }
+
+    def line(self) -> str:
+        return (
+            f"    support {self.support:2d}: retained energy {self.retained_energy:6.2%}  "
+            f"radial {self.radial_psd_distance:.3f}  h/v {self.horizontal_psd_distance:.3f}/"
+            f"{self.vertical_psd_distance:.3f}  radius h/v {self.grain_radius_h:.2f}/"
+            f"{self.grain_radius_v:.2f}  aniso {self.anisotropy:.2f}"
+        )
+
+
+def kernel_support_report(
+    spectra: Sequence[fp.WindowSpectrum],
+    *,
+    supports: Sequence[int] = (15, 21, 31),
+    frames: int = 60,
+    seed: int = 0,
+) -> tuple[SupportCheck, ...]:
+    """Fields from the full filter versus its compact kernel, across support sizes.
+
+    The compact kernel is what ``render_candidate`` actually uses at runtime; this quantifies what
+    cropping the full footprint to a small window costs, so the smallest support that preserves the
+    measured character can be chosen rather than assumed.
+    """
+    filter_magnitude = materialise_filter(spectra)
+    full_kernel = np.fft.fftshift(np.fft.ifft2(filter_magnitude).real)
+    total_energy = float(np.sum(full_kernel**2))
+    reference = fp.window_spectrum(
+        generate_frames(filter_magnitude, frames, seed=seed),
+        interval="full",
+        level=0.1,
+        band="m",
+        sigma_hat=1.0,
+    )
+
+    checks: list[SupportCheck] = []
+    for support in supports:
+        centre = filter_magnitude.shape[0] // 2
+        half = support // 2
+        cropped = full_kernel[centre - half : centre + half + 1, centre - half : centre + half + 1]
+        retained = float(np.sum(cropped**2)) / max(total_energy, EPS)
+
+        kernel = materialise_kernel(filter_magnitude, support=support)
+        level = np.full((160, 160), 0.1)
+        rendered = render_candidate(level, _ConstAmp(1.0), kernel, frames=frames, seed=seed + 1)
+        gen = fp.window_spectrum(rendered, interval="k", level=0.1, band="m", sigma_hat=1.0)
+        checks.append(
+            SupportCheck(
+                support=support,
+                retained_energy=retained,
+                radial_psd_distance=fp.spectral_distance(gen, reference, direction="radial"),
+                horizontal_psd_distance=fp.spectral_distance(
+                    gen, reference, direction="horizontal"
+                ),
+                vertical_psd_distance=fp.spectral_distance(gen, reference, direction="vertical"),
+                grain_radius_h=gen.grain_radius_h,
+                grain_radius_v=gen.grain_radius_v,
+                anisotropy=gen.anisotropy,
+            )
+        )
+    return tuple(checks)
+
+
+class _ConstAmp:
+    """A constant amplitude model, for exercising the renderer at unit strength."""
+
+    def __init__(self, sigma: float) -> None:
+        self.sigma = sigma
+
+    def predict(self, level: np.ndarray, *, outside: str = "clamp") -> np.ndarray:
+        return np.full_like(np.asarray(level, dtype=np.float64), self.sigma)
+
+
 def render_candidate(
     level: np.ndarray,
     amplitude_model: Any,
@@ -159,8 +255,14 @@ def render_candidate(
 
     This is the whole candidate applied to a spatially-varying image -- the composition the
     componentwise held-out validation does not itself perform. ``level`` is a linear-luma image;
-    each frame adds an independent unit-variance footprint field scaled per pixel by the fitted
-    amplitude law.
+    each frame adds an independent footprint field scaled per pixel by the fitted amplitude law.
+
+    **Runtime-faithful.** The field is white unit Gaussian noise convolved with the unit-L2 kernel,
+    with *no* frame-global normalisation. A real-time shader convolves noise with a fixed kernel
+    and cannot divide by a per-frame standard deviation; a unit-L2 kernel already yields
+    unit-variance output in expectation, so the aggregate RMS follows ``sigma(L)`` on its own,
+    within ordinary sampling uncertainty. Dividing by the realised per-frame std would flatter the
+    result by removing exactly the sampling variation the runtime has.
     """
     sigma = np.asarray(amplitude_model.predict(level, outside="clamp"), dtype=np.float64)
     rng = np.random.default_rng(seed)
@@ -175,10 +277,23 @@ def render_candidate(
     for index in range(frames):
         white = rng.normal(0.0, 1.0, (height, width))
         field = np.fft.ifft2(np.fft.fft2(white) * transfer).real
-        std = float(field.std())
-        field = field / std if std > EPS else field
         out[index] = level + sigma * field
     return out
+
+
+def luma_delta_to_rgb(luma_delta: np.ndarray, weights: tuple[float, float, float]) -> np.ndarray:
+    """Project a scalar luma grain delta into RGB the way the legacy shader injects it.
+
+    ``dRGB = w * (dL / dot(w, w))`` -- the minimum-norm RGB change whose luma is ``dL``. This is
+    the shader's ``injectionDelta``; equal-RGB injection would add a colour shift unrelated to the
+    footprint, confounding grain character with a tint in any A/B. Default weights are Rec.709.
+    """
+    w = np.asarray(weights, dtype=np.float64)
+    scale = luma_delta / max(float(np.dot(w, w)), EPS)
+    return np.asarray(scale[..., None] * w)
+
+
+REC709_LUMA: tuple[float, float, float] = (0.2126, 0.7152, 0.0722)
 
 
 @dataclass(frozen=True)
@@ -378,9 +493,13 @@ def _lag_ratio_rho(frames: np.ndarray) -> float:
 
 
 __all__ = [
+    "REC709_LUMA",
     "FoldResult",
     "Reconstruction",
+    "SupportCheck",
     "generate_frames",
+    "kernel_support_report",
+    "luma_delta_to_rgb",
     "materialise_filter",
     "materialise_kernel",
     "reconstruct",

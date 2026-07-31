@@ -692,6 +692,17 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    So, precisely: **all three components passed held-out validation, and their composition passed a
    gradient sanity check.**
 
+   Two runtime-faithfulness checks close out the render path. The **compact kernel is sufficient at
+   15 px**: cropping the full footprint to a 15×15 window retains **99.77%** of its energy and
+   reproduces the radii (1.21/0.84 px) and anisotropy (1.43) exactly; 21 and 31 px add under 0.05%
+   energy, so 15 is the smallest support that preserves the character. And the renderer is
+   **runtime-faithful** — unit noise convolved with the unit-L2 kernel, *no* frame-global
+   normalisation (which a shader cannot do), so the aggregate RMS follows σ(L) on its own (ratio
+   1.000 on a synthetic gradient). The candidate is injected exactly as the legacy shader does,
+   `dRGB = w·dL/(w·w)` with Rec.709 weights, so a future A/B compares grain character rather than a
+   tint. The A/B assembly plan (variants, matched-strength modes, material, ownership boundary) is
+   [`docs/grain_ab_plan.md`](grain_ab_plan.md).
+
    ```
    appearance amplitude : sigma(L) = 0.0616 * L^0.732     held-out log-error 0.12
    spatial structure    : one footprint, ~1.2/0.84 px, ~1.44:1   held-out radial 0.057 (~ null)

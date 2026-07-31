@@ -778,6 +778,17 @@ class SourceOutcome:
         except DataError:
             return None
 
+    def kernel_support(self) -> tuple[reconstruct.SupportCheck, ...]:
+        """The compact-kernel support check on the full candidate: what cropping the footprint to
+        a small runtime window costs. Empty when there are too few spectra to build a kernel."""
+        spectra = [one for interval in self.per_interval for one in interval.spectra]
+        if len({s.interval for s in spectra}) < 1 or not any(s.psd_2d is not None for s in spectra):
+            return ()
+        try:
+            return reconstruct.kernel_support_report(spectra)
+        except DataError:
+            return ()
+
     def amplitude_fit(self) -> amplitude.ModelComparison | None:
         """The compact sigma(level) fit, or ``None`` when there is too little to fit honestly."""
         points = self.amplitude_points()
@@ -827,6 +838,7 @@ class SourceOutcome:
                 _fp.as_record() if (_fp := self.footprint_stability()) else None
             ),
             "reconstruction": _rc.as_record() if (_rc := self.reconstruction()) else None,
+            "kernel_support": [one.as_record() for one in self.kernel_support()],
             "deep_probes": [one.as_record() for one in self.deep],
             "duration_vs_pooling": (
                 self.duration_vs_pooling.as_record() if self.duration_vs_pooling else None
@@ -2207,6 +2219,10 @@ def report(result: StudyResult) -> str:
         rebuild = outcome.reconstruction()
         if rebuild is not None:
             lines.append("  " + rebuild.summary().replace("\n", "\n  "))
+        support = outcome.kernel_support()
+        if support:
+            lines.append("  runtime kernel support (full filter vs compact kernel):")
+            lines += [one.line() for one in support]
 
         if outcome.duration_vs_pooling:
             lines += outcome.duration_vs_pooling.lines()

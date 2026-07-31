@@ -9154,6 +9154,38 @@
           }
         ]
       },
+      "kernel_support": [
+        {
+          "support": 15,
+          "retained_energy": 0.9977448389978919,
+          "radial_psd_distance": 0.026215558954561565,
+          "horizontal_psd_distance": 0.17255499642411432,
+          "vertical_psd_distance": 0.17709466686262237,
+          "grain_radius_h": 1.2096052707669245,
+          "grain_radius_v": 0.8436730643921396,
+          "anisotropy": 1.4337369791916212
+        },
+        {
+          "support": 21,
+          "retained_energy": 0.9979262021840094,
+          "radial_psd_distance": 0.020885913054863137,
+          "horizontal_psd_distance": 0.17971854178805485,
+          "vertical_psd_distance": 0.16816037528568786,
+          "grain_radius_h": 1.2098228473580068,
+          "grain_radius_v": 0.8438279131281629,
+          "anisotropy": 1.433731722470593
+        },
+        {
+          "support": 31,
+          "retained_energy": 0.9981021758167279,
+          "radial_psd_distance": 0.01743753981729809,
+          "horizontal_psd_distance": 0.1785679702635391,
+          "vertical_psd_distance": 0.16331934261301265,
+          "grain_radius_h": 1.2099751949236457,
+          "grain_radius_v": 0.8439272990039198,
+          "anisotropy": 1.4337433998778912
+        }
+      ],
       "deep_probes": [
         {
           "interval_start_s": 2636.0,

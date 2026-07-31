@@ -67,6 +67,10 @@ pulp_fiction_1994_uhd   [UHD HDR10 remux]
     per fold (held interval): 2636s aniso 1.41->1.44; 3998s aniso 1.40->1.44; 5051s aniso 1.48->1.42; 6470s aniso 1.49->1.42; 7683s aniso 1.40->1.44
     generated field is Gaussian and independent: |skew| 0.00  |excess kurtosis| 0.00  |rho| 0.005
     codec block peak: measured 1.62 vs generated 1.16 (deliberately suppressed -- delivery artefact, not grain)
+  runtime kernel support (full filter vs compact kernel):
+    support 15: retained energy 99.77%  radial 0.026  h/v 0.173/0.177  radius h/v 1.21/0.84  aniso 1.43
+    support 21: retained energy 99.79%  radial 0.021  h/v 0.180/0.168  radius h/v 1.21/0.84  aniso 1.43
+    support 31: retained energy 99.81%  radial 0.017  h/v 0.179/0.163  radius h/v 1.21/0.84  aniso 1.43
   duration vs pooling (3 tiles, exact central 128px, excess kurtosis):
     A 10f single   median +42.6529  range +0.9022..+109.0139  n=3
     B 48f single   median +43.4210  range +0.5519..+120.3592  n=3

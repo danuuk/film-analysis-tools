@@ -197,3 +197,48 @@ class _ConstAmp:
 
     def predict(self, level, *, outside="clamp"):
         return np.full_like(np.asarray(level, dtype=float), self.sigma)
+
+
+# --------------------------------------------- runtime fidelity, support, projection
+
+
+def test_the_renderer_rms_follows_sigma_without_frame_normalisation() -> None:
+    """Runtime-faithful: a unit-L2 kernel on unit noise already yields unit-variance fields, so the
+    aggregate RMS follows sigma(L) with no per-frame normalisation a shader could not do."""
+
+    class Amp:
+        def predict(self, level, *, outside="clamp"):
+            return 0.05 * np.asarray(level, dtype=float) ** 0.5
+
+    kernel = rc.materialise_kernel(rc.materialise_filter(_spectra(correlation_px=0.6)))
+    level = np.full((256, 256), 0.1)
+    rendered = rc.render_candidate(level, Amp(), kernel, frames=120, seed=0)
+    rms = float((rendered - 0.1).std())
+    target = 0.05 * 0.1**0.5
+    assert rms == pytest.approx(target, rel=0.03), "aggregate RMS tracks sigma(L)"
+
+
+def test_a_15px_support_preserves_the_measured_character() -> None:
+    """The smallest support that keeps the footprint: 15 px already retains essentially all energy
+    and reproduces the radii and anisotropy, so a larger window buys nothing."""
+    checks = {
+        c.support: c for c in rc.kernel_support_report(_spectra(correlation_px=0.6, aniso=1.5))
+    }
+    assert checks[15].retained_energy > 0.98
+    assert checks[15].radial_psd_distance < 0.1
+    # larger supports do not materially improve the retained energy or the shape
+    assert checks[31].retained_energy - checks[15].retained_energy < 0.02
+    assert abs(checks[31].anisotropy - checks[15].anisotropy) < 0.15
+
+
+def test_the_luma_to_rgb_projection_matches_the_shader() -> None:
+    """dRGB = w * dL/(w.w): the luma of the projected delta is exactly dL, and it is minimum-norm
+    (orthogonal complement carries nothing), unlike an equal-RGB injection."""
+    weights = rc.REC709_LUMA
+    delta = np.array([[0.01, -0.02], [0.0, 0.005]])
+    rgb = rc.luma_delta_to_rgb(delta, weights)
+    recovered = rgb @ np.asarray(weights)
+    assert np.allclose(recovered, delta, atol=1e-9), "projected luma equals the input delta"
+    # equal-RGB injection (dL/sum(w)) would carry a different, tinting, vector
+    equal = delta[..., None] / sum(weights)
+    assert not np.allclose(rgb, equal)
