@@ -1,0 +1,70 @@
+{
+  "schema": "appearance-grain-motion-ab-decision/1",
+  "decision_id": "appearance_grain_v1_image_domain_promotion_2026_07_31",
+  "decided_on": "2026-07-31",
+  "catalogue": {
+    "catalogue_id": "sony_zve10ii_v1",
+    "generated": "2026-07-29T20:20:08Z"
+  },
+  "candidate": {
+    "operation": "appearance_grain",
+    "implementation_version": 1,
+    "model_id": "sony_slog3_kodak_5219_2383_appearance_grain_v1",
+    "strength": 1.0,
+    "scale_policy": "reference_height_bilinear_unit_l2_v1",
+    "sampled_1080_anisotropy": 1.2846469504490108
+  },
+  "review_evidence": {
+    "broad_motion_review": {
+      "manifest_sha256": "b9c9e59976d7952fe6ea3eba9105db4aa06484a95989d69bc928c6c7cbb36708",
+      "scene_ids": ["C0011", "C0021", "C0054", "C0055", "C0070"],
+      "seconds_per_scene": 2.0,
+      "fps": 24,
+      "candidate_strength": 1.0,
+      "legacy_strength": 0.3,
+      "legacy_entrypoint": "PSWindowsGrain"
+    },
+    "focused_equal_control_review": {
+      "manifest_sha256": "6bf1f639ed0e457e440c68ca2de9b680c36aa0ef16e51d3a00198bc2cab26569",
+      "video_sha256": "d535dfa397d41c5153b06e6e461f7cd0e05b5653a02e9b5653e0219ec27a4a22",
+      "scene_id": "C0055",
+      "source_sha256": "536cce64bb30af8a38ac7e5f014a05a5e7b65d1f1651ac4fc6c6f06484b4f5c4",
+      "start_s": 16.5,
+      "duration_s": 2.0,
+      "fps": 24,
+      "candidate_strength": 1.0,
+      "legacy_strength": 1.0,
+      "delta_visualization": "signed_linear_rgb_delta_plus_0.18_linear_grey_no_gain",
+      "amplitude_matching": false
+    }
+  },
+  "human_verdict": {
+    "legacy_at_0_3": "quite_subtle",
+    "measured_candidate_at_1_0": "more_interesting",
+    "focused_equal_control_reviewed": true,
+    "decision": "promote_candidate_to_next_steps"
+  },
+  "promotion": {
+    "status": "accepted_image_domain_baseline_for_next_stage",
+    "validation_level": "visual_reviewed",
+    "runtime_status": "accepted",
+    "promotion_allowed": true,
+    "plugin_default_allowed": false
+  },
+  "scope": {
+    "accepted": [
+      "appearance_grain_v1 amplitude and structure as the image-domain baseline",
+      "strength 1.0 as the reviewed measured setting",
+      "the recorded sampled multi-resolution scaling policy",
+      "use as the output-footprint target for the negative-density experiment"
+    ],
+    "not_claimed": [
+      "Kodak 5219 material-granularity identification",
+      "perceptual or RMS equivalence between legacy 1.0 and candidate 1.0",
+      "acceptance of the complete Sony colour and O1/O2/O3 composition",
+      "plugin-default or production eligibility",
+      "native-backend parity"
+    ]
+  },
+  "next_step": "Begin the isolated negative-density grain experiment while retaining appearance_grain v1 unchanged as the accepted image-domain reference and fallback."
+}

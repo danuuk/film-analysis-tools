@@ -696,11 +696,15 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    15 px**: cropping the full footprint to a 15×15 window retains **99.77%** of its energy and
    reproduces the radii (1.21/0.84 px) and anisotropy (1.43) exactly; 21 and 31 px add under 0.05%
    energy, so 15 is the smallest support that preserves the character. And the renderer is
-   **runtime-faithful** — unit noise convolved with the unit-L2 kernel, *no* frame-global
+   **runtime-faithful at the 1634-pixel reference height** — unit noise convolved with the unit-L2 kernel, *no* frame-global
    normalisation (which a shader cannot do), so the aggregate RMS follows σ(L) on its own (ratio
    1.000 on a synthetic gradient). The candidate is injected exactly as the legacy shader does,
    `dRGB = w·dL/(w·w)` with Rec.709 weights, so a future A/B compares grain character rather than a
-   tint. The A/B assembly plan (variants, matched-strength modes, material, ownership boundary) is
+   tint. Runtime scaling is a separate sampled contract: FEE's bilinear/unit-L2 policy produces
+   radii 0.774/0.602 px and anisotropy 1.285 at the 1080p review resolution, rather than preserving
+   the 1.435 reference-height anisotropy. The 720/1080/1634/2160 results are frozen in
+   `docs/results/appearance_grain_scaling_v1.json`. The A/B assembly plan (variants,
+   matched-strength modes, material, ownership boundary) is
    [`docs/grain_ab_plan.md`](grain_ab_plan.md).
 
    ```
@@ -710,13 +714,14 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    codec block grid     : measured 1.6-2.5, generated 1.1-1.2   suppressed as delivery artefact
    ```
 
-   What remains is human-facing rather than statistical: a compact A/B set — no grain, legacy Pulp
-   grain, and this candidate — through an identical colour pipeline, image-domain placement, scale
-   convention and output encoding, on 5–10 s each of dark, mixed-highlight, skin, fine-texture and
-   gradient material, at normal strength (and 4× as a labelled diagnostic), judged for whether the
-   grain feels natural in motion, stays clean in shadow, sits on skin, and preserves detail against
-   legacy. `render_candidate` produces the FAT side; the legacy variant needs the plugin's own grain
-   generator, so the set is assembled cross-repo. First comparison keeps the candidate in the same
+   The human-facing gate is now complete: a broad five-scene motion set compared no grain, the
+   compiled-FEE candidate, and the shipped plugin grain pass, followed by a focused equal-control
+   C0055 review with exact signed deltas. The project owner selected the measured candidate for the
+   next stage; `docs/results/appearance_grain_motion_ab_decision_v1.json` freezes the bounded
+   promotion and the private report hashes. `render_candidate` remains the compact oracle; the
+   compiled FEE model produces the accepted image-domain baseline, while the legacy variant uses
+   the plugin's own grain pass, so the evidence remains assembled cross-repo. The comparison keeps
+   the candidate in the same
    luma/image-domain placement as legacy, so grain character is not confounded with pipeline
    placement; negative-stage integration is the isolated step after. And the screen-anchoring guard
    is still purely temporal; 60 s does not guarantee unrelated pictures, and an image-similarity
@@ -729,9 +734,10 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    error: a pure power law σ(L) = 0.0616·L^0.732 over the supported range 0.00016–0.177 linear.
    The **spatial footprint** is now measured too (`capabilities/measure/footprint`): once
    amplitude is divided out, the grain shape is stable enough across level and interval to use one
-   common footprint (~1.2 px, ~2:1 horizontal anisotropy). Still to come on this line: holdout
-   residual reconstruction and several-second renders, then the map into the negative-density
-   stage — kept explicitly separate from this appearance-envelope fit.
+   common footprint (~1.2/0.84 px, ~1.44:1 horizontal anisotropy at reference height). Holdout
+   reconstruction and the scoped
+   real-motion review are complete. The next line maps a provisional latent model into the
+   negative-density stage, kept explicitly separate from this accepted appearance-envelope fit.
 
 Steps 1-3 and 5-6 are architecture; step 4 is the slice that proves the architecture runs.
 Only after them does refining an estimator have a defined meaning, because only then is there an

@@ -1,0 +1,49 @@
+{
+  "schema": "appearance-grain-scaling/1",
+  "question": "What discrete footprint does the FEE v1 height-relative runtime policy produce at review and neighbouring resolutions?",
+  "source": {
+    "kernel_shape": [15, 15],
+    "kernel_npy_sha256": "5b1b9b24077eaa81fdca4f939bc8d539f18c2c6ee118beaa0ad48f407e27e8bf",
+    "reference_frame_height_px": 1634,
+    "reference_active_width_px": 3840
+  },
+  "policy": {
+    "id": "reference_height_bilinear_unit_l2_v1",
+    "scale": "output_height_px / 1634",
+    "sampling": "bilinear on both kernel-coordinate axes; zero outside compact support",
+    "normalization": "unit_l2 after sampling",
+    "metric": "circular kernel autocorrelation; horizontal and vertical first 0.5 crossing with linear subpixel interpolation"
+  },
+  "results": [
+    {
+      "output_height_px": 720,
+      "kernel_shape": [9, 9],
+      "grain_radius_h_px": 0.5161336431721737,
+      "grain_radius_v_px": 0.4586110160186149,
+      "anisotropy": 1.1254279228897195
+    },
+    {
+      "output_height_px": 1080,
+      "kernel_shape": [11, 11],
+      "grain_radius_h_px": 0.7737182282908052,
+      "grain_radius_v_px": 0.6022808274447502,
+      "anisotropy": 1.2846469504490108
+    },
+    {
+      "output_height_px": 1634,
+      "kernel_shape": [15, 15],
+      "grain_radius_h_px": 1.2161679413145814,
+      "grain_radius_v_px": 0.8475038395464143,
+      "anisotropy": 1.434999919251666
+    },
+    {
+      "output_height_px": 2160,
+      "kernel_shape": [21, 21],
+      "grain_radius_h_px": 1.7464411380149203,
+      "grain_radius_v_px": 1.3760855533042378,
+      "anisotropy": 1.2691370342646138
+    }
+  ],
+  "interpretation": "Unit-L2 restoration preserves expected field variance, not the reference autocorrelation shape. Subpixel sampling materially changes anisotropy. The 1080p A/B evaluates the recorded 1.285 result and must not be described as exercising the 1.435 reference-height footprint.",
+  "status": "accepted_sampled_runtime_contract_for_ab_not_resolution_invariant"
+}
