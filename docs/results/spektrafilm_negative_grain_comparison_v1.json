@@ -1,0 +1,110 @@
+{
+  "schema_version": "1",
+  "experiment_id": "spektrafilm_negative_grain_external_oracle_v1",
+  "tier": "comparison",
+  "source": {
+    "repository": "andreavolpato/spektrafilm",
+    "reviewed_commit": "3bb2c2d2801ff68b92019cf1dbcbb133d60832bc",
+    "commit_date": "2026-06-07T01:40:37+02:00",
+    "commit_subject": "fix: vlog midgray exposure",
+    "grain_source_sha256": "110a702d1f03d08935e2f138e7c9c77ee8d44ef4af65956c323495fd70cb3f62",
+    "vision3_500t_profile_sha256": "d7beca68bf16db88dbb7373fd13a6a1150a57a911a54bb0309a760a6f9883329",
+    "kodak_2383_profile_sha256": "eb7fdfa3b75a909bf5c400802f7401160c8017ed1ac3e8e0d1c8448d56fbe184"
+  },
+  "question": "Which structural behaviours of the reviewed Spektrafilm negative-grain model should inform, but not be copied into, N2?",
+  "stimulus": {
+    "kind": "synthetic_linear_prophoto_rgb_neutral_wedge_and_colour_patch_chart",
+    "neutral_stops_from_18_percent": [-5, -4, -3, -2, -1, 0, 1, 2],
+    "colour_patches": ["red", "green", "blue", "cyan", "magenta", "yellow", "warm_skin_proxy"],
+    "chart_shape": [256, 256, 3],
+    "spatial_phase_resamples": 16,
+    "pixel_size_um": 21.420,
+    "equivalent_35mm_height_px": 1634,
+    "output": "linear_srgb"
+  },
+  "null_control": {
+    "kind": "grain_disabled_through_otherwise_identical_chain",
+    "maximum_repeat_delta": 0.0
+  },
+  "pipeline_order": [
+    "negative_characteristic_curve_formation",
+    "dir_coupler_correction_and_redevelopment",
+    "negative_cmy_density_grain",
+    "spectral_enlarger_exposure",
+    "kodak_2383_print_development",
+    "spectral_scan_to_linear_srgb"
+  ],
+  "results": {
+    "neutral_output_luma_rms": {
+      "minimum": 0.000013717754378431483,
+      "median": 0.0019925440143634945,
+      "maximum": 0.007632157309839683
+    },
+    "neutral_spektrafilm_to_a1_target_rms_ratio": {
+      "minimum": 0.060972388608043236,
+      "median": 0.34923069569262866,
+      "maximum": 0.44009878550450204
+    },
+    "negative_density_opponent_to_common_rms_ratio": {
+      "minimum": 2.229989376041275,
+      "median": 2.261979414903596,
+      "maximum": 2.334861895704785
+    },
+    "final_neutral_opponent_to_luma_rms_ratio": {
+      "minimum": 1.4367653705014014,
+      "median": 1.611992338912595,
+      "maximum": 1.8286643265566385
+    },
+    "final_colour_patch_opponent_to_luma_rms_ratio": {
+      "minimum": 1.0526018542839315,
+      "median": 1.2883666303347963,
+      "maximum": 2.9312950222499348
+    },
+    "negative_density_off_diagonal_correlation": {
+      "minimum": -0.01348897374174237,
+      "median": 0.003983764819453542,
+      "maximum": 0.022153318072953104
+    },
+    "final_neutral_off_diagonal_correlation": {
+      "minimum": -0.2598686126326565,
+      "median": 0.18241695953760534,
+      "maximum": 0.5324233594308139
+    },
+    "final_neutral_footprint_at_reference_height": {
+      "grain_radius_h_px": {"minimum": 0.9410190927863865, "median": 0.9807790733474167, "maximum": 1.00665900449625},
+      "grain_radius_v_px": {"minimum": 0.9644886371893767, "median": 0.9900607283908155, "maximum": 1.042646870258895},
+      "anisotropy": {"minimum": 0.9504660328421083, "median": 0.9916094997280729, "maximum": 1.0161027576205521}
+    },
+    "layered_to_composite_negative_common_rms_ratio_at_midgray": 0.8192530257206977,
+    "layer_decomposition_maximum_abs_density_error": 0.004154069682751116,
+    "layer_decomposition_midgray_mean_density_error": [-0.0033850343705260078, -0.000008693416355918804, -0.0013572594750677742],
+    "runtime_repeated_call_bit_exact": true,
+    "alternate_seed_branch": "raises_TypeError_at_reviewed_pin"
+  },
+  "comparison_to_n1_a1": {
+    "n1a_shared_opponent_to_luma_range": [0.20953357362665892, 0.9931343842012071],
+    "n1a_independent_opponent_to_luma_range": [2.1155306459146397, 2.9222698165443552],
+    "interpretation": "Spektrafilm negative-density chroma sits in the N1a independent-field regime. Kodak 2383 introduces covariance and lowers, but does not remove, chromatic grain. Its final amplitude remains well below A1 over this wedge and is not treated as a calibration authority."
+  },
+  "decision": {
+    "adopt": [
+      "grain_between_negative_formation_and_print",
+      "density_dependent_material_envelope",
+      "explicit_sublayer_variance_modulation",
+      "measurement_after_2383"
+    ],
+    "do_not_adopt": [
+      "spektrafilm_field_generator",
+      "fully_independent_channels_as_the_only_mode",
+      "fixed_temporal_seed_contract",
+      "layer_reconstruction_before_adding_grain",
+      "spektrafilm_default_amplitude_or_spatial_blur"
+    ],
+    "n2_direction": "Use the accepted A1 FIR/PCG64 field, retain the existing 5219 response as total channel amplitude, add mean-preserving independently authored sublayer variance weights, and expose shared-to-independent covariance as a bounded comparison parameter.",
+    "accepted_fallback": "A1 unchanged"
+  },
+  "generated_full_report": {
+    "relative_path": "build/reports/spektrafilm-negative-grain-oracle-v1/measurement.json",
+    "sha256": "03102f4decb4718a4f789723cf67642915901ef25463f88c410aa7c470e4d7b9"
+  }
+}
