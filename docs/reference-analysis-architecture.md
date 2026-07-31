@@ -670,17 +670,44 @@ inside chosen intervals and *record* its regions to the catalogue rather than di
    artefact. The measured footprint carries its spatial-scale anchor, the **3840×1634 active
    geometry**, so runtime scaling stays explicit.
 
-   The three-component candidate is therefore not just measured but **validated on unseen material**:
+   Two corrections since the first reconstruction. The materialiser's FFT symmetrisation was wrong
+   — it reflected bin *k* to *N−1−k* instead of *(−k) mod N*, which on this footprint broke
+   Hermitian symmetry by ~58% and let `.real` silently discard ~17% of the generated field. Fixed
+   with the one-bin roll; the radius and anisotropy numbers above are the *post-fix* values and
+   survived, as expected. And the **codec block decision is now explicit and made, not accidental**:
+   the measured block-axis peak is 1.6–2.5, the generated field 1.1–1.2, because
+   `reconstruct._suppress_codec` interpolates across the block-frequency bins when building the
+   kernel. Those peaks are a delivery/mastering artefact — reproducing a periodic grid would only
+   worsen under re-encoding — so they are excluded from the generator and kept as provenance.
+
+   What the reconstruction validates is **componentwise**, and the claim is bounded accordingly:
+   the spatial structure and temporal independence are checked on the unit-variance field, the
+   amplitude law against the held-out points. Because the generator is linear (`level + field ×
+   σ(level)`), that is a held-out validation of all three components; the *composed* generator —
+   `reconstruct.render_candidate`, footprint times per-pixel amplitude over a real level field —
+   is materialised and unit-tested (per-pixel variance tracks the fitted law), and passed a
+   gradient sanity render. It is not yet a held-out reconstruction of a real spatially-varying
+   frame; that composed check belongs in the A/B renderer.
+
+   So, precisely: **all three components passed held-out validation, and their composition passed a
+   gradient sanity check.**
 
    ```
    appearance amplitude : sigma(L) = 0.0616 * L^0.732     held-out log-error 0.12
    spatial structure    : one footprint, ~1.2/0.84 px, ~1.44:1   held-out radial 0.057 (~ null)
    temporal baseline    : independent frames             generated rho 0.005
+   codec block grid     : measured 1.6-2.5, generated 1.1-1.2   suppressed as delivery artefact
    ```
 
-   What remains is human-facing rather than statistical: several-second renders on flat gradients,
-   dark and mixed-exposure scenes, skin and fine texture, with the migrated legacy Pulp grain as an
-   A/B reference — a review deliverable, not a further measurement. And the screen-anchoring guard
+   What remains is human-facing rather than statistical: a compact A/B set — no grain, legacy Pulp
+   grain, and this candidate — through an identical colour pipeline, image-domain placement, scale
+   convention and output encoding, on 5–10 s each of dark, mixed-highlight, skin, fine-texture and
+   gradient material, at normal strength (and 4× as a labelled diagnostic), judged for whether the
+   grain feels natural in motion, stays clean in shadow, sits on skin, and preserves detail against
+   legacy. `render_candidate` produces the FAT side; the legacy variant needs the plugin's own grain
+   generator, so the set is assembled cross-repo. First comparison keeps the candidate in the same
+   luma/image-domain placement as legacy, so grain character is not confounded with pipeline
+   placement; negative-stage integration is the isolated step after. And the screen-anchoring guard
    is still purely temporal; 60 s does not guarantee unrelated pictures, and an image-similarity
    check would close it.
 

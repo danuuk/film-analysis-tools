@@ -18,6 +18,19 @@ So the held interval influences neither the amplitude nor the spatial structure 
 to it. The midtone candidate is Gaussian by construction; the shadow heavy tails are deliberately
 excluded, since they are a delivery artefact rather than the particle law (see the footprint and
 tail studies).
+
+**What this validates, precisely.** The generator is linear -- a unit-variance shaped field times
+a per-pixel amplitude -- so its parts are validated separately and honestly: the *spatial* structure
+and *temporal* independence on the unit-variance field, and the *amplitude* law against the
+held-out points. This is a held-out validation of all three components, not yet a held-out
+reconstruction of a spatially-varying image through the full amplitude-times-footprint generator;
+that composed check belongs in the A/B renderer, which multiplies the two together over a real
+level field.
+
+The narrow codec block peaks are **not** reproduced: :func:`_suppress_codec` interpolates across the
+block-frequency bins when materialising the kernel, on the judgement that they are a
+delivery/mastering artefact. The measured peaks are retained as provenance on each fold so the
+exclusion is explicit rather than accidental.
 """
 
 from __future__ import annotations
@@ -35,12 +48,41 @@ from film_analysis_tools.core.errors import DataError
 EPS = 1.0e-12
 
 
-def materialise_filter(spectra: Sequence[fp.WindowSpectrum]) -> np.ndarray:
+def _suppress_codec(pooled: np.ndarray) -> np.ndarray:
+    """Interpolate across the axial codec-block frequency bins, leaving the broad footprint.
+
+    The narrow axial peaks at 1/8 and 1/16 (and harmonics) are a delivery/mastering artefact --
+    the encoder's block grid, not the grain's particle law. Reproducing them would print a
+    periodic pattern that only gets worse when the plugin output is re-encoded, so they are
+    replaced by a smooth interpolation from neighbouring frequency bins on the same axis. The peaks
+    are kept as *provenance* (measured block_peak on the WindowSpectrum), not as generator
+    behaviour.
+    """
+    result = pooled.astype(np.float64).copy()
+    n = result.shape[0]
+    targets: set[int] = set()
+    for size in fp.BLOCK_SIZES:
+        for harmonic in (1, 2, 3):
+            bin_index = round(harmonic / size * n)
+            if 2 < bin_index < n - 2:
+                targets.update({bin_index, n - bin_index})
+    for k in sorted(targets):
+        for lo, hi in ((k - 2, k + 2),):
+            if lo >= 0 and hi < n:
+                result[0, k] = 0.5 * (result[0, lo] + result[0, hi])  # horizontal axis
+                result[k, 0] = 0.5 * (result[lo, 0] + result[hi, 0])  # vertical axis
+    return result
+
+
+def materialise_filter(
+    spectra: Sequence[fp.WindowSpectrum], *, suppress_codec: bool = True
+) -> np.ndarray:
     """A real-valued frequency filter from the interval-weighted, symmetrised pooled 2D PSD.
 
-    Each interval contributes equally, not each window. The pooled power is symmetrised (averaged
-    with its point reflection) so the implied field is exactly real, and the filter magnitude is
-    ``sqrt(power)``.
+    Each interval contributes equally, not each window. The pooled power is symmetrised so the
+    implied field is exactly real, and the filter magnitude is ``sqrt(power)``. ``suppress_codec``
+    (default true) interpolates across the block-frequency axial bins so the grain generator does
+    not reproduce the codec grid -- see :func:`_suppress_codec`.
     """
     usable = [s for s in spectra if s.psd_2d is not None]
     if not usable:
@@ -60,7 +102,16 @@ def materialise_filter(spectra: Sequence[fp.WindowSpectrum]) -> np.ndarray:
         pooled += weight * np.asarray(spectrum.psd_2d)
         total += weight
     pooled /= max(total, EPS)
-    pooled = 0.5 * (pooled + pooled[::-1, ::-1])  # enforce even symmetry -> real field
+    # Enforce exact even symmetry so sqrt(pooled) is an even filter and ifft2 yields a real field.
+    # The conjugate partner of an *unshifted* FFT bin k is (-k) mod N, i.e. a reversal followed by
+    # a one-bin roll -- not the bare reversal ``pooled[::-1, ::-1]``, which maps k to N-1-k and
+    # broke Hermitian symmetry so badly that .real silently discarded ~17% of the field. A pooled
+    # |FFT|^2 average is already Hermitian, so this is a no-op up to float noise; it stays as a
+    # guard, now correct.
+    mirror = np.roll(pooled[::-1, ::-1], shift=(1, 1), axis=(0, 1))
+    pooled = 0.5 * (pooled + mirror)
+    if suppress_codec:
+        pooled = _suppress_codec(pooled)
     return np.sqrt(np.maximum(pooled, 0.0))
 
 
@@ -79,6 +130,55 @@ def generate_frames(filter_magnitude: np.ndarray, frames: int, *, seed: int = 0)
         std = float(shaped.std())
         stack[index] = shaped / std if std > EPS else shaped
     return stack
+
+
+def materialise_kernel(filter_magnitude: np.ndarray, *, support: int = 15) -> np.ndarray:
+    """A small, unit-L2 spatial kernel from the frequency filter -- the footprint's runtime form.
+
+    Convolving white noise (unit variance) with a unit-L2 kernel gives a unit-variance field with
+    the measured footprint, at any frame size. Cropping to a compact support is honest here because
+    the footprint is ~1 px: essentially all of its energy sits within a few pixels of the centre.
+    """
+    kernel = np.fft.fftshift(np.fft.ifft2(filter_magnitude).real)
+    centre = filter_magnitude.shape[0] // 2
+    half = support // 2
+    cropped = kernel[centre - half : centre + half + 1, centre - half : centre + half + 1]
+    norm = float(np.sqrt(np.sum(cropped**2)))
+    return cropped / norm if norm > EPS else cropped
+
+
+def render_candidate(
+    level: np.ndarray,
+    amplitude_model: Any,
+    kernel: np.ndarray,
+    *,
+    frames: int,
+    seed: int = 0,
+) -> np.ndarray:
+    """The **composed** generator: level image + footprint field x sigma(level), per frame.
+
+    This is the whole candidate applied to a spatially-varying image -- the composition the
+    componentwise held-out validation does not itself perform. ``level`` is a linear-luma image;
+    each frame adds an independent unit-variance footprint field scaled per pixel by the fitted
+    amplitude law.
+    """
+    sigma = np.asarray(amplitude_model.predict(level, outside="clamp"), dtype=np.float64)
+    rng = np.random.default_rng(seed)
+    height, width = level.shape
+    padded = np.zeros((height, width))
+    kh, kw = kernel.shape
+    padded[:kh, :kw] = kernel
+    padded = np.roll(padded, (-(kh // 2), -(kw // 2)), axis=(0, 1))
+    transfer = np.fft.fft2(padded)
+
+    out = np.empty((frames, height, width), dtype=np.float64)
+    for index in range(frames):
+        white = rng.normal(0.0, 1.0, (height, width))
+        field = np.fft.ifft2(np.fft.fft2(white) * transfer).real
+        std = float(field.std())
+        field = field / std if std > EPS else field
+        out[index] = level + sigma * field
+    return out
 
 
 @dataclass(frozen=True)
@@ -168,6 +268,9 @@ class Reconstruction:
             ),
             f"  generated field is Gaussian and independent: |skew| {skew_med:.2f}  "
             f"|excess kurtosis| {kurt_med:.2f}  |rho| {rho_med:.3f}",
+            f"  codec block peak: measured {self._spread(lambda f: f.block_peak_measured)[0]:.2f} "
+            f"vs generated {self._spread(lambda f: f.block_peak_generated)[0]:.2f} "
+            "(deliberately suppressed -- delivery artefact, not grain)",
         ]
         return "\n".join(lines)
 
@@ -279,5 +382,7 @@ __all__ = [
     "Reconstruction",
     "generate_frames",
     "materialise_filter",
+    "materialise_kernel",
     "reconstruct",
+    "render_candidate",
 ]
