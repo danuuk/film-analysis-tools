@@ -15,6 +15,13 @@ answer lived in a document nothing linked to.
 
 Studies compose capabilities. Capabilities never compose studies.
 
+The controlled negative-grain strength study is the first concrete FEE adapter: FEE owns its
+scene-linear stimulus and exact original-float N0/N1/N2 renders, while this repository owns the
+regional measurements, fixed-scale signed-delta videos, and decision report. The dependency stays
+confined to `forward/`; no camera corpus is involved. Its final human-review companion is a
+bounded native-pixel crop renderer: it adds no measurements, performs no spatial resampling, and
+encodes only the three declared N2 strength candidates as lossless RGB 4:4:4 motion views.
+
 ## Layers
 
 Strictly downward. A module may import from its own layer or one below it, never above.

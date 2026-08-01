@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import sys
 from collections.abc import Sequence
+from pathlib import Path
 
 from film_analysis_tools import __version__
 from film_analysis_tools.capabilities import catalogue, report, sample
@@ -94,6 +95,48 @@ def build_parser() -> argparse.ArgumentParser:
         help="machine-readable output, for another tool or agent consuming the catalogue",
     )
     cat.set_defaults(handler=_catalogue)
+
+    grain = subparsers.add_parser(
+        "negative-grain-synthetic",
+        help="render and measure the controlled FEE N0/N1/N2 synthetic comparison",
+    )
+    grain.add_argument("--n1-bundle", type=Path, required=True)
+    grain.add_argument("--n2-bundle", type=Path, required=True)
+    grain.add_argument("--report", type=Path, required=True, help="private report directory")
+    grain.add_argument("--width", type=int, default=1920)
+    grain.add_argument("--height", type=int, default=1080)
+    grain.add_argument("--frames", type=int, default=96, help="four seconds at 24 fps")
+    grain.add_argument("--seed", type=int, default=20260731)
+    grain.add_argument(
+        "--frame-workers",
+        "--workers",
+        dest="frame_workers",
+        type=int,
+        default=4,
+        help="independent frame-render processes (legacy alias: --workers)",
+    )
+    grain.add_argument(
+        "--variant-workers",
+        type=int,
+        default=1,
+        help="variant-render threads inside each frame process",
+    )
+    grain.add_argument("--delta-limit", type=float, default=0.05)
+    grain.add_argument("--no-video", action="store_true", help="metrics/report only")
+    grain.set_defaults(handler=_negative_grain_synthetic)
+
+    native_grain = subparsers.add_parser(
+        "negative-grain-native-crops",
+        help="render the bounded N2 0.75/1.0/1.25 native-pixel motion review",
+    )
+    native_grain.add_argument("--n1-bundle", type=Path, required=True)
+    native_grain.add_argument("--n2-bundle", type=Path, required=True)
+    native_grain.add_argument("--report", type=Path, required=True)
+    native_grain.add_argument("--frames", type=int, default=96, help="four seconds at 24 fps")
+    native_grain.add_argument("--seed", type=int, default=20260731)
+    native_grain.add_argument("--frame-workers", type=int, default=4)
+    native_grain.add_argument("--delta-limit", type=float, default=0.05)
+    native_grain.set_defaults(handler=_negative_grain_native_crops)
 
     return parser
 
@@ -300,6 +343,58 @@ def _catalogue(args: argparse.Namespace) -> int:
             path, error = _resolved_path(clip, verify=args.verify)
             line += f"\n      {path}" if path else f"\n      UNRESOLVED: {error}"
         print(line)
+    return 0
+
+
+def _negative_grain_synthetic(args: argparse.Namespace) -> int:
+    # Imported only for this command: the FEE runtime is an optional forward-model dependency,
+    # and ordinary FAT catalogue/measurement commands must remain usable without it installed.
+    from film_analysis_tools.studies.negative_grain_synthetic import (
+        SyntheticGrainRunConfig,
+        run,
+    )
+
+    run(
+        SyntheticGrainRunConfig(
+            n1_bundle=args.n1_bundle,
+            n2_bundle=args.n2_bundle,
+            output_dir=args.report,
+            width=args.width,
+            height=args.height,
+            frame_count=args.frames,
+            seed=args.seed,
+            frame_workers=args.frame_workers,
+            variant_workers=args.variant_workers,
+            delta_display_limit=args.delta_limit,
+            make_videos=not args.no_video,
+        ),
+        progress=lambda done, total: print(f"rendered {done}/{total}", flush=True),
+    )
+    print(f"wrote {args.report}")
+    print(f"open  {args.report / 'index.html'}")
+    return 0
+
+
+def _negative_grain_native_crops(args: argparse.Namespace) -> int:
+    from film_analysis_tools.studies.negative_grain_native_crops import (
+        NativeCropRunConfig,
+        run,
+    )
+
+    run(
+        NativeCropRunConfig(
+            n1_bundle=args.n1_bundle,
+            n2_bundle=args.n2_bundle,
+            output_dir=args.report,
+            frame_count=args.frames,
+            seed=args.seed,
+            frame_workers=args.frame_workers,
+            delta_display_limit=args.delta_limit,
+        ),
+        progress=lambda done, total: print(f"rendered {done}/{total}", flush=True),
+    )
+    print(f"wrote {args.report}")
+    print(f"open  {args.report / 'index.html'}")
     return 0
 
 
